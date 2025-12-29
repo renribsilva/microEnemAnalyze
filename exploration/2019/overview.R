@@ -1,70 +1,29 @@
-#------------------------
-# Importa os microdados -
-#------------------------
+#-------------------------------------------------------
+# Escreve os arquivos json para aplicação web          -
+# atenção: esse script pode demorar para ser executado -
+#-------------------------------------------------------
 
-table <- fread("2019/MICRODADOS/microdados_enem_2019/DADOS/MICRODADOS_ENEM_2019.csv")
+# Importa os microdados
+table <- fread("exploration/2019/MICRODADOS/microdados_enem_2019/DADOS/MICRODADOS_ENEM_2019.csv")
 
-# Filtra colunas
-# table <- table %>%
-#   dplyr::select(-NU_ANO,
-#                 -TP_ESTADO_CIVIL, -TP_NACIONALIDADE,
-#                 -TP_ST_CONCLUSAO, -TP_ANO_CONCLUIU,
-#                 -CO_MUNICIPIO_ESC, -NO_MUNICIPIO_ESC, 
-#                 -CO_UF_ESC, -SG_UF_ESC, -TP_DEPENDENCIA_ADM_ESC,
-#                 -TP_LOCALIZACAO_ESC, -TP_SIT_FUNC_ESC,
-#                 -Q001, -Q002, -Q003, -Q004, -Q005, -Q006, -Q007, 
-#                 -Q008, -Q009, -Q010, -Q011, -Q012, -Q013, -Q014, 
-#                 -Q015, -Q016, -Q017, -Q018, -Q019, -Q020, -Q021,
-#                 -Q022, -Q023, -Q024, -Q025)
+# Caminho para gravar o json
+path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/2019/visao-geral/json/overview/")
 
-#-----------------------------
-# Caminho para gravar o json -
-#-----------------------------
+#-----------------------
+# Inscritos e presença -
+#-----------------------
 
-path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/2019/json/overview/")
+# Escreve json sobre inscritos na prova
+write_inscritos(table, path_json = path_json)
 
-#------------
-# Inscritos -
-#------------
+# Escreve json sobre presença em ao menos um dia na prova
+write_presence(table, path_json = path_json)
 
-inscritos <- as.integer()
+# Escreve json sobre presença em ao menos um dia na prova
+write_presence_day(table, path_json = path_json, day = 1)
 
-if (!any(is.na(table$NU_INSCRICAO))) {
-  inscritos <- as.integer(length(table$NU_INSCRICAO))
-} else {
-  stop("Merda")
-}
-
-treineiros <- table(table$IN_TREINEIRO)
-treineiros_f <- prop.table(treineiros)
-tabela_treineiros <- t(as.data.table(rbind(treineiros, treineiros_f)))
-total_treineiros <- c(sum(tabela_treineiros[,1]), sum(tabela_treineiros[,2]))
-
-if (as.integer(inscritos) == as.integer(total_treineiros[1])) {
-  tabela_treineiros <- rbind(tabela_treineiros, total_treineiros)
-  tabela_treineiros[,2] <- round(tabela_treineiros[,2]*100, 2)
-} else {
-  stop ("Merda")
-}
-
-objeto_inscritos <- list(
-  list(
-    grupo = "Inscritos",
-    total = as.numeric(tabela_treineiros[,1][3]),
-    freq = as.numeric(tabela_treineiros[,2][3]),
-    subRows = list(
-      list(grupo = "Não treineiros",
-           total = as.numeric(tabela_treineiros[,1][1]),
-           freq = as.numeric(tabela_treineiros[,2][1])
-           ),
-      list(grupo = "Treineiros", 
-           total = as.numeric(tabela_treineiros[,1][2]),
-           freq = as.numeric(tabela_treineiros[,2][2]))
-    )
-  )
-)
-
-write_json(objeto_inscritos, path = file.path(path_json, "inscritos.json"), pretty = TRUE, auto_unbox = TRUE)
+# Escreve json sobre presença em ao menos um dia na prova
+write_presence_day(table, path_json = path_json, day = 2)
 
 #-----------------------
 # Rotulagem de fatores -
@@ -144,149 +103,3 @@ write_json(objeto_inscritos, path = file.path(path_json, "inscritos.json"), pret
 #                                               'Não atendimento ao tipo',
 #                                               'Texto insuficiente',
 #                                               'Parte desconectada'))
-
-#--------------------------------------
-# Filtra para pelo menos uma presença -
-#--------------------------------------
-
-batch_size <- 50000
-total_rows <- nrow(table)
-num_batches <- ceiling((total_rows/batch_size))
-
-at_least_one_presence <- data.table()
-
-for (i in 1:num_batches) {
-  start_row <- (i-1)*batch_size+1
-  end_row <- min(i*batch_size, total_rows)
-  dados_batch <- table[start_row:end_row]
-  dados_batch_filtered <- dados_batch[
-    (TP_PRESENCA_LC == 1 | TP_PRESENCA_CH == 1 | TP_PRESENCA_CN == 1 | TP_PRESENCA_MT == 1)
-  ]
-  at_least_one_presence <- rbindlist(list(at_least_one_presence, dados_batch_filtered))
-  cat("Batch", i, "de", num_batches, "processado", "(",start_row, " até ", end_row,")\n")
-  rm(start_row, end_row, dados_batch, dados_batch_filtered)
-  gc()
-}
-
-inscritos_filtered <- as.integer()
-
-if (!any(is.na(at_least_one_presence$NU_INSCRICAO))) {
-  inscritos_filtered <- as.integer(length(at_least_one_presence$NU_INSCRICAO))
-} else {
-  stop("Merda")
-}
-
-treineiros_filtered <- table(at_least_one_presence$IN_TREINEIRO)
-treineiros_filtered_f <- prop.table(treineiros_filtered)
-tabela_treineiros_filtered <- t(as.data.table(rbind(treineiros_filtered, treineiros_filtered_f)))
-total_treineiros_filtered <- c(sum(tabela_treineiros_filtered[,1]), sum(tabela_treineiros_filtered[,2]))
-
-if (as.integer(inscritos_filtered) == as.integer(total_treineiros_filtered[1])) {
-  tabela_treineiros_filtered <- rbind(tabela_treineiros_filtered, total_treineiros_filtered)
-  tabela_treineiros_filtered[,2] <- round(tabela_treineiros_filtered[,2]*100, 2)
-} else {
-  stop ("Merda")
-}
-
-objeto_presenca <- list(
-  list(
-    grupo = "Presentes na prova",
-    total = as.numeric(tabela_treineiros_filtered[,1][3]),
-    freq = as.numeric(tabela_treineiros_filtered[,2][3]),
-    subRows = list(
-      list(grupo = "Não treineiros*",
-           total = as.numeric(tabela_treineiros_filtered[,1][1]),
-           freq = as.numeric(tabela_treineiros_filtered[,2][1])
-      ),
-      list(grupo = "Treineiros", 
-           total = as.numeric(tabela_treineiros_filtered[,1][2]),
-           freq = as.numeric(tabela_treineiros_filtered[,2][2]))
-    )
-  )
-)
-
-write_json(objeto_presenca, path = file.path(path_json, "presenca.json"), pretty = TRUE, auto_unbox = TRUE)
-write.csv(at_least_one_presence, file = paste0("2019/MICRODADOS/at_least_one_presence.csv"), row.names = FALSE)
-
-#--------------------------------
-# Filtra para presença no dia 1 -
-#--------------------------------
-
-table <- table %>%
-  dplyr::select("NU_INSCRICAO", "TP_PRESENCA_LC", "TP_PRESENCA_CH",
-                "TP_PRESENCA_CN", "TP_PRESENCA_MT")
-rm(at_least_one_presence)
-gc()
-
-presence_day1 <- data.table()
-
-for (i in 1:num_batches) {
-  start_row <- (i-1)*batch_size+1
-  end_row <- min(i*batch_size, total_rows)
-  dados_batch <- table[start_row:end_row]
-  dados_batch_filtered <- dados_batch[
-    (TP_PRESENCA_LC == 1 | TP_PRESENCA_CH == 1)
-  ]
-  presence_day1 <- rbindlist(list(presence_day1, dados_batch_filtered))
-  cat("Batch", i, "de", num_batches, "processado", "(",start_row, " até ", end_row,")\n")
-  rm(start_row, end_row, dados_batch, dados_batch_filtered)
-  gc()
-}
-
-inscritos_filtered <- as.integer()
-
-if (!any(is.na(presence_day1$NU_INSCRICAO))) {
-  inscritos_filtered <- as.integer(length(presence_day1$NU_INSCRICAO))
-} else {
-  stop("Merda")
-}
-
-objeto_presenca_dia1 <- list(
-  list(
-    grupo = "Presentes na prova",
-    total = inscritos_filtered,
-    abst = round(((inscritos-inscritos_filtered)/inscritos)*100, 2)
-  )
-)
-
-write_json(objeto_presenca_dia1, path = file.path(path_json, "presenca_dia1.json"), pretty = TRUE, auto_unbox = TRUE)
-
-#--------------------------------
-# Filtra para presença no dia 2 -
-#--------------------------------
-
-rm(presence_day1)
-gc()
-
-presence_day2 <- data.table()
-
-for (i in 1:num_batches) {
-  start_row <- (i-1)*batch_size+1
-  end_row <- min(i*batch_size, total_rows)
-  dados_batch <- table[start_row:end_row]
-  dados_batch_filtered <- dados_batch[
-    (TP_PRESENCA_CN == 1 | TP_PRESENCA_MT == 1)
-  ]
-  presence_day2 <- rbindlist(list(presence_day2, dados_batch_filtered))
-  cat("Batch", i, "de", num_batches, "processado", "(",start_row, " até ", end_row,")\n")
-  rm(start_row, end_row, dados_batch, dados_batch_filtered)
-  gc()
-}
-
-inscritos_filtered <- as.integer()
-
-if (!any(is.na(presence_day2$NU_INSCRICAO))) {
-  inscritos_filtered <- as.integer(length(presence_day2$NU_INSCRICAO))
-} else {
-  stop("Merda")
-}
-
-objeto_presenca_dia2 <- list(
-  list(
-    grupo = "Presentes na prova",
-    total = inscritos_filtered,
-    abst = round(((inscritos -inscritos_filtered)/inscritos)*100, 2)
-  )
-)
-
-write_json(objeto_presenca_dia2, path = file.path(path_json, "presenca_dia2.json"), pretty = TRUE, auto_unbox = TRUE)

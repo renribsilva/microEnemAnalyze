@@ -1,6 +1,6 @@
 Package: microEnemAnalize
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Análise exploratória dos microdados do ENEM (Title Case)
 Version: 0.1.0
 Authors@R: c(
     person(
@@ -9,12 +9,12 @@ Authors@R: c(
       role = c("aut", "cre")
     )
   )
-Description: More about what it does (maybe more than one line).
-    Continuation lines should be indented.
-License: What license is it under?
+Description: Escreve arquivos json para serem usados em uma aplicação web.
+License: GPLv3
 Encoding: UTF-8
 LazyData: true
-Suggests: 
-    dplyr,
-    roxygen2,
-    usethis
+RoxygenNote: 7.3.3
+Imports: 
+    cli,
+    data.table,
+    jsonlite

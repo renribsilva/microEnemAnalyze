@@ -2,16 +2,16 @@
 # Importa os table_lc_score.csv -
 #--------------------------------
 
-filtered <- fread("2019/MICRODADOS/table_filtered.csv")
+filtered <- fread("exploration/2019/MICRODADOS/at_least_one_presence.csv")
 lc_score <- fread("2019/MICRODADOS/score_lc.csv")
 source("2019/process_area.R")
 
 itens_2019 <- fread(input='2019/MICRODADOS/microdados_enem_2019/DADOS/ITENS_PROVA_2019.csv')
 itens_2019_filtered <- itens_2019 %>%
   dplyr::filter(CO_PROVA == 511 | CO_PROVA == 512 | CO_PROVA == 513 | CO_PROVA == 514 | CO_PROVA == 521 | CO_PROVA == 525 |
-                  CO_PROVA == 507 | CO_PROVA == 508 | CO_PROVA == 509 | CO_PROVA == 510 | CO_PROVA == 520 | CO_PROVA == 524 |
-                  CO_PROVA == 503 | CO_PROVA == 504 | CO_PROVA == 505 | CO_PROVA == 506 | CO_PROVA == 519 | CO_PROVA == 523 |
-                  CO_PROVA == 515 | CO_PROVA == 516 | CO_PROVA == 517 | CO_PROVA == 518 | CO_PROVA == 522 | CO_PROVA == 526)
+                CO_PROVA == 507 | CO_PROVA == 508 | CO_PROVA == 509 | CO_PROVA == 510 | CO_PROVA == 520 | CO_PROVA == 524 |
+                CO_PROVA == 503 | CO_PROVA == 504 | CO_PROVA == 505 | CO_PROVA == 506 | CO_PROVA == 519 | CO_PROVA == 523 |
+                CO_PROVA == 515 | CO_PROVA == 516 | CO_PROVA == 517 | CO_PROVA == 518 | CO_PROVA == 522 | CO_PROVA == 526)
 
 #------------------------------------------------
 # Calcula frequência de acertos de cada questão -
@@ -30,7 +30,7 @@ dados_esp <- dplyr::filter(lc_score, TP_LINGUA == 1)
 lista_ing <- lapply(ing, function(item) {
   tab_abs_ing <- table(dados_ing[[item]], useNA = "ifany")
   tab_rel_ing <- round(prop.table(tab_abs_ing) * 100, 2)
-  
+
   resultado_ing <- cbind(f_abs = tab_abs_ing, f_rel = tab_rel_ing)
   return(resultado_ing)
 })
@@ -39,7 +39,7 @@ lista_ing <- lapply(ing, function(item) {
 lista_esp <- lapply(esp, function(item) {
   tab_abs_esp <- table(dados_esp[[item]], useNA = "ifany")
   tab_rel_esp <- round(prop.table(tab_abs_esp) * 100, 2)
-  
+
   resultado_esp <- cbind(f_abs = tab_abs_esp, f_rel = tab_rel_esp)
   return(resultado_esp)
 })
@@ -48,7 +48,7 @@ lista_esp <- lapply(esp, function(item) {
 lista_oth <- lapply(oth, function(item) {
   tab_abs_oth <- table(lc_score[[item]], useNA = "ifany")
   tab_rel_oth <- round(prop.table(tab_abs_oth) * 100, 2)
-  
+
   resultado_oth <- cbind(f_abs = tab_abs_oth, f_rel = tab_rel_oth)
   return(resultado_oth)
 })
@@ -70,16 +70,16 @@ lc_completo
 #-----------------------------
 
 # # Plota a distribuição
-# mirt::plot(lc_score$NU_NOTA_LC, 
-#            rowSums(LC_mat), 
-#            main = "Relação entre quantidade de acertos e proficiência", 
-#            xlab = "Proficiência", 
+# mirt::plot(lc_score$NU_NOTA_LC,
+#            rowSums(LC_mat),
+#            main = "Relação entre quantidade de acertos e proficiência",
+#            xlab = "Proficiência",
 #            ylab = "Quantidade de acertos",
 #            # xlim = c(-4, 4),  # Ajustando o limite do eixo X para de -4 a 4
 #            ylim = c(min(rowSums(LC_mat)), max(rowSums(LC_mat))),  # Ajuste automático do limite do eixo Y
 #            cex = 0.1,
 #            cex.axis = 1)
-# 
+#
 # abline(v = 628.7, lty = 2, lwd = 0.5, col = 'gray')
 # abline(h = 33, lty = 2, lwd = 0.5, col = 'gray')
 
@@ -139,15 +139,15 @@ if (nrow(my_pars) != 45) {
 # 2. Processamento vetorizado
 # Usamos lapply para iterar sobre os índices dos itens
 ls_traceline <- lapply(1:nrow(my_pars), function(i) {
-  
+
   # Captura parâmetros do item atual
   ai <- my_pars$NU_PARAM_A[i]
   bi <- my_pars$NU_PARAM_B[i]
   ci <- my_pars$NU_PARAM_C[i]
-  
+
   # A mágica acontece aqui: theta é um vetor, então p_vector será um vetor
   p_vector <- cci_3pl(theta, ai, bi, ci)
-  
+
   # Retorna um data.frame para este item
   data.frame(
     p1 = p_vector,
