@@ -17,4 +17,13 @@ RoxygenNote: 7.3.3
 Imports: 
     cli,
     data.table,
-    jsonlite
+    jsonlite,
+    mirt,
+    mirtCAT
+Suggests:
+    bit64,
+    devtools,
+    roxygen2,
+    usethis
+Depends: 
+    R (>= 3.5)

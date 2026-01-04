@@ -15,6 +15,7 @@ write_fx_etaria(data, path_json)
 Salva um arquivo JSON no diretório especificado.
 }
 \description{
-Esta função agrupa os dados de faixa etária do ENEM/INEP, calcula frequências
-relativas e exporta um JSON formatado para uso no Chart.js.
+Esta função agrupa os dados de faixa etária do
+ENEM, calcula frequências relativas e exporta um JSON
+formatado para uso no Chart.js.
 }

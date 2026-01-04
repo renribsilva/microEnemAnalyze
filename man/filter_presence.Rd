@@ -4,17 +4,21 @@
 \alias{filter_presence}
 \title{Filtrar inscritos com pelo menos uma presença}
 \usage{
-filter_presence(data, path_csv)
+filter_presence(data, path_csv, nt = FALSE)
 }
 \arguments{
 \item{data}{A data.table com os microdados.}
 
 \item{path_csv}{Caminho para salvar o arquivo CSV final.}
+
+\item{nt}{Argumento booleano que acrescenta um filtro para não
+treineiros}
 }
 \value{
 Retorna a data.table filtrada invisivelmente.
 }
 \description{
-Esta função processa uma data.table em batches para filtrar candidatos que
-compareceram a pelo menos uma das quatro provas do ENEM.
+Esta função processa uma data.table em batches para
+filtrar candidatos que compareceram a pelo menos uma das quatro
+provas do ENEM.
 }

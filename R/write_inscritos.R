@@ -8,38 +8,35 @@
 #'
 #' @return Retorna o caminho do arquivo gerado (invisivelmente).
 #' @export
-#'
-#' @import data.table
-#' @importFrom jsonlite write_json
-#' @importFrom cli cli_alert_info cli_alert_success cli_alert_danger cli_process_start cli_process_done
-#'
 write_inscritos <- function(data, path_json) {
 
+  # --- TÍTULO ---
+  cli::cli_h2("Processamento de Inscritos e Treineiros")
+
   # 1. Validação dos argumentos
+  cli::cli_process_start("Validando estrutura dos dados")
+
   if (typeof(path_json) != "character") {
     cli::cli_alert_danger("Erro no argumento {.var path_json}")
     stop("Erro: o argumentos path_json precisa ser do tipo character")
   }
 
-  # 1. Validação dos argumentos
   if (typeof(data) != "data.table") {
-    cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
+    # cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
     data <- data.table::as.data.table(data)
   }
 
-  # 1. Validação de inscritos
   if (any(is.na(data$NU_INSCRICAO))) {
     cli::cli_alert_danger("Valores ausentes detectados em {.var NU_INSCRICAO}")
     stop("Erro: Existem valores NA em NU_INSCRICAO.")
   }
+  cli::cli_process_done()
 
-  cli::cli_h2("Inicia a criação de tabelas de frequências")
-  ap <- cli::cli_process_start("Criação de tabelas de frequências")
+  # 2. Criação de tabelas de frequências
+  ap <- cli::cli_process_start("Calculando frequências e estatísticas")
 
   inscritos <- as.integer(length(data$NU_INSCRICAO))
 
-  # 2. treineiros
-  cli::cli_alert_info("Calculando estatísticas de treineiros...")
   treineiros_counts <- table(data$IN_TREINEIRO)
   treineiros_prop <- prop.table(treineiros_counts)
 
@@ -73,20 +70,21 @@ write_inscritos <- function(data, path_json) {
       )
     )
   )
-
   cli::cli_process_done(id = ap)
+
+  # 5. Exportação
+  cli::cli_process_start("Salvando arquivo final")
 
   final_file <- if(grepl("\\.json$", path_json)) path_json else file.path(path_json, "inscritos.json")
 
-  # Garante que a estrutura de pastas existe (evita erro se a pasta não existir)
   dir.create(dirname(final_file), showWarnings = FALSE, recursive = TRUE)
   final_file <- normalizePath(final_file, mustWork = FALSE)
 
-  cli::cli_alert_info("Exportando arquivo JSON...")
   jsonlite::write_json(objeto_inscritos, path = final_file, pretty = TRUE, auto_unbox = TRUE)
 
   cli::cli_process_done()
-  cli::cli_alert_success("Arquivo salvo com sucesso em: {.file {final_file}}")
+
+  cli::cli_alert_success("Processo concluído: {.file {final_file}}")
 
   return(invisible(final_file))
 }
