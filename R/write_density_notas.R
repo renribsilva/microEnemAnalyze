@@ -3,27 +3,38 @@
 #' @param data Data.table com a coluna NU_NOTA_...
 #' @param path_json Caminho do arquivo JSON.
 #' @export
-write_density <- function(data, path_json) {
-
-  # --- TÍTULO ---
+write_density_notas <- function(data, path_json) {
   cli::cli_h2("Processamento de Densidade (Chart.js)")
 
-  # Cálculo da densidade
-  cli::cli_process_start("Calculando coordenadas de densidade")
   col_nota <- grep("^NU_NOTA_", names(data), value = TRUE)
   notas <- data[[col_nota]]
   notas_filtrado <- notas[notas > 0 & !is.na(notas)]
 
-  dens <- density(notas_filtrado, n = 512)
+  # Cálculo da densidade REAL
+  dens <- density(notas_filtrado, n = 512,
+                  from = min(notas_filtrado),
+                  to = max(notas_filtrado))
+  pontos_reais <- data.frame(x = dens$x, y = dens$y)
 
-  # 1. Cria o data.frame com os pontos (cada linha vira um objeto {x, y})
-  pontos <- data.frame(x = dens$x, y = dens$y)
+  # Cálculo da densidade NORMAL (Teórica)
+  # Usamos a média e DP reais dos dados para criar a referência
+  media_real <- mean(notas_filtrado)
+  sd_real <- sd(notas_filtrado)
 
-  # 2. Monta a estrutura exata pedida pelo Chart.js
+  # Geramos pontos da normal nos mesmos X da densidade
+  y_normal <- dnorm(dens$x, mean = media_real, sd = sd_real)
+  pontos_normal <- data.frame(x = dens$x, y = y_normal)
+
+  # Monta a estrutura com DOIS datasets
   lista_completa <- list(
     datasets = list(
       list(
-        data = pontos
+        id = "main-density",
+        data = pontos_reais
+      ),
+      list(
+        id = "normal-reference",
+        data = pontos_normal
       )
     )
   )

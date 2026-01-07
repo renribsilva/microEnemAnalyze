@@ -20,7 +20,7 @@ Imports:
     jsonlite,
     mirt,
     mirtCAT
-Suggests:
+DevDependencies:
     bit64,
     devtools,
     roxygen2,

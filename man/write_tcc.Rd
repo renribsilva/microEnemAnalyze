@@ -4,9 +4,11 @@
 \alias{write_tcc}
 \title{Exportar TCCs de todos os cadernos em um único JSON}
 \usage{
-write_tcc(path_json, ano)
+write_tcc(data, path_json, ano)
 }
 \arguments{
+\item{data}{Data.table com a coluna NU_NOTA_}
+
 \item{path_json}{String. Caminho completo do arquivo (ex: "caminho/tcc_completo.json").}
 
 \item{ano}{Ano do exame (ex: 2019).}

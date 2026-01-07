@@ -2,13 +2,15 @@
 % Please edit documentation in R/write_itens.R
 \name{write_itens}
 \alias{write_itens}
-\title{Exportar Dados para JSON}
+\title{Exportar Dados para JSON (Garantindo UTF-8 e Tipos Originais)}
 \usage{
 write_itens(path_json, ano)
 }
 \arguments{
-\item{path_json}{String com o nome do arquivo de saída}
+\item{path_json}{String com o caminho da pasta ou nome do arquivo de saída}
+
+\item{ano}{Inteiro ou string representando o ano (ex: 2019)}
 }
 \description{
-Esta função carrega um arquivo RDA e o converte para JSON.
+Exportar Dados para JSON (Garantindo UTF-8 e Tipos Originais)
 }

@@ -2,99 +2,96 @@
 # CONFIGURAÇÃO DO AMBIENTE - PROJETO ENEM
 # ==============================================================================
 
-# 1. Ativação do ambiente isolado (renv)
-# ------------------------------------------------------------------------------
-if (file.exists("renv/activate.R")) {
-  source("renv/activate.R")
-}
+if (file.exists("renv/activate.R")) source("renv/activate.R")
 
-# 2. Função interna para extrair dependências do DESCRIPTION
+# 1. Extração estruturada do DESCRIPTION
 # ------------------------------------------------------------------------------
-obter_deps <- function() {
+obter_deps_categorizadas <- function() {
+  if (!file.exists("DESCRIPTION")) return(list(imports = c(), dev = c()))
 
   d <- read.dcf("DESCRIPTION")
-  deps <- c()
-  if ("Imports" %in% colnames(d)) deps <- c(deps, d[, "Imports"])
-  if ("DevDependencies" %in% colnames(d)) deps <- c(deps, d[, "DevDependencies"])
+  limpar <- function(campo) {
+    if (!campo %in% colnames(d)) return(c())
+    deps <- gsub("\\s*\\(.*?\\)", "", d[, campo])
+    unlist(strsplit(deps, ",\\s*"))
+  }
 
-  # Limpeza: remove versões (>= 1.0) e espaços
-  deps <- gsub("\\s*\\(.*?\\)", "", deps)
-  deps <- unlist(strsplit(deps, ",\\s*"))
-  return(unique(deps))
+  list(
+    # 'Imports' são pacotes necessários para o funcionamento (Produção)
+    imports = unique(limpar("Imports")),
+    # 'Suggests' ou seu campo customizado 'DevDependencies' (Desenvolvimento)
+    dev     = unique(c(limpar("Suggests"), limpar("DevDependencies")))
+  )
 }
 
-# 3. Identificar pacotes e cruzar com o renv.lock
+# 2. Processamento e Carregamento
 # ------------------------------------------------------------------------------
-pacotes_projeto <- obter_deps()
-pacotes_no_renv <- c()
+deps_list <- obter_deps_categorizadas()
 
-# Precisamos do jsonlite para ler o lockfile
+# Validação com renv.lock
+pacotes_no_renv <- c()
 if (file.exists("renv.lock") && requireNamespace("jsonlite", quietly = TRUE)) {
   lockfile <- jsonlite::fromJSON("renv.lock")
   pacotes_no_renv <- names(lockfile$Packages)
 }
 
-# Só carregar o que estiver no DESCRIPTION e validado pelo RENV
-pacotes_para_carregar <- intersect(pacotes_projeto, pacotes_no_renv)
+imports_faltantes_no_renv <- setdiff(deps_list$imports, pacotes_no_renv)
 
-# 4. Carregamento Silencioso
-# ------------------------------------------------------------------------------
-if (length(pacotes_para_carregar) == 0) {
-  pacotes_para_carregar <- intersect(pacotes_projeto, utils::installed.packages()[, "Package"])
+if (length(imports_faltantes_no_renv) > 0) {
+  # Ajustado de %d para %s e adicionado paste()
+  stop(sprintf("As dependências [%s] não estão registradas no renv.lock. Rode renv::snapshot().",
+               paste(imports_faltantes_no_renv, collapse = ", ")))
 }
 
-invisible(lapply(pacotes_para_carregar, function(p) {
+# 3. Carregamento das dependências
+# ------------------------------------------------------------------------------
+
+invisible(lapply(deps_list$imports, function(p) {
   suppressPackageStartupMessages(library(p, character.only = TRUE))
 }))
 
-# 5. Carregamento do Pacote Local (Modo Desenvolvimento)
+invisible(lapply(deps_list$dev, function(p) {
+  suppressPackageStartupMessages(library(p, character.only = TRUE))
+}))
+
+# 3. Carregamento do Pacote Local
 # ------------------------------------------------------------------------------
 if (interactive() && file.exists("DESCRIPTION")) {
-  if (requireNamespace("pkgload", quietly = TRUE)) {
-    pkgload::load_all(".", quiet = TRUE)
-  }
+  if (requireNamespace("pkgload", quietly = TRUE)) pkgload::load_all(".", quiet = TRUE)
 }
 
-# 6. Dashboard de Inicialização
+# 4. Dashboard de Inicialização (Distinção Visual)
 # ------------------------------------------------------------------------------
 if (interactive() && requireNamespace("cli", quietly = TRUE)) {
 
   na_memoria <- gsub("package:", "", grep("^package:", search(), value = TRUE))
+  pkg_name   <- if(file.exists("DESCRIPTION")) read.dcf("DESCRIPTION")[, "Package"] else ""
 
-  cli::cli_alert_success("Ambiente Isolado: {.info {basename(getwd())}}")
-  cat("\n", cli::style_bold(strrep("=", 70)), "\n")
-
-  # Identifica o nome do pacote atual para destaque
-  pkg_name <- if(file.exists("DESCRIPTION")) read.dcf("DESCRIPTION")[, "Package"] else ""
-
-  if (length(na_memoria) > 0) {
-    cat("\n")
-    cat("  📦 PACOTES ATIVOS:\n")
-    cat("  ", cli::col_green(paste(sort(na_memoria), collapse = " • ")), "\n")
-
-    if (pkg_name %in% na_memoria) {
-      cat("\n")
-      cat("  📦 DO PROJETO:\n")
-      cat("  ", cli::col_yellow(paste(sort(pkg_name), collapse = " • ")), "\n")
-    }
-
-    # --- NOVIDADE AQUI: Filtra e mostra o que é Dev de quem está ativo ---
-    d_raw <- read.dcf("DESCRIPTION")
-    dev_deps_nomes <- if("DevDependencies" %in% colnames(d_raw)) {
-      unlist(strsplit(gsub("\\s*\\(.*?\\)", "", d_raw[,"DevDependencies"]), ",\\s*"))
-    } else c()
-
-    dev_ativos <- intersect(na_memoria, dev_deps_nomes)
-    if(length(dev_ativos) > 0) {
-      cat("\n")
-      cat("  📦 DO DESENVOLVEDOR:\n")
-      cat("  ", cli::col_blue(paste(sort(dev_ativos), collapse = " • ")), "\n")
-    }
-    # ---------------------------------------------------------------------
-  }
+  cli::cli_h1("Ambiente: {basename(getwd())}")
   cat("\n")
-  cat(cli::style_bold(strrep("=", 70)), "\n\n")
+
+  # --- Categoria: Produção (Imports) ---
+  ativos_prod <- intersect(na_memoria, deps_list$imports)
+  if(length(ativos_prod) > 0) {
+    cli::cli_alert_info("PRODUÇÃO (Imports):")
+    cat("  ", cli::col_green(paste(sort(ativos_prod), collapse = " • ")), "\n\n")
+  }
+
+  # --- Categoria: Desenvolvimento (Dev/Suggests) ---
+  ativos_dev <- intersect(na_memoria, deps_list$dev)
+  if(length(ativos_dev) > 0) {
+    cli::cli_alert_info("DESENVOLVIMENTO (DevDeps):")
+    cat("  ", cli::col_blue(paste(sort(ativos_dev), collapse = " • ")), "\n\n")
+  }
+
+  # --- Categoria: O Próprio Projeto ---
+  if (pkg_name %in% na_memoria) {
+    cli::cli_alert_success("PROJETO LOCAL ATIVO:")
+    cat("  ", cli::col_yellow(paste(pkg_name, collapse = " • ")), "\n\n")
+  }
+
+  cli::cli_rule()
 }
 
-# Limpeza de variáveis auxiliares
-rm(list = ls(pattern = "^(pacotes_|na_|lockfile|obter_deps|d|deps|faltantes|p$|pkg_name|dev_|d_raw)"))
+# Limpeza criteriosa
+rm(list = ls(pattern = "^(pacotes_|na_|lockfile|obter_deps|deps_list|todos_|ativos_|p$|pkg_name|d$|limpar|imports_faltantes_no_renv)"))
