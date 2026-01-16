@@ -13,7 +13,7 @@ Um data.frame (ou data.table) com as colunas:
 }
 }
 \source{
-Microdados do INEP 2019.
+Microdados do INEP.
 }
 \usage{
 itens_2019

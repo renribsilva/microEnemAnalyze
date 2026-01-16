@@ -19,8 +19,8 @@ obter_deps_categorizadas <- function() {
   list(
     # 'Imports' são pacotes necessários para o funcionamento (Produção)
     imports = unique(limpar("Imports")),
-    # 'Suggests' ou seu campo customizado 'DevDependencies' (Desenvolvimento)
-    dev     = unique(c(limpar("Suggests"), limpar("DevDependencies")))
+    # 'Suggests'
+    dev     = unique(limpar("Suggests"))
   )
 }
 

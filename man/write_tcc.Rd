@@ -2,17 +2,19 @@
 % Please edit documentation in R/write_tcc.R
 \name{write_tcc}
 \alias{write_tcc}
-\title{Exportar TCCs de todos os cadernos em um único JSON}
+\title{Exportar TCC Consolidado em Arquivo Único}
 \usage{
-write_tcc(data, path_json, ano)
+write_tcc(data, score, path_json, ano)
 }
 \arguments{
-\item{data}{Data.table com a coluna NU_NOTA_}
+\item{data}{Data.table com colunas NU_NOTA_ de todas as áreas (Microdados)}
 
-\item{path_json}{String. Caminho completo do arquivo (ex: "caminho/tcc_completo.json").}
+\item{score}{Lista de data.tables (um por área) com NU_SCORE e NU_NOTA_}
 
-\item{ano}{Ano do exame (ex: 2019).}
+\item{path_json}{Caminho base ou nome do arquivo para salvar}
+
+\item{ano}{Ano do exame}
 }
 \description{
-Exportar TCCs de todos os cadernos em um único JSON
+Exportar TCC Consolidado em Arquivo Único
 }

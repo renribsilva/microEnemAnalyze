@@ -130,19 +130,33 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
 
     cli::cli_process_done(id = cp)
 
-    # Preparação para exportação
-    cli::cli_process_start("Consolidando matriz de scores")
-    cols_mantidas <- c("NU_INSCRICAO",
-                       paste0("TP_PRESENCA_", area_loop),
-                       paste0("CO_PROVA_", area_loop),
-                       paste0("NU_NOTA_", area_loop),
-                       paste0("TX_RESPOSTAS_", area_loop),
-                       paste0("TX_GABARITO_", area_loop))
-    if ("TP_LINGUA" %in% names(data)) cols_mantidas <- c(cols_mantidas, "TP_LINGUA")
+    # --- PREPARAÇÃO PARA EXPORTAÇÃO (CORRIGIDA) ---
+    cli::cli_process_start("Consolidando matriz de scores para {.val {area_loop}}")
 
-    score <- data[, ..cols_mantidas]
-    score$NU_SCORE <- score_nu
-    score <- cbind(score, as.data.table(score_df))
+    # 1. Identificar colunas básicas da área atual
+    cols_base <- c("NU_INSCRICAO",
+                   paste0("TP_PRESENCA_", area_loop),
+                   paste0("CO_PROVA_", area_loop),
+                   paste0("NU_NOTA_", area_loop),
+                   paste0("TX_RESPOSTAS_", area_loop),
+                   paste0("TX_GABARITO_", area_loop))
+
+    if ("TP_LINGUA" %in% names(data)) cols_base <- c(cols_base, "TP_LINGUA")
+
+    # 2. Criar um novo data.table apenas com o necessário (evita lixo do 'data' original)
+    # Usamos data.table::as.data.table para garantir uma cópia física em memória
+    score_final <- data.table::as.data.table(data[, ..cols_base])
+
+    # 3. Atribuir o score bruto (NU_SCORE)
+    score_final[, NU_SCORE := as.vector(score_nu)]
+
+    # 4. Converter a matriz de itens para data.table e juntar
+    # IMPORTANTE: as.data.table(score_df) garante que usamos apenas os itens da área atual
+    itens_dt <- data.table::as.data.table(score_df)
+
+    # Junk as colunas de itens ao score_final
+    score_final <- cbind(score_final, itens_dt)
+
     cli::cli_process_done()
 
     # --- TRATAMENTO DO PATH E ESCRITA ---
@@ -151,7 +165,7 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
     final_file <- normalizePath(final_file, mustWork = FALSE)
 
     cli::cli_process_start("Gravando {.path {basename(final_file)}}")
-    data.table::fwrite(score, file = final_file)
+    data.table::fwrite(score_final, file = final_file)
     cli::cli_process_done()
 
     cli::cli_alert_success("Área {.field {area_loop}} finalizada.")

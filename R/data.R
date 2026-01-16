@@ -1,3 +1,55 @@
+#' @title Constantes de transformação
+#' @description Constantes de transformação da escala dos itens
+#' divulgados nos microdados para a escala oficial do Enem
+#'
+#' @format Um objeto do tipo `data.frame` com as constantes de cada
+#' área.
+#'
+#' Temos duas escalas: a escala oficial do Enem, cuja
+#' referência são os concluintes regulares de escolas públicas do
+#' Enem 2009 (média 500, desvio padrão 100); e a escala dos
+#' itens divulgados nos microdados (escala dos microdados),
+#' cuja referência é a amostra de
+#' calibração do Enem 2009 (média 0, desvio padrão 1).
+#'
+#' Para calcular as constantes de transformação de uma escala
+#' para a outra, aplicamos a equalização linear
+#' (Hambleton et al., 1991). Inicialmente estimamos
+#' a nota dos primeiros 300.000 sujeitos do banco dos
+#' microdados em cada área, de acordo com
+#' as especificações em `calc.nota`. Em seguida, estabelecemos
+#' a igualdade entre a padronização das notas desses sujeitos:
+#' \deqn{\frac{Y_{i}-\overline{Y}}{DP_{y}}=\frac{X_{i}-\overline{X}}{DP_{x}}}
+#' onde \eqn{Y_{i}} representa a nota do sujeito \eqn{i} na escala
+#' oficial do Enem e \eqn{\overline{Y}} e \eqn{DP_{y}} representam a
+#' média e o
+#' desvio padrão das notas dessa amostra de 300.000 sujeitos nessa mesma
+#' escala. \eqn{X_{i}} representa a nota do sujeito \eqn{i} na escala
+#' dos microdados. \eqn{\overline{X}} e \eqn{DP_{x}}
+#' representam a média e o desvio padrão das notas da amostra nessa
+#' escala.
+#'
+#' Nessa
+#' equação, consideramos que as notas padronizadas das duas escalas
+#' são iguais, pois provêm da mesma amostra. Se isolarmos
+#' \eqn{Y_{i}}, teremos (Muñiz, 1997):
+#'
+#' \deqn{Y_{i}=\frac{DP_{y}}{DP_{x}}X_{i}+\overline{Y}-\frac{DP_{y}}{DP_{x}}\overline{X}}
+#'
+#' Dessa equação, extraímos as constantes \eqn{k} e \eqn{d}:
+#'
+#' \deqn{k=\frac{DP_{y}}{DP_{x}}}
+#'
+#' \deqn{d=\overline{Y}-\frac{DP_{y}}{DP_{x}}\overline{X}}
+#' \deqn{d=\overline{Y}-k\overline{X}}
+#'
+#' Portanto, para transformar a nota da escala dos microdados para a
+#' escala oficial do Enem, utilizamos a seguinte equação:
+#' \deqn{Y_{i}=kX_{i}+d}
+#'
+#'
+'constantes'
+
 #' Parâmetros dos Itens do ENEM
 #'
 #' Dataset contendo os parâmetros A, B e C dos itens processados.
@@ -8,12 +60,13 @@
 #'   \item{d}{Intercepto calculado como -a*b}
 #'   \item{g}{Parâmetro de acerto ao acaso (chute)}
 #' }
-#' @source Microdados do INEP 2019.
+#' @source Microdados do INEP.
 "itens_2019"
+"itens_2009"
 
 #' Código das provas do ENEM
 #'
-#' Dataset contendo o código das provas do ENEM de 2019.
+#' Dataset contendo o código das provas do ENEM.
 #'
 #' @format Um data.frame (ou data.table) com as colunas:
 #' \describe{
@@ -21,5 +74,6 @@
 #'   \item{codigo}{Código do caderno}
 #'   \item{cor}{Cor do caderno}
 #' }
-#' @source Microdados do INEP 2019.
+#' @source Microdados do INEP.
 "dic_2019"
+"dic_2009"

@@ -20,9 +20,11 @@ Imports:
     jsonlite,
     mirt,
     mirtCAT
-DevDependencies:
+Suggests: 
     bit64,
     devtools,
+    dplyr,
+    psych,
     roxygen2,
     usethis
 Depends: 

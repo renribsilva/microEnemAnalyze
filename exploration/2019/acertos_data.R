@@ -2,7 +2,7 @@
 # Caminho para gravar o json -
 #-----------------------------
 
-path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/2019/resposta-ao-item/json/")
+path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/2019/notas-e-acertos/json/")
 
 #--------------------------------------------------------------------
 # Escreve tabela com frequências de acerto e erro de todos os itens -
@@ -13,9 +13,7 @@ score_CH <- fread("exploration/2019/MICRODADOS/score_CH.csv")
 score_CN <- fread("exploration/2019/MICRODADOS/score_CN.csv")
 score_MT <- fread("exploration/2019/MICRODADOS/score_MT.csv")
 
-data <- list(score_LC, score_CH, score_CN, score_MT)
+# Precisa de identificadores
+data <- list(LC = score_LC, CH = score_CH, CN = score_CN, MT = score_MT)
 
-write_score_table(data = data, path_json = path_json)
-
-write_score_graph(data = data, path_json = path_json)
-
+write_score_describe(data = data, path_json = path_json)
