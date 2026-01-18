@@ -6,7 +6,7 @@
 table <- fread("exploration/2019/MICRODADOS/microdados_enem_2019/DADOS/MICRODADOS_ENEM_2019.csv")
 
 # Caminho para gravar o csv
-path_csv <- as.character("exploration/2019/MICRODADOS/teste.csv")
+path_csv <- as.character("exploration/2019/MICRODADOS/at_least_one_presence.csv")
 
 # Escreve um csv menor, filtrado para presentes em ao menos um dia da prova
 filter_presence(table, path_csv = path_csv)
@@ -16,21 +16,21 @@ filter_presence(table, path_csv = path_csv)
 #-----------------------------------------------------
 
 # Importa os microdados
-table <- fread("exploration/2019/MICRODADOS/microdados_enem_2019/DADOS/MICRODADOS_ENEM_2019.csv")
+# table <- fread("exploration/2019/MICRODADOS/microdados_enem_2019/DADOS/MICRODADOS_ENEM_2019.csv")
 
 # Caminho para gravar o csv
-path_csv <- as.character("exploration/2019/MICRODADOS/teste.csv")
+# path_csv <- as.character("exploration/2019/MICRODADOS/at_least_one_presence_nt.csv")
 
 # Escreve um csv menor, filtrado para presentes em ao menos
 # um dia da prova e não treineiros
-filter_presence(table, path_csv = path_csv, nt = TRUE)
+# filter_presence(table, path_csv = path_csv, nt = TRUE)
 
 #-------------------------------------------------
 # Escreve arquivos csv com scores para cada área -
 #-------------------------------------------------
 
 # Importa os microdados
-data <- fread("exploration/2019/MICRODADOS/at_least_one_presence_nt.csv")
+data <- fread("exploration/2019/MICRODADOS/at_least_one_presence.csv")
 
 # Caminho para gravar o csv
 path_csv <- as.character("exploration/2019/MICRODADOS")

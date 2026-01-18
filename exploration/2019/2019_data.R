@@ -32,7 +32,7 @@ score_MT <- fread("exploration/2019/MICRODADOS/score_MT.csv")
 score <- list(score_LC,  score_CH, score_CN, score_MT)
 
 # Importa dados
-data <- fread("exploration/2019/MICRODADOS/at_least_one_presence_nt.csv")
+data <- fread("exploration/2019/MICRODADOS/at_least_one_presence.csv")
 
 # Escreve a curva característica do exame por caderno, para um determinado ano
 write_tcc(data = data, score = score, path_json = path_json, ano = 2019)

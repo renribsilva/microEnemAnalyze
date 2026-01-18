@@ -1,11 +1,11 @@
 library(data.table)
 library(dplyr)
 
-#-----------2020--------------
+#-----------2021--------------
 
-data <- fread("exploration/2020/MICRODADOS/microdados_enem_2020/DADOS/MICRODADOS_ENEM_2020.csv")
+data <- fread("exploration/2021/MICRODADOS/microdados_enem_2021/DADOS/MICRODADOS_ENEM_2021.csv")
 my_data <- data %>%
-  dplyr::filter(NU_NOTA_MT == 804.5 & NO_MUNICIPIO_PROVA == "Votuporanga")
+  dplyr::filter(NU_NOTA_MT == 745.9 & NO_MUNICIPIO_PROVA == "Votuporanga")
 
 a <- substr(my_data$TX_RESPOSTAS_LC, 0, 5)
 b <- substr(my_data$TX_RESPOSTAS_LC, 11, 99999)

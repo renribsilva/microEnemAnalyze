@@ -1,18 +1,16 @@
 library(data.table)
 library(dplyr)
 
-#-----------2020--------------
+#-----------2023--------------
 
-data <- fread("exploration/2020/MICRODADOS/microdados_enem_2020/DADOS/MICRODADOS_ENEM_2020.csv")
+data <- fread("exploration/2023/MICRODADOS/microdados_enem_2023/DADOS/MICRODADOS_ENEM_2023.csv")
 my_data <- data %>%
-  dplyr::filter(NU_NOTA_MT == 804.5 & NO_MUNICIPIO_PROVA == "Votuporanga")
+  dplyr::filter(NU_NOTA_MT == 833.2 & NO_MUNICIPIO_PROVA == "Votuporanga")
 
-a <- substr(my_data$TX_RESPOSTAS_LC, 0, 5)
-b <- substr(my_data$TX_RESPOSTAS_LC, 11, 99999)
 c <- substr(my_data$TX_GABARITO_LC, 0, 5)
 d <- substr(my_data$TX_GABARITO_LC, 11, 99999)
 
-res_LC <- paste0(a, b)
+res_LC <- my_data$TX_RESPOSTAS_LC
 res_CH <- my_data$TX_RESPOSTAS_CH
 res_CN <- my_data$TX_RESPOSTAS_CN
 res_MT <- my_data$TX_RESPOSTAS_MT

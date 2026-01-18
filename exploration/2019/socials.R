@@ -2,7 +2,7 @@
 # Importa os table_lc_score.csv -
 #--------------------------------
 
-filtered <- fread("exploration/2019/MICRODADOS/at_least_one_presence_nt.csv")
+filtered <- fread("exploration/2019/MICRODADOS/at_least_one_presence.csv")
 
 #-----------------------------
 # Caminho para gravar o json -
