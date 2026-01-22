@@ -3,7 +3,7 @@
 #-----------------------------------------------
 
 # Cria caminho para salvar o arquivo JSON
-path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/json")
+path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/")
 
 # Escreve o JSON
 write_constantes(path_json = path_json)

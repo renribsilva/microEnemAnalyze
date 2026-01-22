@@ -26,3 +26,22 @@ score_LC <- sum(process_score(res_LC, gab_LC)[process_score(res_LC, gab_LC) == 1
 score_CH <- sum(process_score(res_CH, gab_CH)[process_score(res_CH, gab_CH) == 1])
 score_CN <- sum(process_score(res_CN, gab_CN)[process_score(res_CN, gab_CN) == 1])
 score_MT <- sum(process_score(res_MT, gab_MT)[process_score(res_MT, gab_MT) == 1])
+
+my_data <- fread("exploration/2019/MICRODADOS/at_least_one_presence.csv", nrows = 1)
+calc_nota(my_data, area = "MT", ano = 2019)
+
+sample <- "000000000000000000000000000000000000000000000"
+
+# Converte a string em vetor numérico
+score_i <- as.numeric(strsplit(sample, "")[[1]])
+
+# Transforma em matriz 1 linha x 45 colunas
+score_i <- matrix(score_i, nrow = 1)
+
+# Verifica dimensões
+dim(score_i)
+# [1] 1 45
+
+# Mostra a matriz
+score_i
+

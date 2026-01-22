@@ -84,8 +84,8 @@ calc_nota <- function(sample, area, ano) {
   # Remove nulos (casos onde o caderno não foi encontrado)
   prod_prob <- prod_prob[!sapply(prod_prob, is.null)]
 
+  posterior <- L_theta * p_theta
   theta_EAP <- sapply(prod_prob, function(L_theta) {
-    posterior <- L_theta * p_theta
     sum(theta * posterior) / sum(posterior)
   })
 
