@@ -60,13 +60,17 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
     vetor_respostas <- data[[col_tx_resposta]]
     vetor_gabaritos <- data[[col_tx_gabarito]]
     vetor_codigos <- as.numeric(data[[col_co_prova]])
+    vetor_lingua <- data$TP_LINGUA
 
     # Interface de progresso dinâmica
     cp <- cli::cli_process_start("Corrigindo provas de {.val {n}} participantes")
 
+    cache_itens <- list()
+
     for (i in seq_len(n)) {
 
       cod_prova_origem <- as.numeric(vetor_codigos[i])
+      lang_cand <- vetor_lingua[i]
 
       if (is.na(cod_prova_origem)) {
         score_df[i, ] <- NA
@@ -76,31 +80,103 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
 
       if (cod_prova_origem %in% as.numeric(dic_df_P1_area$codigo)) {
 
-        itens_prova_origem <- itens_df[itens_df$CO_PROVA == cod_prova_origem, ]
-        itens_prova_origem <- itens_prova_origem[order(itens_prova_origem$TP_LINGUA, itens_prova_origem$CO_POSICAO), ]
+        resp_orig_string <- gsub(" ", "", vetor_respostas[i])
+        gab_orig_string <- gsub(" ", "", vetor_gabaritos[i])
 
-        if (is.null(itens_prova_origem)) stop(sprintf("Erro: itens da prova %d não está mapeada", cod_prova_origem))
-
-        resp_orig_string <- vetor_respostas[i]
-        resp_orig_vetor <- strsplit(gsub(" ", "", resp_orig_string), "")[[1]]
-
-        if (length(resp_orig_vetor) != (if(area_loop == "LC") 50 else 45)) {
-          stop(sprintf("Vetor RESP tem tamanho errado (%d) na linha %d.", length(resp_orig_vetor), i))
+        if (area_loop == "LC") {
+          if (lang_cand == 0) {
+            if (nchar(resp_orig_string) > 45) {
+              resp_45 <- paste0(substr(resp_orig_string, 1, 5), substr(resp_orig_string, 11, 9999))
+            } else if (nchar(resp_orig_string) == 45){
+              resp_45 <- resp_orig_string
+            }
+            if (nchar(gab_orig_string) > 45) {
+              gab_45 <- paste0(substr(gab_orig_string, 1, 5), substr(gab_orig_string, 11, 9999))
+            } else if (nchar(gab_orig_string) == 45) {
+              gab_45 <- gab_orig_string
+            }
+          } else if (lang_cand == 1) {
+            if (nchar(resp_orig_string) > 45) {
+              resp_45 <- substr(resp_orig_string, 6, 99999)
+            } else if (nchar(resp_orig_string) == 45) {
+              resp_45 <- resp_orig_string
+            }
+            if (nchar(gab_orig_string) > 45) {
+              gab_45 <- substr(gab_orig_string, 6, 99999)
+            } else if (nchar(gab_orig_string) == 45) {
+              gab_45 <- gab_orig_string
+            }
+          }
+        } else {
+          resp_45 <- resp_orig_string
+          gab_45  <- gab_orig_string
         }
 
-        gab_orig_string <- vetor_gabaritos[i]
-        gab_orig_vetor <- strsplit(gsub(" ", "", gab_orig_string), "")[[1]]
+        resp_orig_vetor <- strsplit(resp_45, "")[[1]]
+        gab_orig_vetor <- strsplit(gab_45, "")[[1]]
 
-        if (length(gab_orig_vetor) != (if(area_loop == "LC") 50 else 45)) {
+        if (length(gab_orig_vetor) != 45) {
           stop(sprintf("Vetor gab_orig_vetor tem tamanho errado (%d) na linha %d.", length(gab_orig_vetor), i))
         }
 
-        if (nrow(itens_prova_origem) != length(resp_orig_vetor)) {
+        chave_cache <- paste(cod_prova_origem, gab_45, lang_cand, sep = "_")
+
+        if (!is.null(cache_itens[[chave_cache]])) {
+          itens_prova_origem <- cache_itens[[chave_cache]]
+        } else {
+
+          pool_itens <- itens_df[itens_df$CO_PROVA == cod_prova_origem, ]
+
+          if (area_loop == "LC") {
+            pool_itens <- pool_itens[pool_itens$TP_LINGUA == lang_cand | is.na(pool_itens$TP_LINGUA), ]
+          }
+
+          itens_prova_origem <- NULL
+          opcoes_v <- unique(pool_itens$TP_VERSAO_DIGITAL)
+
+          if (ano == 2020) {
+            for (v in opcoes_v) {
+              # Se v for NA, filtra por is.na, se não, filtra pelo valor
+              if (is.na(v)) {
+                temp <- pool_itens[is.na(pool_itens$TP_VERSAO_DIGITAL), ]
+              } else {
+                temp <- pool_itens[!is.na(pool_itens$TP_VERSAO_DIGITAL) & pool_itens$TP_VERSAO_DIGITAL == v, ]
+              }
+
+              if (nrow(temp) == 0) stop("Erro no retorno de uma lista de itens")
+
+              temp <- temp[order(temp$CO_POSICAO), ]
+
+              # Compara o gabarito montado com o do microdados
+              if (paste0(temp$TX_GABARITO, collapse = "") == gab_45) {
+                itens_prova_origem <- temp
+                break
+              }
+            }
+          } else {
+            itens_prova_origem <- pool_itens[order(pool_itens$CO_POSICAO), ]
+          }
+
+          if (!is.null(itens_prova_origem)) {
+            cache_itens[[chave_cache]] <- itens_prova_origem
+          }
+        }
+
+        if (is.null(itens_prova_origem)) stop(sprintf("Erro: itens da prova %d não está mapeada", cod_prova_origem))
+
+        if (length(resp_orig_vetor) != 45 | length(gab_orig_vetor) != 45) {
+          stop(sprintf("Vetor RESP tem tamanho errado (%d) na linha %d.", length(resp_orig_vetor), i))
+        }
+
+        if (nrow(itens_prova_origem) != 45) {
           stop(sprintf("O tamanho do vetor resp_orig_vetor (%d) diverge do comprimento de seus itens (%d) na linha %d.", length(resp_orig_vetor), nrow(itens_prova_origem), i))
         }
 
         col_names  <- as.character(itens_prova_origem$CO_ITEM)
         gab_vetor  <- as.character(itens_prova_origem$TX_GABARITO)
+        if (!identical(gab_vetor, gab_orig_vetor)) {
+          stop(sprintf("Inconsistência crítica: Gabarito do pool de itens não bate com gab_45 na linha %d", i))
+        }
         resp_vetor <- as.character(resp_orig_vetor)
 
         res_vetor <- ifelse(resp_vetor == gab_vetor, 1L, 0L)
@@ -109,13 +185,15 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
         res_vetor[resp_vetor == "*"] <- 7L
 
         score_df[i, col_names] <- res_vetor
+        score_orig <- process_score(resp_45, gab_45)
 
-        score_orig <- process_score(resp_orig_string, gab_orig_string)
+        acertos_calculados <- sum(score_df[i, col_names] == 1, na.rm = TRUE)
+        acertos_referencia <- sum(score_orig == 1)
 
-        if (sum(score_df[i, ] == 1, na.rm = TRUE) == sum(score_orig == 1)) {
-          score_nu[i, ] <- sum(score_orig == 1)
+        if (acertos_calculados == acertos_referencia) {
+          score_nu[i, ] <- acertos_referencia
         } else {
-          stop(sprintf("Erro integridade na linha %d: Original %d != Novo %d", i, sum(score_orig == 1), sum(score_df[i, ] == 1, na.rm = TRUE)))
+          stop(sprintf("Erro integridade na linha %d: Original %d != Novo %d", i, acertos_referencia, acertos_calculados))
         }
 
       }

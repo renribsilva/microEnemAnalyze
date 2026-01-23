@@ -22,14 +22,16 @@ write_tcc <- function(data, score, path_json, ano) {
 
   dic_df_P1 <- dic_df[dic_df$aplicacao == "P1", ]
 
-  # --- INICIALIZAÇÃO DO ARQUIVO ÚNICO ---
-  # tcc_consolidated acumulará todos os códigos de todas as áreas
-  tcc_consolidated <- list()
+  # --- INICIALIZAÇÃO DO STREAMING ---
+  final_file <- if(grepl("\\.json$", path_json)) path_json else file.path(path_json, paste0("tcc_", ano,".json"))
+  dir.create(dirname(final_file), showWarnings = FALSE, recursive = TRUE)
 
-  # 2. Loop sobre a lista de áreas
+  con <- file(final_file, open = "w")
+  writeLines("{", con)
+
+  previous_key <- NULL
+
   for (area_dt in score) {
-
-    # Identificar área
     cols_notas_emp <- names(area_dt)[grepl("NU_NOTA_", names(area_dt))]
     if(length(cols_notas_emp) == 0) next
     area_nome <- gsub("NU_NOTA_", "", cols_notas_emp[1])
@@ -42,7 +44,6 @@ write_tcc <- function(data, score, path_json, ano) {
       cor_name <- dic_df$cor[dic_df$codigo == codigo][1]
       col_nota <- paste0("NU_NOTA_", area_nome)
 
-      # --- ESCALA DE INTEIROS ---
       notas_area_ref <- data[[col_nota]]
       notas_area_ref <- notas_area_ref[notas_area_ref > 0 & !is.na(notas_area_ref)]
       if(length(notas_area_ref) == 0) next
@@ -51,70 +52,93 @@ write_tcc <- function(data, score, path_json, ano) {
       nota_max <- max(notas_area_ref, na.rm = TRUE)
       escala_x <- as.numeric(seq(floor(nota_min), ceiling(nota_max), by = 1))
 
-      # --- LÓGICA EMPÍRICA ---
       tabela_real <- area_dt[get(col_nota) > 0, .(
         media = mean(NU_SCORE, na.rm = TRUE)
       ), keyby = .(x = as.integer(round(get(col_nota), 0)))]
 
       df_merge <- merge(data.frame(x = escala_x), tabela_real, by = "x", all.x = TRUE)
-
-      # --- LÓGICA TEÓRICA ---
       Theta_metrico <- matrix((escala_x - const_row$d) / const_row$k)
-      linguas <- if(area_nome == "LC") c(0, 1) else list(NULL)
 
-      for (lingua in linguas) {
-        itens_caderno <- itens_df[itens_df$CO_PROVA == codigo, ]
-        key_name <- as.character(codigo)
+      # --- LÓGICA DE VERSÕES (Digital vs Impresso) ---
+      if (ano == 2020) {
+        v_bruto <- unique(itens_df$TP_VERSAO_DIGITAL[itens_df$CO_PROVA == codigo])
+        versoes_codificadas <- ifelse(is.na(v_bruto) | v_bruto == 0, "I", "D") |> unique()
+      } else {
+        versoes_codificadas <- "I" # Padrão para outros anos
+      }
 
-        if (area_nome == "LC") {
-          itens_caderno <- itens_caderno[order(itens_caderno$TP_LINGUA, itens_caderno$CO_POSICAO), ]
-          condicao <- is.na(itens_caderno$TP_LINGUA) | itens_caderno$TP_LINGUA == "" | itens_caderno$TP_LINGUA == lingua
-          itens_caderno <- itens_caderno[condicao, ]
-          key_name <- paste0(codigo, "_", lingua)
-        }
+      for (v_tag in versoes_codificadas) {
+        linguas <- if(area_nome == "LC") c(0, 1) else list(NULL)
 
-        # Cálculo MIRT
-        itens_mirt <- data.frame(
-          a1 = as.numeric(itens_caderno$NU_PARAM_A),
-          d  = as.numeric(itens_caderno$NU_PARAM_A) * -as.numeric(itens_caderno$NU_PARAM_B),
-          g  = as.numeric(itens_caderno$NU_PARAM_C)
-        )
-        mod_test <- mirtCAT::generate.mirt_object(itens_mirt, '3PL')
+        for (lingua in linguas) {
+          # Filtro por versão para evitar somar 90 itens na TCC
+          if (ano == 2020) {
+            if (v_tag == "I") {
+              itens_caderno <- itens_df[itens_df$CO_PROVA == codigo & (itens_df$TP_VERSAO_DIGITAL == 0 | is.na(itens_df$TP_VERSAO_DIGITAL)), ]
+            } else {
+              itens_caderno <- itens_df[itens_df$CO_PROVA == codigo & itens_df$TP_VERSAO_DIGITAL == 1, ]
+            }
+          } else {
+            itens_caderno <- itens_df[itens_df$CO_PROVA == codigo, ]
+          }
 
-        escore_esperado <- mirt::expected.test(mod_test, Theta_metrico)
-        escore_esperado <- (escore_esperado - min(escore_esperado)) /
-          (max(escore_esperado) - min(escore_esperado)) * nrow(itens_mirt)
+          if (nrow(itens_caderno) == 0) next
 
-        # --- ALIMENTANDO A LISTA ÚNICA ---
-        # Chave principal: key_name | Chave interna: area
-        tcc_consolidated[[key_name]] <- list(
-          area = area_nome,
-          labels_x = escala_x,
-          metadata = list(
-            codigo = as.numeric(codigo),
+          # Identificação da Chave
+          if (area_nome == "LC") {
+            itens_caderno <- itens_caderno[order(itens_caderno$TP_LINGUA, itens_caderno$CO_POSICAO), ]
+            condicao <- is.na(itens_caderno$TP_LINGUA) | itens_caderno$TP_LINGUA == "" | itens_caderno$TP_LINGUA == lingua
+            itens_caderno <- itens_caderno[condicao, ]
+            key_name <- paste0(codigo, "_", lingua, "_", v_tag)
+          } else {
+            key_name <- paste0(codigo, "_X_", v_tag)
+          }
+
+          if (nrow(itens_caderno) == 0) next
+
+          # Cálculo MIRT (Baseado nos 45 itens da versão/língua)
+          itens_mirt <- data.frame(
+            a1 = as.numeric(itens_caderno$NU_PARAM_A),
+            d  = as.numeric(itens_caderno$NU_PARAM_A) * -as.numeric(itens_caderno$NU_PARAM_B),
+            g  = as.numeric(itens_caderno$NU_PARAM_C)
+          )
+          mod_test <- mirtCAT::generate.mirt_object(itens_mirt, '3PL')
+
+          escore_esperado <- mirt::expected.test(mod_test, Theta_metrico)
+          escore_esperado <- (escore_esperado - min(escore_esperado)) /
+            (max(escore_esperado) - min(escore_esperado)) * nrow(itens_mirt)
+
+          if (!is.null(previous_key)) {
+            writeLines(",", con, sep = "\n")
+          }
+
+          tcc_item <- list(
             area = area_nome,
-            cor = cor_name,
-            max = nota_max,
-            min = nota_min,
-            lingua = if(area_nome == "LC") as.numeric(lingua) else "N/A",
-            b_medio_enem = round(mean(as.numeric(itens_caderno$NU_PARAM_B), na.rm = TRUE) * const_row$k + const_row$d, 1)
-          ),
-          data_teorico = round(as.vector(escore_esperado), 2),
-          data_empirico = round(df_merge$media, 2)
-        )
+            labels_x = escala_x,
+            metadata = list(
+              codigo = as.numeric(codigo),
+              versao = v_tag,
+              area = area_nome,
+              cor = cor_name,
+              max = nota_max,
+              min = nota_min,
+              lingua = if(area_nome == "LC") as.numeric(lingua) else "N/A",
+              b_medio_enem = round(mean(as.numeric(itens_caderno$NU_PARAM_B), na.rm = TRUE) * const_row$k + const_row$d, 1)
+            ),
+            data_teorico = round(as.vector(escore_esperado), 2),
+            data_empirico = round(df_merge$media, 2)
+          )
+
+          json_string <- jsonlite::toJSON(tcc_item, pretty = TRUE, auto_unbox = TRUE, na = "null")
+          cat(paste0("\"", key_name, "\": ", json_string), file = con)
+          previous_key <- key_name
+        }
       }
     }
   }
 
-  # --- EXPORTAÇÃO FINAL DO ARQUIVO ÚNICO ---
-  cli::cli_process_start("Preparando diretórios")
-  final_file <- if(grepl("\\.json$", path_json)) path_json else file.path(path_json, paste0("tcc_", ano,".json"))
-  dir.create(dirname(final_file), showWarnings = FALSE, recursive = TRUE)
-  final_file <- normalizePath(final_file, mustWork = FALSE)
-
-  cli::cli_process_start("Exportando JSON Único: {.path {basename(final_file)}}")
-  jsonlite::write_json(tcc_consolidated, path = final_file, pretty = TRUE, auto_unbox = TRUE, na = "null")
-  cli::cli_process_done()
-
-  cli::cli_alert_success("Processamento completo. Todos os códigos salvos em um único arquivo.")
+  writeLines("", con)
+  writeLines("}", con)
+  close(con)
+  cli::cli_alert_success("Processamento completo para {ano}. JSON salvo via streaming.")
 }

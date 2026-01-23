@@ -61,8 +61,9 @@
 #'   \item{g}{Parâmetro de acerto ao acaso (chute)}
 #' }
 #' @source Microdados do INEP.
-"itens_2019"
 "itens_2009"
+"itens_2019"
+"itens_2020"
 
 #' Código das provas do ENEM
 #'
@@ -75,5 +76,6 @@
 #'   \item{cor}{Cor do caderno}
 #' }
 #' @source Microdados do INEP.
-"dic_2019"
 "dic_2009"
+"dic_2019"
+"dic_2020"

@@ -1,4 +1,61 @@
 # ------
+# 2009 -
+# ------
+
+library(data.table)
+
+itens_2009 <- fread(input='exploration/2009/MICRODADOS/microdados_enem_2009/DADOS/ITENS_PROVA_2009.csv')
+
+# --- 1. Linguagens e Códigos (LC) ---
+lc_2009 <- data.table(
+  area      = "LC",
+  ano       = 2009,
+  codigo    = as.numeric(c(57, 58, 59, 60, 83, 73, 74, 75, 76)),
+  cor       = c("Amarela", "Cinza", "Azul", "Rosa", "Cinza - Adaptada Ledor",
+                "Amarela", "Cinza", "Azul", "Rosa"),
+  aplicacao = c(rep("P1", 5), rep("P2", 4))
+)
+
+# --- 2. Ciências Humanas (CH) ---
+ch_2009 <- data.table(
+  area      = "CH",
+  ano       = 2009,
+  codigo    = as.numeric(c(53, 54, 55, 56, 82, 69, 70, 71, 72)),
+  cor       = c("Azul", "Amarela", "Branca", "Rosa",
+                "Branca - Adaptada Ledor",
+                "Azul", "Amarela", "Branca", "Rosa"),
+  aplicacao = c(rep("P1", 5), rep("P2", 4))
+)
+
+# --- 3. Ciências da Natureza (CN) ---
+cn_2009 <- data.table(
+  area      = "CN",
+  ano       = 2009,
+  codigo    = as.numeric(c(49, 50, 51, 52, 81, 65, 66, 67, 68)),
+  cor       = c("Azul", "Amarela", "Branca", "Rosa",
+                "Branca - Adaptada Ledor",
+                "Azul", "Amarela", "Branca", "Rosa"),
+  aplicacao = c(rep("P1", 5), rep("P2", 4))
+)
+
+# --- 4. Matemática (MT) ---
+mt_2009 <- data.table(
+  area      = "MT",
+  ano       = 2009,
+  codigo    = as.numeric(c(61, 62, 63, 64, 84, 77, 78, 79, 80)),
+  cor       = c("Amarela", "Cinza", "Azul", "Rosa",
+                "Cinza - Adaptada Ledor",
+                "Amarela", "Cinza", "Azul", "Rosa"),
+  aplicacao = c(rep("P1", 5), rep("P2", 4))
+)
+
+# --- UNINDO TUDO ---
+dic_2009 <- rbind(lc_2009, ch_2009, cn_2009, mt_2009)
+
+# Salvando no pacote
+usethis::use_data(dic_2009, overwrite = TRUE)
+
+# ------
 # 2019 -
 # ------
 
@@ -63,59 +120,68 @@ dic_2019 <- rbind(lc_2019, ch_2019, cn_2019, mt_2019)
 usethis::use_data(dic_2019, overwrite = TRUE)
 
 # ------
-# 2009 -
+# 2020 -
 # ------
 
 library(data.table)
 
-itens_2009 <- fread(input='exploration/2009/MICRODADOS/microdados_enem_2009/DADOS/ITENS_PROVA_2009.csv')
+itens_2020 <- fread(input='exploration/2020/MICRODADOS/microdados_enem_2020/DADOS/ITENS_PROVA_2020.csv')
 
 # --- 1. Linguagens e Códigos (LC) ---
-lc_2009 <- data.table(
+lc_2020 <- data.table(
   area      = "LC",
-  ano       = 2009,
-  codigo    = as.numeric(c(57, 58, 59, 60, 83, 73, 74, 75, 76)),
-  cor       = c("Amarela", "Cinza", "Azul", "Rosa", "Cinza - Adaptada Ledor",
-                "Amarela", "Cinza", "Azul", "Rosa"),
-  aplicacao = c(rep("P1", 5), rep("P2", 4))
+  ano       = 2020,
+  codigo    = as.numeric(c(577, 578, 579, 580, 581, 582, 584, 585, 691, 692, 693, 694, # P1
+                           657, 658, 659, 660, 664)),                          # P2
+  cor       = c("Azul", "Amarela", "Rosa", "Branca", "Rosa - Ampliada", "Rosa - Superampliada",
+                "Laranja - Adaptada Ledor", "Verde - Videoprova - Libras",
+                "Azul (Digital)", "Amarela (Digital)", "Branca (Digital)", "Rosa (Digital)",
+                "Azul", "Amarela", "Rosa", "Branca", "Laranja - Adaptada Ledor"),
+  aplicacao = c(rep("P1", 12), rep("P2", 5))
 )
 
 # --- 2. Ciências Humanas (CH) ---
-ch_2009 <- data.table(
+ch_2020 <- data.table(
   area      = "CH",
-  ano       = 2009,
-  codigo    = as.numeric(c(53, 54, 55, 56, 82, 69, 70, 71, 72)),
-  cor       = c("Azul", "Amarela", "Branca", "Rosa",
-                "Branca - Adaptada Ledor",
-                "Azul", "Amarela", "Branca", "Rosa"),
-  aplicacao = c(rep("P1", 5), rep("P2", 4))
+  ano       = 2020,
+  codigo    = as.numeric(c(567, 568, 569, 570, 571, 572, 574, 575, 687, 688, 689, 690, # P1
+                           647, 648, 649, 650, 654)),                          # P2
+  cor       = c("Azul", "Amarela", "Branca", "Rosa", "Rosa - Ampliada", "Rosa - Superampliada",
+                "Laranja - Adaptada Ledor", "Verde - Videoprova - Libras",
+                "Azul (Digital)", "Amarela (Digital)", "Branca (Digital)", "Rosa (Digital)",
+                "Azul", "Amarela", "Branca", "Rosa", "Laranja - Adaptada Ledor"),
+  aplicacao = c(rep("P1", 12), rep("P2", 5))
 )
 
 # --- 3. Ciências da Natureza (CN) ---
-cn_2009 <- data.table(
+cn_2020 <- data.table(
   area      = "CN",
-  ano       = 2009,
-  codigo    = as.numeric(c(49, 50, 51, 52, 81, 65, 66, 67, 68)),
-  cor       = c("Azul", "Amarela", "Branca", "Rosa",
-                "Branca - Adaptada Ledor",
-                "Azul", "Amarela", "Branca", "Rosa"),
-  aplicacao = c(rep("P1", 5), rep("P2", 4))
+  ano       = 2020,
+  codigo    = as.numeric(c(597, 598, 599, 600, 601, 602, 604, 605, 699, 700, 701, 702, # P1
+                           677, 678, 679, 680, 684)),                          # P2
+  cor       = c("Azul", "Amarela", "Cinza", "Rosa", "Rosa - Ampliada", "Rosa - Superampliada",
+                "Laranja - Adaptada Ledor", "Verde - Videoprova - Libras",
+                "Azul (Digital)", "Amarela (Digital)", "Rosa (Digital)", "Cinza (Digital)",
+                "Azul", "Amarela", "Cinza", "Rosa", "Laranja - Adaptada Ledor"),
+  aplicacao = c(rep("P1", 12), rep("P2", 5))
 )
 
 # --- 4. Matemática (MT) ---
-mt_2009 <- data.table(
+mt_2020 <- data.table(
   area      = "MT",
-  ano       = 2009,
-  codigo    = as.numeric(c(61, 62, 63, 64, 84, 77, 78, 79, 80)),
-  cor       = c("Amarela", "Cinza", "Azul", "Rosa",
-                "Cinza - Adaptada Ledor",
-                "Amarela", "Cinza", "Azul", "Rosa"),
-  aplicacao = c(rep("P1", 5), rep("P2", 4))
+  ano       = 2020,
+  codigo    = as.numeric(c(587, 588, 589, 590, 591, 592, 594, 595, 695, 696, 697, 698, # P1
+                           667, 668, 669, 670, 674)),                          # P2
+  cor       = c("Azul", "Amarela", "Rosa", "Cinza", "Rosa - Ampliada", "Rosa - Superampliada",
+                "Laranja - Adaptada Ledor", "Verde - Videoprova - Libras",
+                "Azul (Digital)", "Amarela (Digital)", "Rosa (Digital)", "Cinza (Digital)",
+                "Azul", "Amarela", "Rosa", "Cinza", "Laranja - Adaptada Ledor"),
+  aplicacao = c(rep("P1", 12), rep("P2", 5))
 )
 
 # --- UNINDO TUDO ---
-dic_2009 <- rbind(lc_2009, ch_2009, cn_2009, mt_2009)
+dic_2020 <- rbind(lc_2020, ch_2020, cn_2020, mt_2020)
 
 # Salvando no pacote
-usethis::use_data(dic_2009, overwrite = TRUE)
+usethis::use_data(dic_2020, overwrite = TRUE)
 
