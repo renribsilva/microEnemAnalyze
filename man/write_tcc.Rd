@@ -2,7 +2,7 @@
 % Please edit documentation in R/write_tcc.R
 \name{write_tcc}
 \alias{write_tcc}
-\title{Exportar TCC Consolidado em Arquivo Único}
+\title{Exportar TCC Consolidado em Arquivo Único (Streaming)}
 \usage{
 write_tcc(data, score, path_json, ano)
 }
@@ -16,5 +16,5 @@ write_tcc(data, score, path_json, ano)
 \item{ano}{Ano do exame}
 }
 \description{
-Exportar TCC Consolidado em Arquivo Único
+Exportar TCC Consolidado em Arquivo Único (Streaming)
 }

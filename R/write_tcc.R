@@ -1,4 +1,4 @@
-#' Exportar TCC Consolidado em Arquivo Único
+#' Exportar TCC Consolidado em Arquivo Único (Streaming)
 #' @param data Data.table com colunas NU_NOTA_ de todas as áreas (Microdados)
 #' @param score Lista de data.tables (um por área) com NU_SCORE e NU_NOTA_
 #' @param path_json Caminho base ou nome do arquivo para salvar
@@ -6,139 +6,178 @@
 #' @export
 write_tcc <- function(data, score, path_json, ano) {
 
-  cli::cli_h2("Processamento Consolidado: TCC Teórico + Empírico")
+  cli::cli_h2("Processamento Consolidado: TCC Teórico + Empírico (Streaming)")
 
-  # 1. Recuperar objetos do Global Env
+  # ------------------------------------------------------------------
+  # Objetos globais
+  # ------------------------------------------------------------------
   cli::cli_process_start("Recuperando objetos do Global Env")
-  tryCatch({
-    itens_df <- get(paste0("itens_", as.character(ano)), envir = .GlobalEnv)
-    dic_df   <- get(paste0("dic_", as.character(ano)), envir = .GlobalEnv)
-    consts   <- get("constantes", envir = .GlobalEnv)
-    cli::cli_process_done()
-  }, error = function(e) {
-    cli::cli_alert_danger("Erro: Objetos não encontrados no Global Env.")
-    stop(e)
-  })
+  itens_df <- get(paste0("itens_", ano), envir = .GlobalEnv)
+  dic_df   <- get(paste0("dic_", ano),   envir = .GlobalEnv)
+  consts   <- get("constantes",           envir = .GlobalEnv)
+  cli::cli_process_done()
 
   dic_df_P1 <- dic_df[dic_df$aplicacao == "P1", ]
 
-  # --- INICIALIZAÇÃO DO STREAMING ---
-  final_file <- if(grepl("\\.json$", path_json)) path_json else file.path(path_json, paste0("tcc_", ano,".json"))
-  dir.create(dirname(final_file), showWarnings = FALSE, recursive = TRUE)
+  # ------------------------------------------------------------------
+  # Arquivo de saída (streaming)
+  # ------------------------------------------------------------------
+  final_file <- if (grepl("\\.json$", path_json)) {
+    path_json
+  } else {
+    file.path(path_json, paste0("tcc_", ano, ".json"))
+  }
 
-  con <- file(final_file, open = "w")
+  dir.create(dirname(final_file), recursive = TRUE, showWarnings = FALSE)
+
+  con <- file(final_file, open = "w", encoding = "UTF-8")
+  on.exit(close(con), add = TRUE)
+
   writeLines("{", con)
+  first_entry <- TRUE
 
-  previous_key <- NULL
-
+  # ------------------------------------------------------------------
+  # Loop por área
+  # ------------------------------------------------------------------
   for (area_dt in score) {
-    cols_notas_emp <- names(area_dt)[grepl("NU_NOTA_", names(area_dt))]
-    if(length(cols_notas_emp) == 0) next
-    area_nome <- gsub("NU_NOTA_", "", cols_notas_emp[1])
 
+    col_nota <- names(area_dt)[grepl("^NU_NOTA_", names(area_dt))]
+    if (length(col_nota) == 0) next
+
+    area_nome <- sub("^NU_NOTA_", "", col_nota[1])
     cli::cli_alert_info("Processando área: {.val {area_nome}}")
+
     const_row <- consts[consts$area == area_nome, ]
+    if (nrow(const_row) != 1) {
+      stop("Constantes inválidas para a área: ", area_nome, call. = FALSE)
+    }
+
     codigos <- unique(dic_df_P1$codigo[dic_df_P1$area == area_nome])
 
     for (codigo in codigos) {
+
       cor_name <- dic_df$cor[dic_df$codigo == codigo][1]
-      col_nota <- paste0("NU_NOTA_", area_nome)
+      col_nota_area <- paste0("NU_NOTA_", area_nome)
 
-      notas_area_ref <- data[[col_nota]]
-      notas_area_ref <- notas_area_ref[notas_area_ref > 0 & !is.na(notas_area_ref)]
-      if(length(notas_area_ref) == 0) next
+      notas <- data[[col_nota_area]]
+      notas <- notas[!is.na(notas) & notas > 0]
+      if (length(notas) == 0) next
 
-      nota_min <- min(notas_area_ref, na.rm = TRUE)
-      nota_max <- max(notas_area_ref, na.rm = TRUE)
-      escala_x <- as.numeric(seq(floor(nota_min), ceiling(nota_max), by = 1))
+      nota_min <- min(notas)
+      nota_max <- max(notas)
+      escala_x <- seq(floor(nota_min), ceiling(nota_max), by = 1)
 
-      tabela_real <- area_dt[get(col_nota) > 0, .(
-        media = mean(NU_SCORE, na.rm = TRUE)
-      ), keyby = .(x = as.integer(round(get(col_nota), 0)))]
+      tabela_real <- area_dt[
+        get(col_nota) > 0,
+        .(media = mean(NU_SCORE, na.rm = TRUE)),
+        keyby = .(x = as.integer(round(get(col_nota), 0)))
+      ]
 
-      df_merge <- merge(data.frame(x = escala_x), tabela_real, by = "x", all.x = TRUE)
-      Theta_metrico <- matrix((escala_x - const_row$d) / const_row$k)
+      df_merge <- merge(
+        data.table::data.table(x = escala_x),
+        tabela_real,
+        by = "x",
+        all.x = TRUE
+      )
 
-      # --- LÓGICA DE VERSÕES (Digital vs Impresso) ---
-      if (ano == 2020) {
-        v_bruto <- unique(itens_df$TP_VERSAO_DIGITAL[itens_df$CO_PROVA == codigo])
-        versoes_codificadas <- ifelse(is.na(v_bruto) | v_bruto == 0, "I", "D") |> unique()
+      Theta_metrico <- matrix(
+        (escala_x - const_row$d) / const_row$k,
+        ncol = 1
+      )
+
+      tem_digital <- "TP_VERSAO_DIGITAL" %in% names(itens_df)
+      versoes <- if (tem_digital) {
+        unique(na.omit(itens_df$TP_VERSAO_DIGITAL[itens_df$CO_PROVA == codigo]))
       } else {
-        versoes_codificadas <- "I" # Padrão para outros anos
+        "X"
       }
+      if (length(versoes) == 0) versoes <- "X"
 
-      for (v_tag in versoes_codificadas) {
-        linguas <- if(area_nome == "LC") c(0, 1) else list(NULL)
+      linguas <- if (area_nome == "LC") c("0", "1") else "X"
 
+      for (v_digital in versoes) {
         for (lingua in linguas) {
-          # Filtro por versão para evitar somar 90 itens na TCC
-          if (ano == 2020) {
-            if (v_tag == "I") {
-              itens_caderno <- itens_df[itens_df$CO_PROVA == codigo & (itens_df$TP_VERSAO_DIGITAL == 0 | is.na(itens_df$TP_VERSAO_DIGITAL)), ]
-            } else {
-              itens_caderno <- itens_df[itens_df$CO_PROVA == codigo & itens_df$TP_VERSAO_DIGITAL == 1, ]
-            }
-          } else {
-            itens_caderno <- itens_df[itens_df$CO_PROVA == codigo, ]
+
+          itens_caderno <- itens_df[itens_df$CO_PROVA == codigo, ]
+
+          if (tem_digital && v_digital != "X") {
+            itens_caderno <- itens_caderno[itens_caderno$TP_VERSAO_DIGITAL == v_digital, ]
           }
 
-          if (nrow(itens_caderno) == 0) next
-
-          # Identificação da Chave
           if (area_nome == "LC") {
-            itens_caderno <- itens_caderno[order(itens_caderno$TP_LINGUA, itens_caderno$CO_POSICAO), ]
-            condicao <- is.na(itens_caderno$TP_LINGUA) | itens_caderno$TP_LINGUA == "" | itens_caderno$TP_LINGUA == lingua
-            itens_caderno <- itens_caderno[condicao, ]
-            key_name <- paste0(codigo, "_", lingua, "_", v_tag)
-          } else {
-            key_name <- paste0(codigo, "_X_", v_tag)
+            itens_caderno <- itens_caderno[
+              is.na(TP_LINGUA) | TP_LINGUA == as.numeric(lingua),
+            ]
+            itens_caderno <- itens_caderno[order(CO_POSICAO), ]
           }
 
-          if (nrow(itens_caderno) == 0) next
+          if (nrow(itens_caderno) != 45) {
+            stop(
+              sprintf(
+                "ERRO CRÍTICO: caderno inválido (n != 45)\n  codigo=%s | area=%s | versao=%s | lingua=%s | n_itens=%s",
+                codigo, area_nome, v_digital, lingua, nrow(itens_caderno)
+              ),
+              call. = FALSE
+            )
+          }
 
-          # Cálculo MIRT (Baseado nos 45 itens da versão/língua)
+          key_name <- paste(codigo, lingua, v_digital, sep = "_")
+
           itens_mirt <- data.frame(
             a1 = as.numeric(itens_caderno$NU_PARAM_A),
-            d  = as.numeric(itens_caderno$NU_PARAM_A) * -as.numeric(itens_caderno$NU_PARAM_B),
+            d  = -as.numeric(itens_caderno$NU_PARAM_A) *
+              as.numeric(itens_caderno$NU_PARAM_B),
             g  = as.numeric(itens_caderno$NU_PARAM_C)
           )
-          mod_test <- mirtCAT::generate.mirt_object(itens_mirt, '3PL')
 
-          escore_esperado <- mirt::expected.test(mod_test, Theta_metrico)
-          escore_esperado <- (escore_esperado - min(escore_esperado)) /
-            (max(escore_esperado) - min(escore_esperado)) * nrow(itens_mirt)
+          mod_test <- mirtCAT::generate.mirt_object(itens_mirt, "3PL")
+          escore <- mirt::expected.test(mod_test, Theta_metrico)
 
-          if (!is.null(previous_key)) {
-            writeLines(",", con, sep = "\n")
-          }
+          den <- max(escore) - min(escore)
+          if (den == 0) stop("Escore teórico constante", call. = FALSE)
 
-          tcc_item <- list(
+          escore <- (escore - min(escore)) / den * nrow(itens_mirt)
+
+          obj <- list(
             area = area_nome,
             labels_x = escala_x,
             metadata = list(
-              codigo = as.numeric(codigo),
-              versao = v_tag,
+              codigo = codigo,
               area = area_nome,
               cor = cor_name,
-              max = nota_max,
               min = nota_min,
-              lingua = if(area_nome == "LC") as.numeric(lingua) else "N/A",
-              b_medio_enem = round(mean(as.numeric(itens_caderno$NU_PARAM_B), na.rm = TRUE) * const_row$k + const_row$d, 1)
+              max = nota_max,
+              lingua = lingua,
+              versao_digital = v_digital,
+              b_medio_enem = round(
+                mean(itens_caderno$NU_PARAM_B, na.rm = TRUE) *
+                  const_row$k + const_row$d, 1
+              )
             ),
-            data_teorico = round(as.vector(escore_esperado), 2),
+            data_teorico  = round(as.vector(escore), 2),
             data_empirico = round(df_merge$media, 2)
           )
 
-          json_string <- jsonlite::toJSON(tcc_item, pretty = TRUE, auto_unbox = TRUE, na = "null")
-          cat(paste0("\"", key_name, "\": ", json_string), file = con)
-          previous_key <- key_name
+          json_entry <- jsonlite::toJSON(
+            obj,
+            auto_unbox = TRUE,
+            pretty = TRUE,
+            na = "null"
+          )
+
+          prefix <- if (first_entry) "" else ",\n"
+          first_entry <- FALSE
+
+          writeLines(
+            paste0(prefix, "\"", key_name, "\": ", json_entry),
+            con
+          )
         }
       }
     }
   }
 
-  writeLines("", con)
-  writeLines("}", con)
-  close(con)
-  cli::cli_alert_success("Processamento completo para {ano}. JSON salvo via streaming.")
+  writeLines("\n}", con)
+
+  cli::cli_alert_success("Processamento completo (streaming JSON).")
 }

@@ -127,38 +127,23 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
 
           pool_itens <- itens_df[itens_df$CO_PROVA == cod_prova_origem, ]
 
-          if (area_loop == "LC") {
-            pool_itens <- pool_itens[pool_itens$TP_LINGUA == lang_cand | is.na(pool_itens$TP_LINGUA), ]
-          }
-
           itens_prova_origem <- NULL
-          opcoes_v <- unique(pool_itens$TP_VERSAO_DIGITAL)
 
-          if (ano == 2020) {
-            for (v in opcoes_v) {
-              # Se v for NA, filtra por is.na, se não, filtra pelo valor
-              if (is.na(v)) {
-                temp <- pool_itens[is.na(pool_itens$TP_VERSAO_DIGITAL), ]
-              } else {
-                temp <- pool_itens[!is.na(pool_itens$TP_VERSAO_DIGITAL) & pool_itens$TP_VERSAO_DIGITAL == v, ]
-              }
+          # Verifica se a coluna existe e se NÃO é toda composta por NAs
+          tem_versao_digital <- "TP_VERSAO_DIGITAL" %in% names(pool_itens) && !all(is.na(pool_itens$TP_VERSAO_DIGITAL))
 
-              if (nrow(temp) == 0) stop("Erro no retorno de uma lista de itens")
-
-              temp <- temp[order(temp$CO_POSICAO), ]
-
-              # Compara o gabarito montado com o do microdados
-              if (paste0(temp$TX_GABARITO, collapse = "") == gab_45) {
-                itens_prova_origem <- temp
-                break
-              }
-            }
+          if (tem_versao_digital) {
+            itens_prova_origem <- pool_itens[pool_itens$TP_VERSAO_DIGITAL == lang_cand, ]
           } else {
-            itens_prova_origem <- pool_itens[order(pool_itens$CO_POSICAO), ]
+            itens_prova_origem <- pool_itens[is.na(pool_itens$TP_LINGUA) | pool_itens$TP_LINGUA == lang_cand, ]
           }
 
-          if (!is.null(itens_prova_origem)) {
+          # Validação e Ordenação Crítica
+          if (!is.null(itens_prova_origem) && nrow(itens_prova_origem) == 45) {
+            itens_prova_origem <- itens_prova_origem[order(itens_prova_origem$CO_POSICAO), ]
             cache_itens[[chave_cache]] <- itens_prova_origem
+          } else {
+            cli::cli_abort("Falha na seleção de itens: Caderno {cod_prova_origem} retornou {nrow(itens_prova_origem)} itens (esperado: 45).")
           }
         }
 
