@@ -98,7 +98,7 @@ write_presence <- function(data, path_json) {
 
   objeto_presenca <- list(
     list(
-      grupo = "Presentes na prova",
+      grupo = "Presentes na prova*",
       total = as.numeric(tabela_treineiros_filtered[,1][3]),
       freq = as.numeric(tabela_treineiros_filtered[,2][3]),
       subRows = list(

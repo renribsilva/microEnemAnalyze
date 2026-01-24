@@ -131,52 +131,52 @@ itens_2020 <- fread(input='exploration/2020/MICRODADOS/microdados_enem_2020/DADO
 lc_2020 <- data.table(
   area      = "LC",
   ano       = 2020,
-  codigo    = as.numeric(c(577, 578, 579, 580, 581, 582, 584, 585, 691, 692, 693, 694, # P1
+  codigo    = as.numeric(c(577, 578, 579, 580, 584, 585, 691, 692, 693, 694, # P1
                            657, 658, 659, 660, 664)),                          # P2
-  cor       = c("Azul", "Amarela", "Rosa", "Branca", "Rosa - Ampliada", "Rosa - Superampliada",
+  cor       = c("Azul", "Amarela", "Rosa", "Branca",
                 "Laranja - Adaptada Ledor", "Verde - Videoprova - Libras",
                 "Azul (Digital)", "Amarela (Digital)", "Branca (Digital)", "Rosa (Digital)",
                 "Azul", "Amarela", "Rosa", "Branca", "Laranja - Adaptada Ledor"),
-  aplicacao = c(rep("P1", 12), rep("P2", 5))
+  aplicacao = c(rep("P1", 10), rep("P2", 5))
 )
 
 # --- 2. Ciências Humanas (CH) ---
 ch_2020 <- data.table(
   area      = "CH",
   ano       = 2020,
-  codigo    = as.numeric(c(567, 568, 569, 570, 571, 572, 574, 575, 687, 688, 689, 690, # P1
+  codigo    = as.numeric(c(567, 568, 569, 570, 574, 575, 687, 688, 689, 690, # P1
                            647, 648, 649, 650, 654)),                          # P2
-  cor       = c("Azul", "Amarela", "Branca", "Rosa", "Rosa - Ampliada", "Rosa - Superampliada",
+  cor       = c("Azul", "Amarela", "Branca", "Rosa",
                 "Laranja - Adaptada Ledor", "Verde - Videoprova - Libras",
                 "Azul (Digital)", "Amarela (Digital)", "Branca (Digital)", "Rosa (Digital)",
                 "Azul", "Amarela", "Branca", "Rosa", "Laranja - Adaptada Ledor"),
-  aplicacao = c(rep("P1", 12), rep("P2", 5))
+  aplicacao = c(rep("P1", 10), rep("P2", 5))
 )
 
 # --- 3. Ciências da Natureza (CN) ---
 cn_2020 <- data.table(
   area      = "CN",
   ano       = 2020,
-  codigo    = as.numeric(c(597, 598, 599, 600, 601, 602, 604, 605, 699, 700, 701, 702, # P1
+  codigo    = as.numeric(c(597, 598, 599, 600, 604, 605, 699, 700, 701, 702, # P1
                            677, 678, 679, 680, 684)),                          # P2
-  cor       = c("Azul", "Amarela", "Cinza", "Rosa", "Rosa - Ampliada", "Rosa - Superampliada",
+  cor       = c("Azul", "Amarela", "Cinza", "Rosa",
                 "Laranja - Adaptada Ledor", "Verde - Videoprova - Libras",
                 "Azul (Digital)", "Amarela (Digital)", "Rosa (Digital)", "Cinza (Digital)",
                 "Azul", "Amarela", "Cinza", "Rosa", "Laranja - Adaptada Ledor"),
-  aplicacao = c(rep("P1", 12), rep("P2", 5))
+  aplicacao = c(rep("P1", 10), rep("P2", 5))
 )
 
 # --- 4. Matemática (MT) ---
 mt_2020 <- data.table(
   area      = "MT",
   ano       = 2020,
-  codigo    = as.numeric(c(587, 588, 589, 590, 591, 592, 594, 595, 695, 696, 697, 698, # P1
+  codigo    = as.numeric(c(587, 588, 589, 590, 594, 595, 695, 696, 697, 698, # P1
                            667, 668, 669, 670, 674)),                          # P2
-  cor       = c("Azul", "Amarela", "Rosa", "Cinza", "Rosa - Ampliada", "Rosa - Superampliada",
+  cor       = c("Azul", "Amarela", "Rosa", "Cinza",
                 "Laranja - Adaptada Ledor", "Verde - Videoprova - Libras",
                 "Azul (Digital)", "Amarela (Digital)", "Rosa (Digital)", "Cinza (Digital)",
                 "Azul", "Amarela", "Rosa", "Cinza", "Laranja - Adaptada Ledor"),
-  aplicacao = c(rep("P1", 12), rep("P2", 5))
+  aplicacao = c(rep("P1", 10), rep("P2", 5))
 )
 
 # --- UNINDO TUDO ---

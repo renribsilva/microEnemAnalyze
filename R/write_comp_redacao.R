@@ -28,7 +28,7 @@ write_comp_redacao <- function(data, path_json) {
   resultados_final <- lapply(todas_as_notas, function(col) {
 
     # Filtro: Status 1 e remove NAs
-    valores <- data[[col]][data$TP_STATUS_REDACAO == 1 & !is.na(data[[col]])]
+    valores <- data[[col]][data$TP_STATUS_REDACAO %in% 1 & !is.na(data[[col]])]
 
     if(length(valores) == 0) return(NULL)
 

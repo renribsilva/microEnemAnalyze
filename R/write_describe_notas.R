@@ -22,16 +22,16 @@ write_describe_notas <- function(data, path_json) {
   v_notas <- data_filtrado[[col_nota]]
   desc_nota <- as.list(psych::describe(v_notas)[1, ])
   desc_nota$mode <- microEnemAnalize::get_grouped_mode(v_notas, bin_width = 25)
-  desc_nota$q1 <- quantile(v_notas, 0.25)[[1]]
-  desc_nota$q3 <- quantile(v_notas, 0.75)[[1]]
+  desc_nota$q1 <- quantile(v_notas, 0.25, na.rm = TRUE)[[1]]
+  desc_nota$q3 <- quantile(v_notas, 0.75, na.rm = TRUE)[[1]]
   desc_nota$p99 <- quantile(v_notas, probs = 0.99, na.rm = TRUE, type = 1)[[1]] # Mínima do Top 1%
 
   # Cálculos para ACERTOS
   v_acertos <- data_filtrado[[col_score]]
   desc_acertos <- as.list(psych::describe(v_acertos)[1, ])
   desc_acertos$mode <- get_mode(v_acertos)
-  desc_acertos$q1 <- quantile(v_acertos, 0.25)[[1]]
-  desc_acertos$q3 <- quantile(v_acertos, 0.75)[[1]]
+  desc_acertos$q1 <- quantile(v_acertos, 0.25, na.rm = TRUE)[[1]]
+  desc_acertos$q3 <- quantile(v_acertos, 0.75, na.rm = TRUE)[[1]]
   desc_acertos$p99 <- quantile(v_acertos, probs = 0.99, na.rm = TRUE, type = 1)[[1]]
 
   lista_completa <- list(

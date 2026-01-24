@@ -80,6 +80,7 @@ write_score_table <- function(data, path_json) {
 
   is_file <- grepl("\\.json$", path_json, ignore.case = TRUE)
   final_file <- if(is_file) path_json else file.path(path_json, "score_table.json")
+  dir.create(dirname(final_file), showWarnings = FALSE, recursive = TRUE)
 
   cli::cli_process_start("Salvando arquivo JSON")
   jsonlite::write_json(lista_final_resultados, path = final_file, pretty = TRUE, auto_unbox = TRUE)

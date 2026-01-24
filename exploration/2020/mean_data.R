@@ -2,8 +2,8 @@
 # Path e data -
 #-----------------------
 
-path <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2019/media-simples/")
-data <- fread("exploration/2019/MICRODADOS/at_least_one_presence.csv")
+path <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2020/media-simples/")
+data <- fread("exploration/2020/MICRODADOS/at_least_one_presence.csv")
 
 #-----------------------
 # Executions -

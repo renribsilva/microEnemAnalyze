@@ -56,7 +56,6 @@ write_tcc <- function(data, score, path_json, ano) {
 
     for (codigo in codigos) {
 
-      cor_name <- dic_df$cor[dic_df$codigo == codigo][1]
       col_nota_area <- paste0("NU_NOTA_", area_nome)
 
       notas <- data[[col_nota_area]]
@@ -93,32 +92,50 @@ write_tcc <- function(data, score, path_json, ano) {
       }
       if (length(versoes) == 0) versoes <- "X"
 
-      linguas <- if (area_nome == "LC") c("0", "1") else "X"
+      linguas <- if (area_nome == "LC") c(0, 1) else "X"
 
       for (v_digital in versoes) {
+
         for (lingua in linguas) {
+
+          cor_name_base <- dic_df$cor[dic_df$codigo == codigo][1]
+          cor_name <- if (area_nome == "LC") {
+            if (lingua == 0) {
+              paste0(cor_name_base, " (Inglês)")
+            } else if (lingua == 1) {
+              paste0(cor_name_base, " (Espanhol)")
+            } else {
+              cor_name_base
+            }
+          } else {
+            cor_name_base
+          }
 
           itens_caderno <- itens_df[itens_df$CO_PROVA == codigo, ]
 
-          if (tem_digital && v_digital != "X") {
+          if (tem_digital && (v_digital != "X")) {
             itens_caderno <- itens_caderno[itens_caderno$TP_VERSAO_DIGITAL == v_digital, ]
           }
 
           if (area_nome == "LC") {
             itens_caderno <- itens_caderno[
-              is.na(TP_LINGUA) | TP_LINGUA == as.numeric(lingua),
+              is.na(TP_LINGUA) | TP_LINGUA == lingua,
             ]
             itens_caderno <- itens_caderno[order(CO_POSICAO), ]
           }
 
           if (nrow(itens_caderno) != 45) {
-            stop(
-              sprintf(
-                "ERRO CRÍTICO: caderno inválido (n != 45)\n  codigo=%s | area=%s | versao=%s | lingua=%s | n_itens=%s",
-                codigo, area_nome, v_digital, lingua, nrow(itens_caderno)
-              ),
-              call. = FALSE
-            )
+            if (tem_digital && (v_digital != "X") && (lingua != v_digital)) {
+              next("Pulando carderno inválido (n != 45)\n  codigo=%s | area=%s | versao=%s | lingua=%s | n_itens=%s")
+            } else {
+              stop(
+                sprintf(
+                  "ERRO CRÍTICO: caderno inválido (n != 45)\n  codigo=%s | area=%s | versao=%s | lingua=%s | n_itens=%s",
+                  codigo, area_nome, v_digital, lingua, nrow(itens_caderno)
+                ),
+                call. = FALSE
+              )
+            }
           }
 
           key_name <- paste(codigo, lingua, v_digital, sep = "_")
@@ -166,12 +183,14 @@ write_tcc <- function(data, score, path_json, ano) {
           )
 
           prefix <- if (first_entry) "" else ",\n"
-          first_entry <- FALSE
 
-          writeLines(
+          # 3. Escreve tudo de uma vez
+          cat(
             paste0(prefix, "\"", key_name, "\": ", json_entry),
-            con
+            file = con
           )
+
+          first_entry <- FALSE
         }
       }
     }

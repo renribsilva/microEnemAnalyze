@@ -2,13 +2,13 @@
 # Importa os dados.csv -
 #--------------------------------
 
-filtered <- fread("exploration/2019/MICRODADOS/at_least_one_presence.csv")
+filtered <- fread("exploration/2020/MICRODADOS/at_least_one_presence.csv")
 
 #-----------------------------
 # Caminho para gravar o json -
 #-----------------------------
 
-path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2019/visao-geral/socials/")
+path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2020/visao-geral/socials/")
 
 #----------------------------------------------------
 # Frequência absoluta e relativa das faixas etárias -

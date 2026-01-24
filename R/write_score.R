@@ -154,7 +154,7 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
         }
 
         if (nrow(itens_prova_origem) != 45) {
-          stop(sprintf("O tamanho do vetor resp_orig_vetor (%d) diverge do comprimento de seus itens (%d) na linha %d.", length(resp_orig_vetor), nrow(itens_prova_origem), i))
+          stop(sprintf("Falha na seleção dos itens"))
         }
 
         col_names  <- as.character(itens_prova_origem$CO_ITEM)

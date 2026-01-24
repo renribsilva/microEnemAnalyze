@@ -3,9 +3,9 @@
 #---------------------------------------------
 
 # Importa os scores
-data <- fread("exploration/2019/MICRODADOS/score_LC.csv")
+data <- fread("exploration/2020/MICRODADOS/score_LC.csv")
 
-path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2019/dificuldade-do-exame/LC/")
+path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2020/dificuldade-do-exame/LC/")
 
 # Escreve a descrição unidimensional dos dados
 write_describe_notas(data, path_json = path_json)
@@ -24,9 +24,9 @@ write_frequency_acertos(data, path_json = path_json)
 #---------------------------------------------
 
 # Importa os scores
-data <- fread("exploration/2019/MICRODADOS/score_CH.csv")
+data <- fread("exploration/2020/MICRODADOS/score_CH.csv")
 
-path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2019/dificuldade-do-exame/CH/")
+path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2020/dificuldade-do-exame/CH/")
 
 # Escreve a descrição unidimensional dos dados
 write_describe_notas(data, path_json = path_json)
@@ -45,9 +45,9 @@ write_frequency_acertos(data, path_json = path_json)
 #---------------------------------------------
 
 # Importa os scores
-data <- fread("exploration/2019/MICRODADOS/score_CN.csv")
+data <- fread("exploration/2020/MICRODADOS/score_CN.csv")
 
-path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2019/dificuldade-do-exame/CN/")
+path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2020/dificuldade-do-exame/CN/")
 
 # Escreve a descrição unidimensional dos dados
 write_describe_notas(data, path_json = path_json)
@@ -66,9 +66,9 @@ write_frequency_acertos(data, path_json = path_json)
 #---------------------------------------------
 
 # Importa os scores
-data <- fread("exploration/2019/MICRODADOS/score_MT.csv")
+data <- fread("exploration/2020/MICRODADOS/score_MT.csv")
 
-path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2019/dificuldade-do-exame/MT/")
+path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2020/dificuldade-do-exame/MT/")
 
 # Escreve a descrição unidimensional dos dados
 write_describe_notas(data, path_json = path_json)
