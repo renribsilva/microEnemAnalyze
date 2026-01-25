@@ -31,35 +31,59 @@ write_presence_day <- function(data, path_json, day) {
   }
   cli::cli_process_done()
 
-  # Preparação dos dados
-  cli::cli_process_start("Reduzindo dimensionalidade e preparando batches")
-  batch_size <- 50000
-  total_rows <- nrow(data)
-  num_batches <- ceiling((total_rows/batch_size))
-
+  cli::cli_process_start("Reduzindo dimensionalidade dos dados")
   data <- data.table::as.data.table(data)[, .(
+    NU_ANO,
     NU_INSCRICAO,
     IN_TREINEIRO,
     TP_PRESENCA_LC,
     TP_PRESENCA_CH,
     TP_PRESENCA_CN,
-    TP_PRESENCA_MT
+    TP_PRESENCA_MT,
+    CO_PROVA_LC,
+    CO_PROVA_CH,
+    CO_PROVA_CN,
+    CO_PROVA_MT
   )]
   cli::cli_process_done()
 
+  # Preparação dos dados
+  cli::cli_process_start("Preparando batches")
+
+  batch_size <- 50000
+  total_rows <- nrow(data)
+  num_batches <- ceiling((total_rows/batch_size))
+
+  ano <- data[1,]$NU_ANO
+  dic_df   <- get(paste0("dic_", ano),   envir = .GlobalEnv)
+  cod_selected <- dic_df$codigo
+
+  if (as.integer(day) == 1L) {
+    data_filtered_by_cod <- data[CO_PROVA_LC %in% cod_selected | CO_PROVA_CH %in% cod_selected]
+  } else {
+    data_filtered_by_cod <- data[CO_PROVA_CN %in% cod_selected | CO_PROVA_MT %in% cod_selected]
+  }
+
   presence_filtered <- data.table()
+
+  cli::cli_process_done()
 
   # Filtração por Batches
   cp <- cli::cli_process_start("Filtrando presenças por dia")
   for (i in 1:num_batches) {
     start_row <- (i-1)*batch_size+1
     end_row <- min(i*batch_size, total_rows)
-    dados_batch <- data[start_row:end_row]
 
     if (as.integer(day) == 1L) {
-      dados_batch_filtered <- dados_batch[TP_PRESENCA_LC == 1 | TP_PRESENCA_CH == 1]
+      dados_batch_filtered <- data[start_row:end_row][
+        (TP_PRESENCA_LC == 1 & CO_PROVA_LC %in% cod_selected) |
+        (TP_PRESENCA_CH == 1 & CO_PROVA_CH %in% cod_selected)
+      ]
     } else if (as.integer(day) == 2L) {
-      dados_batch_filtered <- dados_batch[TP_PRESENCA_CN == 1 | TP_PRESENCA_MT == 1]
+      dados_batch_filtered <- data[start_row:end_row][
+        (TP_PRESENCA_CN == 1 & CO_PROVA_CN %in% cod_selected) |
+        (TP_PRESENCA_MT == 1 & CO_PROVA_MT %in% cod_selected)
+      ]
     }
 
     presence_filtered <- rbindlist(list(presence_filtered, dados_batch_filtered))
@@ -68,7 +92,10 @@ write_presence_day <- function(data, path_json, day) {
       id = cp,
       msg = "Processando batch {i}/{num_batches} ({start_row} a {end_row})..."
     )
-    rm(start_row, end_row, dados_batch, dados_batch_filtered)
+    rm(dados_batch_filtered)
+
+    # Dica: rode o gc() apenas a cada 10 ou 20 batches para não perder performance
+    if (i %% 10 == 0) gc()
   }
   cli::cli_process_done(id = cp)
 

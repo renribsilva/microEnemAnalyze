@@ -29,24 +29,36 @@ write_presence <- function(data, path_json) {
   }
   cli::cli_process_done()
 
-  # Redução de dados
   cli::cli_process_start("Reduzindo dimensionalidade dos dados")
-  batch_size <- 50000
-  total_rows <- nrow(data)
-  num_batches <- ceiling((total_rows/batch_size))
-
   data <- data.table::as.data.table(data)[, .(
+    NU_ANO,
     NU_INSCRICAO,
     IN_TREINEIRO,
     TP_PRESENCA_LC,
     TP_PRESENCA_CH,
     TP_PRESENCA_CN,
-    TP_PRESENCA_MT
+    TP_PRESENCA_MT,
+    CO_PROVA_LC,
+    CO_PROVA_CH,
+    CO_PROVA_CN,
+    CO_PROVA_MT
   )]
-
   cli::cli_process_done()
 
+  # Redução de dados
+  cli::cli_process_start("Preparando batches")
+
+  batch_size <- 50000
+  total_rows <- nrow(data)
+  num_batches <- ceiling((total_rows/batch_size))
+
+  ano <- data[1,]$NU_ANO
+  dic_df   <- get(paste0("dic_", ano),   envir = .GlobalEnv)
+  cod_selected <- dic_df$codigo
+
   presence_filtered <- data.table()
+
+  cli::cli_process_done()
 
   # Filtração por Batches
   cp <- cli::cli_process_start("Filtrando presenças em {.val {num_batches}} batches")
@@ -54,10 +66,14 @@ write_presence <- function(data, path_json) {
   for (i in 1:num_batches) {
     start_row <- (i-1)*batch_size+1
     end_row <- min(i*batch_size, total_rows)
-    dados_batch <- data[start_row:end_row]
-    dados_batch_filtered <- dados_batch[
-      (TP_PRESENCA_LC == 1 | TP_PRESENCA_CH == 1 | TP_PRESENCA_CN == 1 | TP_PRESENCA_MT == 1)
+
+    dados_batch_filtered <- data[start_row:end_row][
+      (TP_PRESENCA_CN == 1 & CO_PROVA_CN %in% cod_selected) |
+      (TP_PRESENCA_CH == 1 & CO_PROVA_CH %in% cod_selected) |
+      (TP_PRESENCA_LC == 1 & CO_PROVA_LC %in% cod_selected) |
+      (TP_PRESENCA_MT == 1 & CO_PROVA_MT %in% cod_selected)
     ]
+
     presence_filtered <- rbindlist(list(presence_filtered, dados_batch_filtered))
 
     cli::cli_status_update(
@@ -65,8 +81,10 @@ write_presence <- function(data, path_json) {
       msg = "Processando batch {i}/{num_batches} ({start_row} a {end_row})..."
     )
 
-    rm(start_row, end_row, dados_batch, dados_batch_filtered)
-    gc()
+    rm(dados_batch_filtered)
+
+    # Dica: rode o gc() apenas a cada 10 ou 20 batches para não perder performance
+    if (i %% 10 == 0) gc()
   }
   cli::cli_process_done(id = cp)
 
@@ -82,15 +100,15 @@ write_presence <- function(data, path_json) {
     stop("Merda")
   }
 
-  treineiros_filtered <- table(presence_filtered$IN_TREINEIRO)
-  treineiros_filtered_f <- prop.table(treineiros_filtered)
+  presence_table <- table(presence_filtered$IN_TREINEIRO)
+  presence_table_f <- prop.table(presence_table)
 
-  tabela_treineiros_filtered <- t(as.data.table(rbind(treineiros_filtered, treineiros_filtered_f)))
-  total_treineiros_filtered <- c(sum(tabela_treineiros_filtered[,1]), sum(tabela_treineiros_filtered[,2]))
+  tabela_presence_table <- t(as.data.table(rbind(presence_table, presence_table_f)))
+  total_presence_table <- c(sum(tabela_presence_table[,1]), sum(tabela_presence_table[,2]))
 
-  if (as.integer(inscritos_filtered) == as.integer(total_treineiros_filtered[1])) {
-    tabela_treineiros_filtered <- rbind(tabela_treineiros_filtered, total_treineiros_filtered)
-    tabela_treineiros_filtered[,2] <- round(tabela_treineiros_filtered[,2]*100, 2)
+  if (as.integer(inscritos_filtered) == as.integer(total_presence_table[1])) {
+    tabela_presence_table <- rbind(tabela_presence_table, total_presence_table)
+    tabela_presence_table[,2] <- round(tabela_presence_table[,2]*100, 2)
   } else {
     cli::cli_alert_danger("Inconsistência nos totais de presença")
     stop("Merda")
@@ -99,16 +117,16 @@ write_presence <- function(data, path_json) {
   objeto_presenca <- list(
     list(
       grupo = "Presentes na prova*",
-      total = as.numeric(tabela_treineiros_filtered[,1][3]),
-      freq = as.numeric(tabela_treineiros_filtered[,2][3]),
+      total = as.numeric(tabela_presence_table[,1][3]),
+      freq = as.numeric(tabela_presence_table[,2][3]),
       subRows = list(
-        list(grupo = "Não treineiros*",
-             total = as.numeric(tabela_treineiros_filtered[,1][1]),
-             freq = as.numeric(tabela_treineiros_filtered[,2][1])
+        list(grupo = "Não treineiros",
+             total = as.numeric(tabela_presence_table[,1][1]),
+             freq = as.numeric(tabela_presence_table[,2][1])
         ),
         list(grupo = "Treineiros",
-             total = as.numeric(tabela_treineiros_filtered[,1][2]),
-             freq = as.numeric(tabela_treineiros_filtered[,2][2]))
+             total = as.numeric(tabela_presence_table[,1][2]),
+             freq = as.numeric(tabela_presence_table[,2][2]))
       )
     )
   )

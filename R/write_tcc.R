@@ -45,7 +45,7 @@ write_tcc <- function(data, score, path_json, ano) {
     if (length(col_nota) == 0) next
 
     area_nome <- sub("^NU_NOTA_", "", col_nota[1])
-    cli::cli_alert_info("Processando área: {.val {area_nome}}")
+    cli::cli_progress_step("Processando área: {.strong {area_nome}}")
 
     const_row <- consts[consts$area == area_nome, ]
     if (nrow(const_row) != 1) {
@@ -126,7 +126,8 @@ write_tcc <- function(data, score, path_json, ano) {
 
           if (nrow(itens_caderno) != 45) {
             if (tem_digital && (v_digital != "X") && (lingua != v_digital)) {
-              next("Pulando carderno inválido (n != 45)\n  codigo=%s | area=%s | versao=%s | lingua=%s | n_itens=%s")
+              cli::cli_alert_warning("Pulando caderno inválido: {codigo} | {area_nome} | Itens: {nrow(itens_caderno)}")
+              next
             } else {
               stop(
                 sprintf(

@@ -64,6 +64,7 @@
 "itens_2009"
 "itens_2019"
 "itens_2020"
+"itens_2021"
 
 #' Código das provas do ENEM
 #'
@@ -79,3 +80,4 @@
 "dic_2009"
 "dic_2019"
 "dic_2020"
+"dic_2021"

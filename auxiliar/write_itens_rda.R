@@ -27,3 +27,13 @@ itens_2020 <- fread("exploration/2020/MICRODADOS/microdados_enem_2020/DADOS/ITEN
 
 # Salvando no pacote
 usethis::use_data(itens_2020, overwrite = TRUE, compress = "xz")
+
+# ------
+# 2021 -
+# ------
+
+# Importa os itens
+itens_2021 <- fread("exploration/2021/MICRODADOS/microdados_enem_2021/DADOS/ITENS_PROVA_2021.csv")
+
+# Salvando no pacote
+usethis::use_data(itens_2021, overwrite = TRUE, compress = "xz")
