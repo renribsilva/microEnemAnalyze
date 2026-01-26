@@ -65,6 +65,7 @@
 "itens_2019"
 "itens_2020"
 "itens_2021"
+"itens_2022"
 
 #' Código das provas do ENEM
 #'
@@ -81,3 +82,4 @@
 "dic_2019"
 "dic_2020"
 "dic_2021"
+"dic_2022"

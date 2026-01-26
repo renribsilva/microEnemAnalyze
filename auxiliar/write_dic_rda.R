@@ -228,3 +228,127 @@ dic_2021 <- rbind(lc_2021, ch_2021, cn_2021, mt_2021)
 
 # Salvando no pacote
 usethis::use_data(dic_2021, overwrite = TRUE)
+
+# ------
+# 2022 -
+# ------
+
+library(data.table)
+
+itens_2022 <- fread(input='exploration/2022/MICRODADOS/microdados_enem_2022/DADOS/ITENS_PROVA_2022.csv')
+
+# --- 1. Linguagens e Códigos (LC) ---
+lc_2022 <- data.table(
+  area      = "LC",
+  ano       = 2022,
+  codigo    = as.numeric(c(1065, 1066, 1067, 1068, 1072, 1073, 1179, 1180, 1181, 1182)),  # P1
+  cor       = c("Azul", "Amarela", "Rosa", "Branca",
+                "Laranja - Adaptada Ledor", "Verde - Videoprova - Libras",
+                "Azul (Digital)", "Amarela (Digital)", "Branca (Digital)", "Rosa (Digital)"),
+  aplicacao = c(rep("P1", 10))
+)
+
+# --- 2. Ciências Humanas (CH) ---
+ch_2022 <- data.table(
+  area      = "CH",
+  ano       = 2022,
+  codigo    = as.numeric(c(1055, 1056, 1057, 1058, 1062, 1063, 1175, 1176, 1177, 1178)), # P1
+  cor       = c("Azul", "Amarela", "Branca", "Rosa",
+                "Laranja - Adaptada Ledor", "Verde - Videoprova - Libras",
+                "Azul (Digital)", "Amarela (Digital)", "Branca (Digital)", "Rosa (Digital)"),
+  aplicacao = c(rep("P1", 10))
+)
+
+# --- 3. Ciências da Natureza (CN) ---
+cn_2022 <- data.table(
+  area      = "CN",
+  ano       = 2022,
+  codigo    = as.numeric(c(1085, 1086, 1087, 1088, 1092, 1093, 1187, 1188, 1189, 1190)), # P1
+  cor       = c("Azul", "Amarela", "Cinza", "Rosa",
+                "Laranja - Adaptada Ledor", "Verde - Videoprova - Libras",
+                "Azul (Digital)", "Amarela (Digital)", "Rosa (Digital)", "Cinza (Digital)"),
+  aplicacao = c(rep("P1", 10))
+)
+
+# --- 4. Matemática (MT) ---
+mt_2022 <- data.table(
+  area      = "MT",
+  ano       = 2022,
+  codigo    = as.numeric(c(1075, 1076, 1077, 1078, 1082, 1083, 1183, 1184, 1185, 1186)),  # P1
+  cor       = c("Azul", "Amarela", "Rosa", "Cinza",
+                "Laranja - Adaptada Ledor", "Verde - Videoprova - Libras",
+                "Azul (Digital)", "Amarela (Digital)", "Rosa (Digital)", "Cinza (Digital)"),
+  aplicacao = c(rep("P1", 10))
+)
+
+# --- UNINDO TUDO ---
+dic_2022 <- rbind(lc_2022, ch_2022, cn_2022, mt_2022)
+
+# Salvando no pacote
+usethis::use_data(dic_2022, overwrite = TRUE)
+
+# ------
+# 2023 -
+# ------
+
+library(data.table)
+
+itens_2023 <- fread(input='exploration/2023/MICRODADOS/microdados_enem_2023/DADOS/ITENS_PROVA_2023.csv')
+
+# --- 1. Linguagens e Códigos (LC) ---
+lc_2023 <- data.table(
+  area      = "LC",
+  ano       = 2023,
+  codigo    = as.numeric(c(1201, 1202, 1203, 1204,
+                           1205, 1206,
+                           1207, 1208, 1209)),
+  cor       = c("Azul", "Amarela", "Rosa", "Branca",
+                "Rosa (Ampliada)", "Rosa (Superampliada)",
+                "Laranja - Braile", "Laranja - Adaptada Ledor", "Verde - Videoprova - Libras"),
+  aplicacao = c(rep("P1", 9))
+)
+
+# --- 2. Ciências Humanas (CH) ---
+ch_2023 <- data.table(
+  area      = "CH",
+  ano       = 2023,
+  codigo    = as.numeric(c(1191, 1192, 1193, 1194,
+                           1195, 1196,
+                           1197, 1198, 1199)), # P1
+  cor       = c("Azul", "Amarela", "Branca", "Rosa",
+                "Rosa (Ampliada)", "Rosa (Superampliada)",
+                "Laranja - Braile", "Laranja - Adaptada Ledor", "Verde - Videoprova - Libras"),
+  aplicacao = c(rep("P1", 9))
+)
+
+# --- 3. Ciências da Natureza (CN) ---
+cn_2023 <- data.table(
+  area      = "CN",
+  ano       = 2023,
+  codigo    = as.numeric(c(1221, 1222, 1223, 1224,
+                           1225, 1226,
+                           1227, 1228, 1229)), # P1
+  cor       = c("Azul", "Amarela", "Rosa", "Cinza",
+                "Rosa (Ampliada)", "Rosa (Superampliada)",
+                "Laranja - Braile", "Laranja - Adaptada Ledor", "Verde - Videoprova - Libras"),
+  aplicacao = c(rep("P1", 9))
+)
+
+# --- 4. Matemática (MT) ---
+mt_2023 <- data.table(
+  area      = "MT",
+  ano       = 2023,
+  codigo    = as.numeric(c(1211, 1212, 1213, 1214,
+                           1215, 1216,
+                           1217, 1218, 1219)),  # P1
+  cor       = c("Azul", "Amarela", "Rosa", "Cinza",
+                "Rosa (Ampliada)", "Rosa (Superampliada)",
+                "Laranja - Braile", "Laranja - Adaptada Ledor", "Verde - Videoprova - Libras"),
+  aplicacao = c(rep("P1", 9))
+)
+
+# --- UNINDO TUDO ---
+dic_2023 <- rbind(lc_2023, ch_2023, cn_2023, mt_2023)
+
+# Salvando no pacote
+usethis::use_data(dic_2023, overwrite = TRUE)

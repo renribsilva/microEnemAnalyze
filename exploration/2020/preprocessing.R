@@ -4,7 +4,10 @@
 
 # Importa os microdados
 table <- fread("exploration/2020/MICRODADOS/microdados_enem_2020/DADOS/MICRODADOS_ENEM_2020.csv")
-
+# sort(unique(table$CO_PROVA_LC))
+# sort(unique(table$CO_PROVA_CH))
+# sort(unique(table$CO_PROVA_CN))
+# sort(unique(table$CO_PROVA_MT))
 # Caminho para gravar o csv
 path_csv <- as.character("exploration/2020/MICRODADOS/at_least_one_presence.csv")
 

@@ -37,3 +37,23 @@ itens_2021 <- fread("exploration/2021/MICRODADOS/microdados_enem_2021/DADOS/ITEN
 
 # Salvando no pacote
 usethis::use_data(itens_2021, overwrite = TRUE, compress = "xz")
+
+# ------
+# 2022 -
+# ------
+
+# Importa os itens
+itens_2022 <- fread("exploration/2022/MICRODADOS/microdados_enem_2022/DADOS/ITENS_PROVA_2022.csv")
+
+# Salvando no pacote
+usethis::use_data(itens_2022, overwrite = TRUE, compress = "xz")
+
+# ------
+# 2023 -
+# ------
+
+# Importa os itens
+itens_2023 <- fread("exploration/2023/MICRODADOS/microdados_enem_2023/DADOS/ITENS_PROVA_2023.csv")
+
+# Salvando no pacote
+usethis::use_data(itens_2023, overwrite = TRUE, compress = "xz")

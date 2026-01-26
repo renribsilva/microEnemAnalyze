@@ -35,12 +35,44 @@ write_mean_table <- function(data, path) {
 
     cli::cli_process_start("Processando scores da área: {.strong {a}}")
 
-    top_dt[, (score_col) := mapply(function(r, g) {
-      res_matriz <- process_score(r, g)
+    # Passamos r (resposta), g (gabarito) e l (língua) para o mapply
+    top_dt[, (score_col) := mapply(function(r, g, l, area_atual) {
+
+      g_final <- g
+      r_final <- r
+
+      # Tratamento específico para Linguagens
+      if (area_atual == "LC") {
+
+        # Só corta o GABARITO se ele estiver com o tamanho cheio do ENEM (50)
+        if (nchar(g) != 45) {
+          if (l == 0) {
+            g_final <- paste0(substr(g, 1, 5), substr(g, 11, 50))
+          } else {
+            g_final <- substr(g, 6, 50)
+          }
+        }
+
+        # Só corta a RESPOSTA se, por algum motivo, ela também vier com 50
+        if (nchar(r) != 45) {
+          if (l == 0) {
+            r_final <- paste0(substr(r, 1, 5), substr(r, 11, 50))
+          } else {
+            r_final <- substr(r, 6, 50)
+          }
+        }
+      }
+
+      # Se nchar for 45, ele ignora os IFS acima e usa r e g originais
+      res_matriz <- process_score(r_final, g_final)
+
+      # Limpeza padrão
       res_limpo <- res_matriz[res_matriz != 9]
       res_limpo[res_limpo %in% c(7, 8)] <- 0
+
       return(paste0(res_limpo, collapse = ""))
-    }, get(res_col), get(gab_col))]
+
+    }, get(res_col), get(gab_col), TP_LINGUA, MoreArgs = list(area_atual = a))]
 
     cli::cli_process_done()
   }
