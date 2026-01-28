@@ -4,11 +4,24 @@
 #' @param path_json Caminho do arquivo JSON.
 #' @export
 write_density_notas <- function(data, path_json) {
+
   cli::cli_h2("Processamento de Densidade (Chart.js)")
 
+  col_prova <- grep("^CO_PROVA_", names(data), value = TRUE)
   col_nota <- grep("^NU_NOTA_", names(data), value = TRUE)
-  notas <- data[[col_nota]]
-  notas_filtrado <- notas[notas > 0 & !is.na(notas)]
+
+  ano <- data[1,]$NU_ANO
+  dic_df   <- get(paste0("dic_", ano),   envir = .GlobalEnv)
+  cod_selected <- dic_df$codigo
+
+  data_filtrado <- data[get(col_prova) %in% cod_selected & get(col_nota) > 0 & !is.na(get(col_nota))]
+
+  notas_filtrado <- data_filtrado[[col_nota]]
+
+  if (length(notas_filtrado) < 2) {
+    cli::cli_alert_danger("Dados insuficientes para calcular densidade em {.strong {col_nota}}")
+    return(invisible(NULL))
+  }
 
   # Cálculo da densidade REAL
   dens <- density(notas_filtrado, n = 512,

@@ -4,7 +4,7 @@
 \alias{write_score_describe}
 \title{Exportar Estatísticas Descritivas e Densidade por Score}
 \usage{
-write_score_describe(data, path_json)
+write_score_describe(data, path_json, ano)
 }
 \arguments{
 \item{data}{Uma lista nomeada de data.tables.}

@@ -81,3 +81,4 @@ write_density_notas(data, path_json = path_json)
 
 # Escreve a frequência de acertos
 write_frequency_acertos(data, path_json = path_json)
+

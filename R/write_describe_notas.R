@@ -9,9 +9,14 @@ write_describe_notas <- function(data, path_json) {
   cli::cli_process_start("Calculando estatísticas descritivas")
 
   col_nota <- grep("^NU_NOTA_", names(data), value = TRUE)
+  col_prova <- grep("^CO_PROVA_", names(data), value = TRUE)
   col_score <- "NU_SCORE"
 
-  data_filtrado <- data[get(col_nota) > 0 & !is.na(get(col_nota))]
+  ano <- data[1,]$NU_ANO
+  dic_df   <- get(paste0("dic_", ano),   envir = .GlobalEnv)
+  cod_selected <- dic_df$codigo
+
+  data_filtrado <- data[get(col_prova) %in% cod_selected & get(col_nota) > 0 & !is.na(get(col_nota))]
 
   get_mode <- function(x) {
     ux <- unique(na.omit(x))

@@ -1,7 +1,7 @@
 #' Exportar Estatísticas Descritivas e Densidade por Score
 #' @param data Uma lista nomeada de data.tables.
 #' @param path_json Caminho para o arquivo .json de saída.
-write_score_describe <- function(data, path_json) {
+write_score_describe <- function(data, path_json, ano) {
 
   cli::cli_h1("Descrição estatística: Processamento por Score")
   cli::cli_alert_info("Iniciando análise de {length(data)} área(s)")
@@ -9,7 +9,13 @@ write_score_describe <- function(data, path_json) {
   lista_final_resultados <- list()
 
   for (i in seq_along(data)) {
+
     dt_area <- data[[i]]
+
+    ano <- dt_area[1,]$NU_ANO
+    dic_df   <- get(paste0("dic_", ano),   envir = .GlobalEnv)
+    cod_selected <- dic_df$codigo
+
     names_dt <- names(dt_area)
 
     idx_nota <- grep("NU_NOTA_", names_dt)
@@ -17,6 +23,9 @@ write_score_describe <- function(data, path_json) {
 
     col_referencia <- names_dt[idx_nota[1]]
     nm <- gsub("NU_NOTA_", "", col_referencia)
+
+    # Identifica a coluna de prova dinâmica (ex: CO_PROVA_CN)
+    col_prova <- paste0("CO_PROVA_", nm)
 
     cli::cli_process_start("Processando área: {.strong {nm}}")
 
@@ -26,7 +35,7 @@ write_score_describe <- function(data, path_json) {
     }
 
     # 1. Filtro e Seleção em um passo único (Performance)
-    dt_temp <- dt_area[!is.na(get(col_referencia)) & get(col_referencia) > 0,
+    dt_temp <- dt_area[get(col_prova) %in% cod_selected & !is.na(get(col_referencia)) & get(col_referencia) > 0,
                        .(nota = as.numeric(get(col_referencia)),
                          score = as.integer(NU_SCORE))]
 

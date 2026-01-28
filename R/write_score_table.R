@@ -17,7 +17,7 @@
 #' @export
 write_score_table <- function(data, path_json) {
 
-  prefixos_ignore <- c("NU_INSCRICAO", "TP_LINGUA", "NU_SCORE", "TP_PRESENCA",
+  prefixos_ignore <- c("NU_ANO", "NU_INSCRICAO", "TP_LINGUA", "NU_SCORE", "TP_PRESENCA",
                        "CO_PROVA", "NU_NOTA", "TX_RESPOSTAS", "TX_GABARITO")
 
   cli::cli_h1("Processamento de Frequências (ENEM)")
@@ -28,6 +28,11 @@ write_score_table <- function(data, path_json) {
   for (i in seq_along(data)) {
 
     dt_area <- data[[i]]
+
+    ano <- dt_area[1,]$NU_ANO
+    dic_df   <- get(paste0("dic_", ano),   envir = .GlobalEnv)
+    cod_selected <- dic_df$codigo
+
     names_dt <- names(dt_area)
 
     idx_nota <- grep("NU_NOTA_", names_dt)
@@ -36,8 +41,11 @@ write_score_table <- function(data, path_json) {
     col_referencia <- names_dt[idx_nota[1]]
     nm <- gsub("NU_NOTA_", "", col_referencia)
 
+    # Identifica a coluna de prova dinâmica (ex: CO_PROVA_CN)
+    col_prova <- paste0("CO_PROVA_", nm)
+
     # --- FILTRAGEM DO DT (APENAS NOTAS > 0) ---
-    dt <- dt_area[get(col_referencia) > 0]
+    dt <- dt_area[get(col_prova) %in% cod_selected & get(col_referencia) > 0]
 
     cli::cli_alert_info("Processando: {.strong {nm}}...")
 

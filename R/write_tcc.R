@@ -18,6 +18,7 @@ write_tcc <- function(data, score, path_json, ano) {
   cli::cli_process_done()
 
   dic_df_P1 <- dic_df[dic_df$aplicacao == "P1", ]
+  cod_selected <- dic_df_P1$codigo
 
   # ------------------------------------------------------------------
   # Arquivo de saída (streaming)
@@ -52,25 +53,32 @@ write_tcc <- function(data, score, path_json, ano) {
       stop("Constantes inválidas para a área: ", area_nome, call. = FALSE)
     }
 
+    col_prova_area <- paste0("CO_PROVA_", area_nome)
+
+    tabela_real <- area_dt[
+      get(col_prova_area) %in% cod_selected & get(col_nota) > 0,
+      .(media = mean(NU_SCORE, na.rm = TRUE)),
+      keyby = .(x = as.integer(round(get(col_nota), 0)))
+    ]
+
     codigos <- unique(dic_df_P1$codigo[dic_df_P1$area == area_nome])
 
     for (codigo in codigos) {
 
       col_nota_area <- paste0("NU_NOTA_", area_nome)
 
-      notas <- data[[col_nota_area]]
-      notas <- notas[!is.na(notas) & notas > 0]
-      if (length(notas) == 0) next
+      data_filtrado <- data[get(col_prova_area) %in% cod_selected & !is.na(get(col_nota_area)) & get(col_nota_area) > 0]
+
+      notas <- data_filtrado[[col_nota_area]]
+
+      if (length(notas) == 0) {
+        cli::cli_alert_info("Sem dados para o caderno {codigo} em {area_nome}. Pulando...")
+        next
+      }
 
       nota_min <- min(notas)
       nota_max <- max(notas)
       escala_x <- seq(floor(nota_min), ceiling(nota_max), by = 1)
-
-      tabela_real <- area_dt[
-        get(col_nota) > 0,
-        .(media = mean(NU_SCORE, na.rm = TRUE)),
-        keyby = .(x = as.integer(round(get(col_nota), 0)))
-      ]
 
       df_merge <- merge(
         data.table::data.table(x = escala_x),

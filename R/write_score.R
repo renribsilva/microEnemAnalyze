@@ -119,6 +119,10 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
           stop(sprintf("Vetor gab_orig_vetor tem tamanho errado (%d) na linha %d.", length(gab_orig_vetor), i))
         }
 
+        if (length(resp_orig_vetor) != 45) {
+          stop(sprintf("Vetor resp_orig_vetor tem tamanho errado (%d) na linha %d.", length(resp_orig_vetor), i))
+        }
+
         chave_cache <- paste(cod_prova_origem, gab_45, lang_cand, sep = "_")
 
         if (!is.null(cache_itens[[chave_cache]])) {
@@ -150,7 +154,7 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
         if (is.null(itens_prova_origem)) stop(sprintf("Erro: itens da prova %d não está mapeada", cod_prova_origem))
 
         if (length(resp_orig_vetor) != 45 | length(gab_orig_vetor) != 45) {
-          stop(sprintf("Vetor RESP tem tamanho errado (%d) na linha %d.", length(resp_orig_vetor), i))
+          stop(sprintf("Vetor RESP ou GAB tem tamanho errado"))
         }
 
         if (nrow(itens_prova_origem) != 45) {
@@ -161,6 +165,7 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
         gab_vetor  <- as.character(itens_prova_origem$TX_GABARITO)
 
         indices_anulados <- which(gab_vetor == "X")
+
         gab_orig_comparacao <- gab_orig_vetor
         if (length(indices_anulados) > 0) {
           gab_orig_comparacao[indices_anulados] <- "X"
@@ -213,7 +218,7 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
     cli::cli_process_start("Consolidando matriz de scores para {.val {area_loop}}")
 
     # 1. Identificar colunas básicas da área atual
-    cols_base <- c("NU_INSCRICAO",
+    cols_base <- c("NU_INSCRICAO", "NU_ANO",
                    paste0("TP_PRESENCA_", area_loop),
                    paste0("CO_PROVA_", area_loop),
                    paste0("NU_NOTA_", area_loop),

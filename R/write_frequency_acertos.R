@@ -10,8 +10,17 @@ write_frequency_acertos <- function(data, path_json) {
   # 1. Preparação dos dados
   cli::cli_process_start("Calculando frequências de NU_SCORE")
 
+  col_prova <- grep("^CO_PROVA_", names(data), value = TRUE)
+  col_score <- "NU_SCORE"
+
+  ano <- data[1,]$NU_ANO
+  dic_df   <- get(paste0("dic_", ano),   envir = .GlobalEnv)
+  cod_selected <- dic_df$codigo
+
+  data_filtrado <- data[get(col_prova) %in% cod_selected & !is.na(get(col_score))]
+
   # Garantir que NU_SCORE seja tratado como inteiro e remover NAs
-  acertos <- data$NU_SCORE[!is.na(data$NU_SCORE)]
+  acertos <- data_filtrado$NU_SCORE
 
   # Criar tabela de frequência absoluta
   # Usamos factor para garantir que acertos com 0 alunos também apareçam (0 a 45)
