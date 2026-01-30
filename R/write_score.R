@@ -161,16 +161,19 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
           stop(sprintf("Falha na seleção dos itens"))
         }
 
+        indices_anulados <- which(itens_prova_origem$IN_ITEM_ABAN == 1)
+
         col_names  <- as.character(itens_prova_origem$CO_ITEM)
         gab_vetor  <- as.character(itens_prova_origem$TX_GABARITO)
 
-        indices_anulados <- which(gab_vetor == "X")
-
         gab_orig_comparacao <- gab_orig_vetor
+
         if (length(indices_anulados) > 0) {
           gab_orig_comparacao[indices_anulados] <- "X"
+          gab_vetor[indices_anulados] <- "X"
         }
-        if (!identical(gab_vetor, gab_orig_comparacao)) {
+
+        if (!identical(unname(as.character(gab_vetor)), unname(as.character(gab_orig_comparacao)))) {
           stop(sprintf("Inconsistência crítica na linha %d: Gabaritos não são idênticos.", i))
         }
 
@@ -181,9 +184,14 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
         res_vetor[resp_vetor == "."] <- 8L
         res_vetor[resp_vetor == "*"] <- 7L
 
+        if (length(indices_anulados) > 0) {
+          res_vetor[indices_anulados] <- NA_integer_
+        }
+
         score_df[i, col_names] <- res_vetor
 
         gab_45_referencia <- gab_45
+
         if (length(indices_anulados) > 0) {
           # Reconstrói a string com "X" nas posições certas
           gab_45_vetor_ref <- strsplit(gab_45, "")[[1]]
@@ -194,7 +202,7 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
         score_orig <- process_score(resp_45, gab_45_referencia)
 
         acertos_calculados <- sum(score_df[i, col_names] == 1, na.rm = TRUE)
-        acertos_referencia <- sum(score_orig == 1)
+        acertos_referencia <- sum(score_orig == 1, na.rm = TRUE)
 
         if (acertos_calculados == acertos_referencia) {
           score_nu[i, ] <- acertos_referencia

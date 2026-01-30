@@ -3,6 +3,7 @@ library(dplyr)
 
 #-----------2019--------------
 
+# CADERNO 516
 data <- fread("exploration/2019/MICRODADOS/microdados_enem_2019/DADOS/MICRODADOS_ENEM_2019.csv")
 my_data <- data %>%
   dplyr::filter(NU_NOTA_MT == 795.4 & NO_MUNICIPIO_PROVA == "Votuporanga")
@@ -21,6 +22,9 @@ gab_LC <- paste0(c, d)
 gab_CH <- my_data$TX_GABARITO_CH
 gab_CN <- my_data$TX_GABARITO_CN
 gab_MT <- my_data$TX_GABARITO_MT
+
+paste0(process_score(res_MT, gab_MT), collapse = "")
+my_data$CO_PROVA_MT
 
 score_LC <- sum(process_score(res_LC, gab_LC)[process_score(res_LC, gab_LC) == 1])
 score_CH <- sum(process_score(res_CH, gab_CH)[process_score(res_CH, gab_CH) == 1])

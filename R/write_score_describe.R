@@ -19,13 +19,10 @@ write_score_describe <- function(data, path_json, ano) {
     names_dt <- names(dt_area)
 
     idx_nota <- grep("NU_NOTA_", names_dt)
-    if (length(idx_nota) == 0) next
+    if (length(idx_nota) == 0) stop ("Índice da coluna de notas não encontrado")
 
     col_referencia <- names_dt[idx_nota[1]]
     nm <- gsub("NU_NOTA_", "", col_referencia)
-
-    # Identifica a coluna de prova dinâmica (ex: CO_PROVA_CN)
-    col_prova <- paste0("CO_PROVA_", nm)
 
     cli::cli_process_start("Processando área: {.strong {nm}}")
 
@@ -33,6 +30,8 @@ write_score_describe <- function(data, path_json, ano) {
       cli::cli_alert_danger("Coluna NU_SCORE não encontrada em {nm}")
       next
     }
+
+    col_prova <- paste0("CO_PROVA_", nm)
 
     # 1. Filtro e Seleção em um passo único (Performance)
     dt_temp <- dt_area[get(col_prova) %in% cod_selected & !is.na(get(col_referencia)) & get(col_referencia) > 0,

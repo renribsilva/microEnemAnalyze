@@ -10,6 +10,7 @@ write_describe_notas <- function(data, path_json) {
 
   col_nota <- grep("^NU_NOTA_", names(data), value = TRUE)
   col_prova <- grep("^CO_PROVA_", names(data), value = TRUE)
+  col_ling <- grep("^TP_LINGUA", names(data), value = TRUE)
   col_score <- "NU_SCORE"
 
   ano <- data[1,]$NU_ANO

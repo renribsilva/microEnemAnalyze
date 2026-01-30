@@ -34,7 +34,7 @@ filter_presence(table, path_csv = path_csv)
 
 # Importa os microdados
 data <- fread("exploration/2020/MICRODADOS/at_least_one_presence.csv")
-
+unique(data$CO_PROVA_LC)
 # Caminho para gravar o csv
 path_csv <- as.character("exploration/2020/MICRODADOS")
 
