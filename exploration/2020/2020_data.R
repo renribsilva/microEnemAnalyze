@@ -36,3 +36,4 @@ data <- fread("exploration/2020/MICRODADOS/at_least_one_presence.csv")
 
 # Escreve a curva característica do exame por caderno, para um determinado ano
 write_tcc(data = data, score = score, path_json = path_json, ano = 2020)
+

@@ -6,62 +6,65 @@
 write_describe_notas <- function(data, path_json) {
 
   cli::cli_h2("Descrição Estatística")
-  cli::cli_process_start("Calculando estatísticas descritivas")
 
   col_nota <- grep("^NU_NOTA_", names(data), value = TRUE)
   col_prova <- grep("^CO_PROVA_", names(data), value = TRUE)
-  col_ling <- grep("^TP_LINGUA", names(data), value = TRUE)
   col_score <- "NU_SCORE"
 
   ano <- data[1,]$NU_ANO
-  dic_df   <- get(paste0("dic_", ano),   envir = .GlobalEnv)
-  cod_selected <- dic_df$codigo
+  dic_df <- get(paste0("dic_", ano), envir = .GlobalEnv)
 
-  data_filtrado <- data[get(col_prova) %in% cod_selected & get(col_nota) > 0 & !is.na(get(col_nota))]
-
+  # --- Helpers Mínimos ---
   get_mode <- function(x) {
-    ux <- unique(na.omit(x))
-    ux[which.max(tabulate(match(x, ux)))]
+    ux <- unique(na.omit(x)); ux[which.max(tabulate(match(x, ux)))]
   }
-
   get_cor_from_dic <- function(codigo_procurado, dicionario) {
     cor_encontrada <- dicionario$cor[dicionario$codigo == codigo_procurado]
     return(cor_encontrada[1])
   }
 
-  # Cálculos para NOTAS
-  v_notas <- data_filtrado[[col_nota]]
-  cod_min_n <- data_filtrado[[col_prova]][which.min(v_notas)]
-  cod_max_n <- data_filtrado[[col_prova]][idx_max_n <- which.max(v_notas)]
-  desc_nota <- as.list(psych::describe(v_notas)[1, ])
-  desc_nota$mode <- microEnemAnalize::get_grouped_mode(v_notas, bin_width = 25)
-  desc_nota$q1 <- quantile(v_notas, 0.25, na.rm = TRUE)[[1]]
-  desc_nota$q3 <- quantile(v_notas, 0.75, na.rm = TRUE)[[1]]
-  desc_nota$p99 <- quantile(v_notas, probs = 0.99, na.rm = TRUE, type = 1)[[1]] # Mínima do Top 1%
-  desc_nota$cor_min <- get_cor_from_dic(cod_min_n, dic_df)
-  desc_nota$cor_max <- get_cor_from_dic(cod_max_n, dic_df)
-  desc_nota$cod_min <- cod_min_n
-  desc_nota$cod_max <- cod_max_n
+  # --- Função interna para rodar os dois pools ---
+  calc_stats <- function(codigos_pool) {
+    df_pool <- data[get(col_prova) %in% codigos_pool & get(col_nota) > 0 & !is.na(get(col_nota))]
+    if(nrow(df_pool) == 0) return(NULL)
 
-  # Cálculos para ACERTOS
-  v_acertos <- data_filtrado[[col_score]]
-  desc_acertos <- as.list(psych::describe(v_acertos)[1, ])
-  desc_acertos$mode <- get_mode(v_acertos)
-  desc_acertos$q1 <- quantile(v_acertos, 0.25, na.rm = TRUE)[[1]]
-  desc_acertos$q3 <- quantile(v_acertos, 0.75, na.rm = TRUE)[[1]]
-  desc_acertos$p99 <- quantile(v_acertos, probs = 0.99, na.rm = TRUE, type = 1)[[1]]
+    # Notas
+    v_n <- df_pool[[col_nota]]
+    c_min <- df_pool[[col_prova]][which.min(v_n)]; c_max <- df_pool[[col_prova]][which.max(v_n)]
+    d_n <- as.list(psych::describe(v_n)[1, ])
+    d_n$mode <- microEnemAnalize::get_grouped_mode(v_n, bin_width = 25)
+    d_n$q1 <- quantile(v_n, 0.25, na.rm = TRUE)[[1]]; d_n$q3 <- quantile(v_n, 0.75, na.rm = TRUE)[[1]]
+    d_n$p99 <- quantile(v_n, probs = 0.99, na.rm = TRUE, type = 1)[[1]]
+    d_n$cor_min <- get_cor_from_dic(c_min, dic_df); d_n$cor_max <- get_cor_from_dic(c_max, dic_df)
+    d_n$cod_min <- c_min; d_n$cod_max <- c_max
+
+    # Acertos
+    v_a <- df_pool[[col_score]]
+    d_a <- as.list(psych::describe(v_a)[1, ])
+    d_a$mode <- get_mode(v_a)
+    d_a$q1 <- quantile(v_a, 0.25, na.rm = TRUE)[[1]]; d_a$q3 <- quantile(v_a, 0.75, na.rm = TRUE)[[1]]
+    d_a$p99 <- quantile(v_a, probs = 0.99, na.rm = TRUE, type = 1)[[1]]
+
+    return(list(notas = d_n, acertos = d_a))
+  }
+
+  # --- Definição dos Pools ---
+  cod_digital <- dic_df$codigo[grepl("Digital", dic_df$cor, ignore.case = TRUE)]
+  cod_regular <- dic_df$codigo[!grepl("Digital", dic_df$cor, ignore.case = TRUE)]
+
+  cli::cli_process_start("Processando Pools")
 
   lista_completa <- list(
-    notas = desc_nota,
-    acertos = desc_acertos
+    digital = calc_stats(cod_digital),
+    regular = calc_stats(cod_regular)
   )
 
   cli::cli_process_done()
 
-  # --- EXPORTAÇÃO ---
+  # --- Exportação ---
   final_file <- if(grepl("\\.json$", path_json)) path_json else file.path(path_json, "describe.json")
   dir.create(dirname(final_file), showWarnings = FALSE, recursive = TRUE)
-  jsonlite::write_json(lista_completa, path = final_file, pretty = TRUE, auto_unbox = TRUE)
+  jsonlite::write_json(lista_completa, path = final_file, pretty = TRUE, auto_unbox = TRUE, na = "null")
 
   cli::cli_alert_success("Processo concluído: {.path {final_file}}")
   return(invisible(final_file))

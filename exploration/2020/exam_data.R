@@ -46,7 +46,7 @@ write_frequency_acertos(data, path_json = path_json)
 
 # Importa os scores
 data <- fread("exploration/2020/MICRODADOS/score_CN.csv")
-data[data$NU_NOTA_CN == 828.9, ]
+
 path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2020/dificuldade-do-exame/CN/")
 
 # Escreve a descrição unidimensional dos dados

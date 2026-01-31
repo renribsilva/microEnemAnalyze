@@ -7,57 +7,54 @@ write_frequency_acertos <- function(data, path_json) {
 
   cli::cli_h2("Processamento de Frequência (Acertos)")
 
-  # 1. Preparação dos dados
-  cli::cli_process_start("Calculando frequências de NU_SCORE")
-
   col_prova <- grep("^CO_PROVA_", names(data), value = TRUE)
   col_score <- "NU_SCORE"
 
   ano <- data[1,]$NU_ANO
-  dic_df   <- get(paste0("dic_", ano),   envir = .GlobalEnv)
-  cod_selected <- dic_df$codigo
+  dic_df <- get(paste0("dic_", ano), envir = .GlobalEnv)
 
-  data_filtrado <- data[get(col_prova) %in% cod_selected & !is.na(get(col_score))]
+  # --- Função de Cálculo Interna ---
+  calc_freq <- function(codigos_pool) {
+    df_pool <- data[get(col_prova) %in% codigos_pool & !is.na(get(col_score))]
+    if (nrow(df_pool) == 0) return(NULL)
 
-  # Garantir que NU_SCORE seja tratado como inteiro e remover NAs
-  acertos <- data_filtrado$NU_SCORE
+    acertos <- df_pool[[col_score]]
+    tab_abs <- table(factor(acertos, levels = 0:45))
+    tab_rel <- prop.table(tab_abs) * 100
 
-  # Criar tabela de frequência absoluta
-  # Usamos factor para garantir que acertos com 0 alunos também apareçam (0 a 45)
-  tab_abs <- table(factor(acertos, levels = 0:45))
+    df_f <- data.frame(
+      x = as.numeric(names(tab_abs)),
+      abs = as.integer(tab_abs),
+      rel = as.numeric(tab_rel)
+    )
 
-  # Criar tabela de frequência relativa
-  tab_rel <- prop.table(tab_abs) * 100
-
-  # 2. Formatação para Chart.js {x: acerto, y: valor}
-  df_frequencia <- data.frame(
-    x = as.numeric(names(tab_abs)),
-    frequencia_absoluta = as.integer(tab_abs),
-    frequencia_relativa = as.numeric(tab_rel)
-  )
-
-  # Montagem da estrutura JSON
-  # Exportamos ambas para que você escolha qual usar no gráfico (yAbs ou yRel)
-  lista_completa <- list(
-    datasets = list(
-      list(
-        label = "Frequência Absoluta",
-        data = lapply(1:nrow(df_frequencia), function(i) {
-          list(x = df_frequencia$x[i], y = df_frequencia$frequencia_absoluta[i])
-        })
-      ),
-      list(
-        label = "Frequência Relativa (%)",
-        data = lapply(1:nrow(df_frequencia), function(i) {
-          list(x = df_frequencia$x[i], y = df_frequencia$frequencia_relativa[i])
-        })
+    list(
+      datasets = list(
+        list(
+          label = "Frequência Absoluta",
+          data = lapply(1:nrow(df_f), function(i) list(x = df_f$x[i], y = df_f$abs[i]))
+        ),
+        list(
+          label = "Frequência Relativa (%)",
+          data = lapply(1:nrow(df_f), function(i) list(x = df_f$x[i], y = df_f$rel[i]))
+        )
       )
     )
+  }
+
+  # --- Definição dos Pools ---
+  cod_digital <- dic_df$codigo[grepl("Digital", dic_df$cor, ignore.case = TRUE)]
+  cod_regular <- dic_df$codigo[!grepl("Digital", dic_df$cor, ignore.case = TRUE)]
+
+  cli::cli_process_start("Calculando Frequências (Digital vs Regular)")
+
+  lista_completa <- list(
+    digital = calc_freq(cod_digital),
+    regular = calc_freq(cod_regular)
   )
   cli::cli_process_done()
 
-  # 3. Exportação
-  cli::cli_process_start("Salvando JSON")
+  # --- Exportação ---
   final_file <- if(grepl("\\.json$", path_json)) path_json else file.path(path_json, "frequency_acertos.json")
   dir.create(dirname(final_file), showWarnings = FALSE, recursive = TRUE)
 

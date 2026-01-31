@@ -107,6 +107,12 @@ write_tcc <- function(data, score, path_json, ano) {
         for (lingua in linguas) {
 
           cor_name_base <- dic_df$cor[dic_df$codigo == codigo][1]
+
+          v_digital_ajustada <- v_digital
+          if (grepl("\\(Digital\\)", cor_name_base, ignore.case = TRUE)) {
+            v_digital_ajustada <- "D"
+          }
+
           cor_name <- if (area_nome == "LC") {
             if (lingua == 0) {
               paste0(cor_name_base, " (Inglês)")
@@ -129,8 +135,9 @@ write_tcc <- function(data, score, path_json, ano) {
             itens_caderno <- itens_caderno[
               is.na(TP_LINGUA) | TP_LINGUA == lingua,
             ]
-            itens_caderno <- itens_caderno[order(CO_POSICAO), ]
           }
+
+          itens_caderno <- itens_caderno[order(CO_POSICAO), ]
 
           if (nrow(itens_caderno) != 45) {
             if (tem_digital && (v_digital != "X") && (lingua != v_digital)) {
@@ -147,7 +154,7 @@ write_tcc <- function(data, score, path_json, ano) {
             }
           }
 
-          key_name <- paste(codigo, lingua, v_digital, sep = "_")
+          key_name <- paste(codigo, lingua, v_digital_ajustada, sep = "_")
 
           itens_mirt <- data.frame(
             a1 = as.numeric(itens_caderno$NU_PARAM_A),
@@ -174,7 +181,7 @@ write_tcc <- function(data, score, path_json, ano) {
               min = nota_min,
               max = nota_max,
               lingua = lingua,
-              versao_digital = v_digital,
+              versao_digital = v_digital_ajustada,
               b_medio_enem = round(
                 mean(itens_caderno$NU_PARAM_B, na.rm = TRUE) *
                   const_row$k + const_row$d, 1
