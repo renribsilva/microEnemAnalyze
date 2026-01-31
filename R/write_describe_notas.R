@@ -24,13 +24,24 @@ write_describe_notas <- function(data, path_json) {
     ux[which.max(tabulate(match(x, ux)))]
   }
 
+  get_cor_from_dic <- function(codigo_procurado, dicionario) {
+    cor_encontrada <- dicionario$cor[dicionario$codigo == codigo_procurado]
+    return(cor_encontrada[1])
+  }
+
   # Cálculos para NOTAS
   v_notas <- data_filtrado[[col_nota]]
+  cod_min_n <- data_filtrado[[col_prova]][which.min(v_notas)]
+  cod_max_n <- data_filtrado[[col_prova]][idx_max_n <- which.max(v_notas)]
   desc_nota <- as.list(psych::describe(v_notas)[1, ])
   desc_nota$mode <- microEnemAnalize::get_grouped_mode(v_notas, bin_width = 25)
   desc_nota$q1 <- quantile(v_notas, 0.25, na.rm = TRUE)[[1]]
   desc_nota$q3 <- quantile(v_notas, 0.75, na.rm = TRUE)[[1]]
   desc_nota$p99 <- quantile(v_notas, probs = 0.99, na.rm = TRUE, type = 1)[[1]] # Mínima do Top 1%
+  desc_nota$cor_min <- get_cor_from_dic(cod_min_n, dic_df)
+  desc_nota$cor_max <- get_cor_from_dic(cod_max_n, dic_df)
+  desc_nota$cod_min <- cod_min_n
+  desc_nota$cod_max <- cod_max_n
 
   # Cálculos para ACERTOS
   v_acertos <- data_filtrado[[col_score]]

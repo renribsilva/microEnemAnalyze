@@ -31,6 +31,8 @@ score_MT <- fread("exploration/2023/MICRODADOS/score_MT.csv")
 
 score <- list(score_LC,  score_CH, score_CN, score_MT)
 
+score_LC[score_LC$NU_NOTA_LC == 288.6,]
+
 # Importa dados
 data <- fread("exploration/2023/MICRODADOS/at_least_one_presence.csv")
 
