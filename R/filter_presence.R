@@ -6,17 +6,14 @@
 #'
 #' @param data A data.table com os microdados.
 #' @param path_csv Caminho para salvar o arquivo CSV final.
-#' @param nt Argumento booleano que acrescenta um filtro para não
 #' treineiros
 #'
 #' @return Retorna a data.table filtrada invisivelmente.
 #' @export
-filter_presence <- function(data,
-                            path_csv,
-                            nt = FALSE) {
+filter_presence <- function(data, path_csv) {
 
   # --- TÍTULO ---
-  cli::cli_h2(if(nt) "Filtração: Presença Mínima (Não Treineiros)" else "Filtração: Presença Mínima")
+  cli::cli_h2("Filtração: Presença Mínima")
 
   # Validação básica
   cli::cli_process_start("Validando argumentos")
@@ -54,10 +51,6 @@ filter_presence <- function(data,
         (TP_PRESENCA_MT == 1 & CO_PROVA_MT %in% cod_selected)
     ]
 
-    if (nt) {
-      dados_batch_filtered <- dados_batch_filtered[IN_TREINEIRO == 0]
-    }
-
     at_least_one_presence <- rbindlist(list(at_least_one_presence, dados_batch_filtered))
 
     cli::cli_status_update(
@@ -77,11 +70,7 @@ filter_presence <- function(data,
   # Exportação
   cli::cli_process_start("Exportando arquivo CSV")
 
-  if (nt == TRUE) {
-    final_file <- if(grepl("\\.csv$", path_csv)) path_csv else file.path(path_csv, "at_least_one_presence_nt.csv")
-  } else {
-    final_file <- if(grepl("\\.csv$", path_csv)) path_csv else file.path(path_csv, "at_least_one_presence.csv")
-  }
+  final_file <- if(grepl("\\.csv$", path_csv)) path_csv else file.path(path_csv, "at_least_one_presence.csv")
 
   dir.create(dirname(final_file), showWarnings = FALSE, recursive = TRUE)
   final_file <- normalizePath(final_file, mustWork = FALSE)

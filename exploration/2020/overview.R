@@ -17,9 +17,6 @@ path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(hom
 write_inscritos(table, path_json = path_json)
 
 # Escreve json sobre presença em ao menos um dia na prova
-write_presence(table, path_json = path_json)
-
-# Escreve json sobre presença em ao menos um dia na prova
 write_presence_day(table, path_json = path_json, day = 1)
 
 # Escreve json sobre presença em ao menos um dia na prova

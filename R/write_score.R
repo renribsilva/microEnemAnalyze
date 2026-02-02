@@ -134,13 +134,15 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
           itens_prova_origem <- NULL
 
           # Verifica se a coluna existe e se NÃO é toda composta por NAs
-          tem_versao_digital <- "TP_VERSAO_DIGITAL" %in% names(pool_itens) && !all(is.na(pool_itens$TP_VERSAO_DIGITAL))
+          # tem_versao_digital <- "TP_VERSAO_DIGITAL" %in% names(pool_itens) && !all(is.na(pool_itens$TP_VERSAO_DIGITAL))
 
-          if (tem_versao_digital) {
-            itens_prova_origem <- pool_itens[pool_itens$TP_VERSAO_DIGITAL == lang_cand, ]
-          } else {
-            itens_prova_origem <- pool_itens[is.na(pool_itens$TP_LINGUA) | pool_itens$TP_LINGUA == lang_cand, ]
-          }
+          # if (tem_versao_digital) {
+          #   itens_prova_origem <- pool_itens[pool_itens$TP_VERSAO_DIGITAL == lang_cand, ]
+          # } else {
+          #   itens_prova_origem <- pool_itens[is.na(pool_itens$TP_LINGUA) | pool_itens$TP_LINGUA == lang_cand, ]
+          # }
+
+          itens_prova_origem <- pool_itens[is.na(pool_itens$TP_LINGUA) | pool_itens$TP_LINGUA == lang_cand, ]
 
           # Validação e Ordenação Crítica
           if (!is.null(itens_prova_origem) && nrow(itens_prova_origem) == 45) {
