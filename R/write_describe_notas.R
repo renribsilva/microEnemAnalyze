@@ -15,25 +15,57 @@ write_describe_notas <- function(data, path_json) {
   get_mode <- function(x) {
     ux <- unique(na.omit(x)); ux[which.max(tabulate(match(x, ux)))]
   }
+
   get_cor_from_dic <- function(codigo_procurado, dicionario) {
     cor_encontrada <- dicionario$cor[dicionario$codigo == codigo_procurado]
     return(cor_encontrada[1])
   }
 
+  get_area_from_dic <- function(codigo_procurado, dicionario) {
+    area_encontrada <- dicionario$area[dicionario$codigo == codigo_procurado]
+    return(area_encontrada[1])
+  }
+
   # --- Função interna para rodar os dois pools ---
   calc_stats <- function(codigos_pool) {
+
     df_pool <- data[get(col_prova) %in% codigos_pool & get(col_nota) > 0 & !is.na(get(col_nota))]
     if(nrow(df_pool) == 0) return(NULL)
 
-    # Notas
+    idx_min <- which.min(df_pool[[col_nota]])
+    idx_max <- which.max(df_pool[[col_nota]])
+
+    c_min <- df_pool[[col_prova]][idx_min]
+    c_max <- df_pool[[col_prova]][idx_max]
+
+    area_prova <- get_area_from_dic(c_min, dic_df)
+
+    lang_min <- ""
+    lang_max <- ""
+
+    if("TP_LINGUA" %in% names(df_pool) && identical(area_prova, "LC")) {
+      tp_min <- df_pool$TP_LINGUA[idx_min]
+      tp_max <- df_pool$TP_LINGUA[idx_max]
+
+      if(!is.na(tp_min)) {
+        lang_min <- paste0(" (", ifelse(tp_min == 0, "Inglês", "Espanhol"), ")")
+      }
+
+      if(!is.na(tp_max)) {
+        lang_max <- paste0(" (", ifelse(tp_max == 0, "Inglês", "Espanhol"), ")")
+      }
+    }
+
     v_n <- df_pool[[col_nota]]
-    c_min <- df_pool[[col_prova]][which.min(v_n)]; c_max <- df_pool[[col_prova]][which.max(v_n)]
+
     d_n <- as.list(psych::describe(v_n)[1, ])
     d_n$mode <- microEnemAnalize::get_grouped_mode(v_n, bin_width = 25)
     d_n$q1 <- quantile(v_n, 0.25, na.rm = TRUE)[[1]]; d_n$q3 <- quantile(v_n, 0.75, na.rm = TRUE)[[1]]
     d_n$p99 <- quantile(v_n, probs = 0.99, na.rm = TRUE, type = 1)[[1]]
-    d_n$cor_min <- get_cor_from_dic(c_min, dic_df); d_n$cor_max <- get_cor_from_dic(c_max, dic_df)
-    d_n$cod_min <- c_min; d_n$cod_max <- c_max
+    d_n$cor_min <- paste0(get_cor_from_dic(c_min, dic_df), lang_min)
+    d_n$cor_max <- paste0(get_cor_from_dic(c_max, dic_df), lang_max)
+    d_n$cod_min <- c_min
+    d_n$cod_max <- c_max
 
     # Acertos
     v_a <- df_pool[[col_score]]
