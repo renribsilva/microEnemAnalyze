@@ -2,7 +2,7 @@
 # Importa os dados.csv -
 #--------------------------------
 
-filtered <- fread("exploration/2023/MICRODADOS/at_least_one_presence.csv")
+filtered <- fread("exploration/2023/MICRODADOS/microdados_enem_2023/DADOS/MICRODADOS_ENEM_2023.csv")
 
 #-----------------------------
 # Caminho para gravar o json -

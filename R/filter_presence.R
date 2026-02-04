@@ -29,43 +29,19 @@ filter_presence <- function(data, path_csv) {
 
   ano <- data[1,]$NU_ANO
   dic_df   <- get(paste0("dic_", ano),   envir = .GlobalEnv)
-  cod_selected <- dic_df$codigo
+  dic_df_P1 <- dic_df[dic_df$tipo == "1", ]
+  cod_selected <- dic_df_P1$codigo
 
-  # Processamento de Batches
-  batch_size <- 50000
-  total_rows <- nrow(data)
-  num_batches <- ceiling((total_rows/batch_size))
+  cli::cli_process_start("Filtrando in-place (Otimizado)")
 
-  cp <- cli::cli_process_start("Filtrando dados em {.val {num_batches}} batches")
+  at_least_one_presence <- data[
+    (TP_PRESENCA_CN == 1 & CO_PROVA_CN %in% cod_selected) |
+      (TP_PRESENCA_CH == 1 & CO_PROVA_CH %in% cod_selected) |
+      (TP_PRESENCA_LC == 1 & CO_PROVA_LC %in% cod_selected) |
+      (TP_PRESENCA_MT == 1 & CO_PROVA_MT %in% cod_selected)
+  ]
 
-  at_least_one_presence <- data.table()
-
-  for (i in 1:num_batches) {
-    start_row <- (i-1)*batch_size+1
-    end_row <- min(i*batch_size, total_rows)
-
-    dados_batch_filtered <- data[start_row:end_row][
-      (TP_PRESENCA_CN == 1 & CO_PROVA_CN %in% cod_selected) |
-        (TP_PRESENCA_CH == 1 & CO_PROVA_CH %in% cod_selected) |
-        (TP_PRESENCA_LC == 1 & CO_PROVA_LC %in% cod_selected) |
-        (TP_PRESENCA_MT == 1 & CO_PROVA_MT %in% cod_selected)
-    ]
-
-    at_least_one_presence <- rbindlist(list(at_least_one_presence, dados_batch_filtered))
-
-    cli::cli_status_update(
-      id = cp,
-      msg = "Processando batch {i}/{num_batches} ({start_row} a {end_row})..."
-    )
-
-    # Removendo apenas o que realmente existe nesta iteração
-    rm(dados_batch_filtered)
-
-    # Dica: rode o gc() apenas a cada 10 ou 20 batches para não perder performance
-    if (i %% 10 == 0) gc()
-  }
-
-  cli::cli_process_done(id = cp)
+  cli::cli_process_done()
 
   # Exportação
   cli::cli_process_start("Exportando arquivo CSV")

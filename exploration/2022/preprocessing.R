@@ -40,3 +40,4 @@ path_csv <- as.character("exploration/2022/MICRODADOS")
 
 # Escreve arquivos csv com score para cada área
 write_score(data, path_csv = path_csv, ano = 2022)
+

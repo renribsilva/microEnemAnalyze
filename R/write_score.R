@@ -31,7 +31,7 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
   })
 
   n <- nrow(data)
-  dic_df_P1 <- dic_df[dic_df$aplicacao == "P1", ]
+  dic_df_P1 <- dic_df[dic_df$tipo == "1", ]
   areas_to_process <- if (!is.null(area)) area else c("LC", "CH", "CN", "MT")
 
   for (area_loop in areas_to_process) {
@@ -228,7 +228,7 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
     cli::cli_process_start("Consolidando matriz de scores para {.val {area_loop}}")
 
     # 1. Identificar colunas básicas da área atual
-    cols_base <- c("NU_INSCRICAO", "NU_ANO",
+    cols_base <- c("NU_ANO",
                    paste0("TP_PRESENCA_", area_loop),
                    paste0("CO_PROVA_", area_loop),
                    paste0("NU_NOTA_", area_loop),

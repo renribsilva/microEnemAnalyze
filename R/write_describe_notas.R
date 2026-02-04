@@ -11,9 +11,6 @@ write_describe_notas <- function(data, path_json) {
   col_prova <- grep("^CO_PROVA_", names(data), value = TRUE)
   col_score <- "NU_SCORE"
 
-  ano <- data[1,]$NU_ANO
-  dic_df <- get(paste0("dic_", ano), envir = .GlobalEnv)
-
   # --- Helpers Mínimos ---
   get_mode <- function(x) {
     ux <- unique(na.omit(x)); ux[which.max(tabulate(match(x, ux)))]
@@ -48,9 +45,13 @@ write_describe_notas <- function(data, path_json) {
     return(list(notas = d_n, acertos = d_a))
   }
 
+  ano <- data[1,]$NU_ANO
+  dic_df  <- get(paste0("dic_", ano), envir = .GlobalEnv)
+  dic_df_P1 <- dic_df[dic_df$tipo == "1", ]
+
   # --- Definição dos Pools ---
-  cod_digital <- dic_df$codigo[grepl("Digital", dic_df$cor, ignore.case = TRUE)]
-  cod_regular <- dic_df$codigo[!grepl("Digital", dic_df$cor, ignore.case = TRUE)]
+  cod_digital <- dic_df_P1$codigo[grepl("Digital", dic_df$cor, ignore.case = TRUE)]
+  cod_regular <- dic_df_P1$codigo[!grepl("Digital", dic_df$cor, ignore.case = TRUE)]
 
   cli::cli_process_start("Processando Pools")
 

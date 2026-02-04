@@ -10,9 +10,6 @@ write_density_notas <- function(data, path_json) {
   col_prova <- grep("^CO_PROVA_", names(data), value = TRUE)
   col_nota <- grep("^NU_NOTA_", names(data), value = TRUE)
 
-  ano <- data[1,]$NU_ANO
-  dic_df <- get(paste0("dic_", ano), envir = .GlobalEnv)
-
   # --- Função de Cálculo Interna ---
   calc_dens <- function(codigos_pool) {
     df_pool <- data[get(col_prova) %in% codigos_pool & get(col_nota) > 0 & !is.na(get(col_nota))]
@@ -31,9 +28,13 @@ write_density_notas <- function(data, path_json) {
     )
   }
 
+  ano <- data[1,]$NU_ANO
+  dic_df <- get(paste0("dic_", ano), envir = .GlobalEnv)
+  dic_df_P1 <- dic_df[dic_df$tipo == "1", ]
+
   # --- Definição dos Pools ---
-  cod_digital <- dic_df$codigo[grepl("Digital", dic_df$cor, ignore.case = TRUE)]
-  cod_regular <- dic_df$codigo[!grepl("Digital", dic_df$cor, ignore.case = TRUE)]
+  cod_digital <- dic_df_P1$codigo[grepl("Digital", dic_df$cor, ignore.case = TRUE)]
+  cod_regular <- dic_df_P1$codigo[!grepl("Digital", dic_df$cor, ignore.case = TRUE)]
 
   cli::cli_process_start("Calculando Densidades (Digital vs Regular)")
 

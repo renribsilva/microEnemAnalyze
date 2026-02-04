@@ -4,14 +4,12 @@
 \alias{filter_presence}
 \title{Filtrar inscritos com pelo menos uma presença}
 \usage{
-filter_presence(data, path_csv, nt = FALSE)
+filter_presence(data, path_csv)
 }
 \arguments{
 \item{data}{A data.table com os microdados.}
 
-\item{path_csv}{Caminho para salvar o arquivo CSV final.}
-
-\item{nt}{Argumento booleano que acrescenta um filtro para não
+\item{path_csv}{Caminho para salvar o arquivo CSV final.
 treineiros}
 }
 \value{

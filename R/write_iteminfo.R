@@ -44,7 +44,10 @@ write_iteminfo <- function(path_json = NULL, co_prova = NULL, ano) {
 
   # 3. Geração dos Modelos
   cp_mod <- cli::cli_process_start("Gerando modelos para os cadernos")
-  for (codigo in dic_df$codigo) {
+
+  dic_df_P1 <- dic_df[dic_df$tipo == "1", ]
+
+  for (codigo in dic_df_P1$codigo) {
     dados_prova <- itens_df[itens_df$CO_PROVA == codigo, ]
     dados_prova <- dados_prova[order(dados_prova$TP_LINGUA, dados_prova$CO_POSICAO), ]
 

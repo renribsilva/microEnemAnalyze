@@ -4,7 +4,6 @@
 
 # Importa os microdados
 table <- fread("exploration/2024/MICRODADOS/microdados_enem_2024/DADOS/RESULTADOS_2024.csv")
-
 # sort(unique(table$CO_PROVA_LC))
 # sort(unique(table$CO_PROVA_CH))
 # sort(unique(table$CO_PROVA_CN))

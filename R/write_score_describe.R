@@ -8,9 +8,8 @@ write_score_describe <- function(data, path_json, ano) {
   lista_final_resultados <- list()
 
   for (i in seq_along(data)) {
+
     dt_area <- data[[i]]
-    ano_dt  <- dt_area[1, ]$NU_ANO
-    dic_df  <- get(paste0("dic_", ano_dt), envir = .GlobalEnv)
 
     # --- Identificação da Área ---
     names_dt <- names(dt_area)
@@ -50,9 +49,13 @@ write_score_describe <- function(data, path_json, ano) {
       return(lista_scores)
     }
 
+    ano_dt  <- dt_area[1, ]$NU_ANO
+    dic_df  <- get(paste0("dic_", ano_dt), envir = .GlobalEnv)
+    dic_df_P1 <- dic_df[dic_df$tipo == "1", ]
+
     # --- Separação e Atribuição mantendo a chave original [[nm]] ---
-    cod_digital <- dic_df[grepl("Digital", cor, ignore.case = TRUE), codigo]
-    cod_regular <- dic_df[!grepl("Digital", cor, ignore.case = TRUE), codigo]
+    cod_digital <- dic_df_P1[grepl("Digital", cor, ignore.case = TRUE), codigo]
+    cod_regular <- dic_df_P1[!grepl("Digital", cor, ignore.case = TRUE), codigo]
 
     lista_final_resultados[[nm]] <- list(
       digital = processar_grupo(cod_digital),

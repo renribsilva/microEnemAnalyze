@@ -31,20 +31,23 @@ write_presence_day <- function(data, path_json, day) {
   }
   cli::cli_process_done()
 
+  cols_disponiveis <- names(data)
+  id_col <- intersect(c("NU_INSCRICAO", "NU_SEQUENCIAL"), cols_disponiveis)
+
+  if (length(id_col) == 0) {
+    cli::cli_abort("Erro: Nenhuma coluna de identificação ({.var NU_INSCRICAO} ou {.var NU_SEQUENCIAL}) encontrada.")
+  } else {
+    id_col <- id_col[1] # Caso existam as duas, pega a primeira
+    cli::cli_alert_info("Usando {.val {id_col}} como identificador único.")
+  }
+
+  cols_necessarias <- c("NU_ANO", id_col,
+                        "TP_PRESENCA_LC", "TP_PRESENCA_CH", "TP_PRESENCA_CN", "TP_PRESENCA_MT",
+                        "CO_PROVA_LC", "CO_PROVA_CH", "CO_PROVA_CN", "CO_PROVA_MT")
+  cols_to_keep <- intersect(cols_necessarias, names(data))
+
   cli::cli_process_start("Reduzindo dimensionalidade dos dados")
-  data <- data.table::as.data.table(data)[, .(
-    NU_ANO,
-    NU_INSCRICAO,
-    IN_TREINEIRO,
-    TP_PRESENCA_LC,
-    TP_PRESENCA_CH,
-    TP_PRESENCA_CN,
-    TP_PRESENCA_MT,
-    CO_PROVA_LC,
-    CO_PROVA_CH,
-    CO_PROVA_CN,
-    CO_PROVA_MT
-  )]
+  data <- data[, ..cols_to_keep]
   cli::cli_process_done()
 
   # Preparação dos dados
@@ -53,16 +56,6 @@ write_presence_day <- function(data, path_json, day) {
   batch_size <- 50000
   total_rows <- nrow(data)
   num_batches <- ceiling((total_rows/batch_size))
-
-  ano <- data[1,]$NU_ANO
-  dic_df   <- get(paste0("dic_", ano),   envir = .GlobalEnv)
-  cod_selected <- dic_df$codigo
-
-  if (as.integer(day) == 1L) {
-    data_filtered_by_cod <- data[CO_PROVA_LC %in% cod_selected | CO_PROVA_CH %in% cod_selected]
-  } else {
-    data_filtered_by_cod <- data[CO_PROVA_CN %in% cod_selected | CO_PROVA_MT %in% cod_selected]
-  }
 
   presence_filtered <- data.table()
 
@@ -76,13 +69,13 @@ write_presence_day <- function(data, path_json, day) {
 
     if (as.integer(day) == 1L) {
       dados_batch_filtered <- data[start_row:end_row][
-        (TP_PRESENCA_LC == 1 & CO_PROVA_LC %in% cod_selected) |
-        (TP_PRESENCA_CH == 1 & CO_PROVA_CH %in% cod_selected)
+        (TP_PRESENCA_LC == 1) |
+        (TP_PRESENCA_CH == 1)
       ]
     } else if (as.integer(day) == 2L) {
       dados_batch_filtered <- data[start_row:end_row][
-        (TP_PRESENCA_CN == 1 & CO_PROVA_CN %in% cod_selected) |
-        (TP_PRESENCA_MT == 1 & CO_PROVA_MT %in% cod_selected)
+        (TP_PRESENCA_CN == 1) |
+        (TP_PRESENCA_MT == 1)
       ]
     }
 
@@ -102,15 +95,15 @@ write_presence_day <- function(data, path_json, day) {
   # Validação e Frequências
   ap <- cli::cli_process_start("Calculando frequências e validação de integridade")
 
-  if (any(is.na(data$NU_INSCRICAO))) {
-    cli::cli_alert_danger("Valores ausentes detectados em {.var NU_INSCRICAO}")
-    stop("Erro: Existem valores NA em NU_INSCRICAO.")
+  if (any(is.na(data[[id_col]]))) {
+    cli::cli_alert_danger("Valores ausentes detectados em {.var {id_col}}")
+    stop("Erro: Existem valores NA em {.var {id_col}}.")
   }
 
-  inscritos <- as.integer(length(data$NU_INSCRICAO))
+  inscritos <- as.integer(length(data[[id_col]]))
 
-  if (!any(is.na(presence_filtered$NU_INSCRICAO))) {
-    inscritos_filtered <- as.integer(length(presence_filtered$NU_INSCRICAO))
+  if (!any(is.na(presence_filtered[[id_col]]))) {
+    inscritos_filtered <- as.integer(length(presence_filtered[[id_col]]))
   } else {
     stop("Merda")
   }

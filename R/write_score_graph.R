@@ -30,7 +30,8 @@ write_score_graph <- function(data, path_json) {
 
     ano <- dt_area[1,]$NU_ANO
     dic_df   <- get(paste0("dic_", ano),   envir = .GlobalEnv)
-    cod_selected <- dic_df$codigo
+    dic_df_P1 <- dic_df[dic_df$tipo == "1", ]
+    cod_selected <- dic_df_P1$codigo
 
     names_dt <- names(dt_area)
 

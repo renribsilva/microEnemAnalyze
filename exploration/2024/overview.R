@@ -4,7 +4,8 @@
 #-------------------------------------------------------
 
 # Importa os microdados
-table <- fread("exploration/2024/MICRODADOS/microdados_enem_2024/DADOS/RESULTADOS_2024.csv")
+table1 <- fread("exploration/2024/MICRODADOS/microdados_enem_2024/DADOS/PARTICIPANTES_2024.csv")
+table2 <- fread("exploration/2024/MICRODADOS/microdados_enem_2024/DADOS/RESULTADOS_2024.csv")
 
 # Caminho para gravar o json
 path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2024/visao-geral/overview/")
@@ -14,16 +15,13 @@ path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(hom
 #-----------------------
 
 # Escreve json sobre inscritos na prova
-write_inscritos(table, path_json = path_json)
+write_inscritos(table1, path_json = path_json)
 
 # Escreve json sobre presença em ao menos um dia na prova
-write_presence(table, path_json = path_json)
+write_presence_day(table2, path_json = path_json, day = 1)
 
 # Escreve json sobre presença em ao menos um dia na prova
-write_presence_day(table, path_json = path_json, day = 1)
-
-# Escreve json sobre presença em ao menos um dia na prova
-write_presence_day(table, path_json = path_json, day = 2)
+write_presence_day(table2, path_json = path_json, day = 2)
 
 #-----------------------
 # Rotulagem de fatores -

@@ -6,7 +6,7 @@
 #' @export
 write_tcc <- function(data, score, path_json, ano) {
 
-  cli::cli_h2("Processamento Consolidado: TCC Teórico + Empírico (Streaming)")
+  cli::cli_h1("Processamento Consolidado: TCC Teórico + Empírico (Streaming)")
 
   # ------------------------------------------------------------------
   # Objetos globais
@@ -17,7 +17,7 @@ write_tcc <- function(data, score, path_json, ano) {
   consts   <- get("constantes",           envir = .GlobalEnv)
   cli::cli_process_done()
 
-  dic_df_P1 <- dic_df[dic_df$aplicacao == "P1", ]
+  dic_df_P1 <- dic_df[dic_df$tipo == "1", ]
   cod_selected <- dic_df_P1$codigo
 
   # ------------------------------------------------------------------
@@ -46,11 +46,12 @@ write_tcc <- function(data, score, path_json, ano) {
     if (length(col_nota) == 0) next
 
     area_nome <- sub("^NU_NOTA_", "", col_nota[1])
-    cli::cli_progress_step("Processando área: {.strong {area_nome}}")
+
+    cli::cli_h3("Área: {.field {area_nome}}")
 
     const_row <- consts[consts$area == area_nome, ]
     if (nrow(const_row) != 1) {
-      stop("Constantes inválidas para a área: ", area_nome, call. = FALSE)
+      cli::cli_abort("Constantes inválidas para a área: {.val {area_nome}}")
     }
 
     col_prova_area <- paste0("CO_PROVA_", area_nome)
@@ -63,7 +64,14 @@ write_tcc <- function(data, score, path_json, ano) {
 
     codigos <- unique(dic_df_P1$codigo[dic_df_P1$area == area_nome])
 
+    pbar <- cli::cli_progress_bar(
+      total = length(codigos),
+      format = "  {cli::pb_spin} Processando cadernos [{pb_current}/{pb_total}] {pb_percent} | ETA: {pb_eta}"
+    )
+
     for (codigo in codigos) {
+
+      cli::cli_progress_update(id = pbar)
 
       col_nota_area <- paste0("NU_NOTA_", area_nome)
 
@@ -72,7 +80,8 @@ write_tcc <- function(data, score, path_json, ano) {
       notas <- data_filtrado[[col_nota_area]]
 
       if (length(notas) == 0) {
-        cli::cli_alert_info("Sem dados para o caderno {codigo} em {area_nome}. Pulando...")
+        # CLI: Evita que alertas quebrem a visualização da barra
+        cli::cli_inform("Sem dados para caderno {codigo}. Pulando...")
         next
       }
 
@@ -92,13 +101,15 @@ write_tcc <- function(data, score, path_json, ano) {
         ncol = 1
       )
 
-      tem_digital <- "TP_VERSAO_DIGITAL" %in% names(itens_df)
-      versoes <- if (tem_digital) {
-        unique(na.omit(itens_df$TP_VERSAO_DIGITAL[itens_df$CO_PROVA == codigo]))
-      } else {
-        "X"
-      }
-      if (length(versoes) == 0) versoes <- "X"
+      # tem_digital <- "TP_VERSAO_DIGITAL" %in% names(itens_df)
+      # versoes <- if (tem_digital) {
+      #   unique(na.omit(itens_df$TP_VERSAO_DIGITAL[itens_df$CO_PROVA == codigo]))
+      # } else {
+      #   "X"
+      # }
+      # if (length(versoes) == 0) versoes <- "X"
+
+      versoes <- "X"
 
       linguas <- if (area_nome == "LC") c(0, 1) else "X"
 
@@ -127,9 +138,9 @@ write_tcc <- function(data, score, path_json, ano) {
 
           itens_caderno <- itens_df[itens_df$CO_PROVA == codigo, ]
 
-          if (tem_digital && (v_digital != "X")) {
-            itens_caderno <- itens_caderno[itens_caderno$TP_VERSAO_DIGITAL == v_digital, ]
-          }
+          # if (tem_digital && (v_digital != "X")) {
+          #   itens_caderno <- itens_caderno[itens_caderno$TP_VERSAO_DIGITAL == v_digital, ]
+          # }
 
           if (area_nome == "LC") {
             itens_caderno <- itens_caderno[
@@ -139,19 +150,29 @@ write_tcc <- function(data, score, path_json, ano) {
 
           itens_caderno <- itens_caderno[order(CO_POSICAO), ]
 
+          # if (nrow(itens_caderno) != 45) {
+          #   if (tem_digital && (v_digital != "X") && (lingua != v_digital)) {
+          #     cli::cli_alert_warning("Pulando caderno inválido: {codigo} | {area_nome} | Itens: {nrow(itens_caderno)}")
+          #     next
+          #   } else {
+          #     stop(
+          #       sprintf(
+          #         "ERRO CRÍTICO: caderno inválido (n != 45)\n  codigo=%s | area=%s | versao=%s | lingua=%s | n_itens=%s",
+          #         codigo, area_nome, v_digital, lingua, nrow(itens_caderno)
+          #       ),
+          #       call. = FALSE
+          #     )
+          #   }
+          # }
+
           if (nrow(itens_caderno) != 45) {
-            if (tem_digital && (v_digital != "X") && (lingua != v_digital)) {
-              cli::cli_alert_warning("Pulando caderno inválido: {codigo} | {area_nome} | Itens: {nrow(itens_caderno)}")
-              next
-            } else {
-              stop(
-                sprintf(
-                  "ERRO CRÍTICO: caderno inválido (n != 45)\n  codigo=%s | area=%s | versao=%s | lingua=%s | n_itens=%s",
-                  codigo, area_nome, v_digital, lingua, nrow(itens_caderno)
-                ),
-                call. = FALSE
-              )
-            }
+            stop(
+              sprintf(
+                "ERRO CRÍTICO: caderno inválido (n != 45)\n  codigo=%s | area=%s | versao=%s | lingua=%s | n_itens=%s",
+                codigo, area_nome, v_digital, lingua, nrow(itens_caderno)
+              ),
+              call. = FALSE
+            )
           }
 
           key_name <- paste(codigo, lingua, v_digital_ajustada, sep = "_")
@@ -210,9 +231,10 @@ write_tcc <- function(data, score, path_json, ano) {
         }
       }
     }
+    cli::cli_progress_done(id = pbar)
   }
 
   writeLines("\n}", con)
-
+  cli::cli_rule()
   cli::cli_alert_success("Processamento completo (streaming JSON).")
 }

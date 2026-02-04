@@ -19,3 +19,4 @@ write_fx_etaria(filtered, path_json = path_json)
 write_sexo(filtered, path_json = path_json)
 
 write_cor_raca(filtered, path_json = path_json)
+
