@@ -35,7 +35,10 @@ write_score_describe <- function(data, path_json, ano) {
           codigos_selecionados &
           !is.na(get(col_referencia)) &
           get(col_referencia) > 0,
-        .(nota = as.numeric(get(col_referencia)), score = as.integer(NU_SCORE))
+        list(
+          nota = as.numeric(get(col_referencia)),
+          score = as.integer(NU_SCORE)
+        )
       ]
 
       if (nrow(dt_temp) == 0) {
@@ -44,7 +47,7 @@ write_score_describe <- function(data, path_json, ano) {
 
       res_agg <- dt_temp[,
         data.table::as.data.table(psych::describe(nota)),
-        keyby = .(score)
+        keyby = list(score)
       ]
       res_agg[, vars := NULL]
 

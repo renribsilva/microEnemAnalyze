@@ -77,7 +77,7 @@ calc_nota <- function(sample, area, ano) {
     # Identificamos quais posições da string/score devem sumir
     idx_anulados <- which(pars$IN_ITEM_ABAN == 1)
 
-    score_i <- process_score(resp, gaba) # Gera vetor de 0 e 1 (45 ou 50 itens)
+    score_i <- process_score(resp, gaba) # nolint
 
     if (length(idx_anulados) > 0) {
       score_i <- score_i[-idx_anulados] # Remove do score

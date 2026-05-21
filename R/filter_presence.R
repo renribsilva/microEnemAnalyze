@@ -34,7 +34,7 @@ filter_presence <- function(data, path_csv) {
   cli::cli_process_start("Filtrando in-place (Otimizado)")
 
   at_least_one_presence <- data[
-    (.data$TP_PRESENCA_CN == 1 & .data$CO_PROVA_CN %in% cod_selected) |
+    (.data$TP_PRESENCA_CN == 1 & .data$CO_PROVA_CN %in% cod_selected) | # nolint
       (.data$TP_PRESENCA_CH == 1 & .data$CO_PROVA_CH %in% cod_selected) |
       (.data$TP_PRESENCA_LC == 1 & .data$CO_PROVA_LC %in% cod_selected) |
       (.data$TP_PRESENCA_MT == 1 & .data$CO_PROVA_MT %in% cod_selected)

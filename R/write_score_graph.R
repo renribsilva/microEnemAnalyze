@@ -78,11 +78,11 @@ write_score_graph <- function(data, path_json) {
     res_area <- lapply(cols_para_calcular, function(code) {
       # Lógica Empírica: Frequência 1 / (0+1+7+8)
       tabela_real <- dt[,
-        .(
+        list(
           p = sum(get(code) == "1", na.rm = TRUE) /
             sum(get(code) %in% c("0", "1", "7", "8"), na.rm = TRUE)
         ),
-        keyby = .(x = as.integer(round(get(col_referencia), 0)))
+        keyby = list(x = as.integer(round(get(col_referencia), 0)))
       ]
 
       # Merge para escala completa

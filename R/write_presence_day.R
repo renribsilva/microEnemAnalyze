@@ -10,6 +10,7 @@
 #' @param day Dia de realização da prova: 1 ou 2 (numeric ou double)
 #'
 #' @return Retorna o caminho do arquivo gerado (invisivelmente).
+#' @importFrom rlang .data
 #' @export
 write_presence_day <- function(data, path_json, day) {
   # --- TÍTULO ---
@@ -83,16 +84,13 @@ write_presence_day <- function(data, path_json, day) {
 
     if (as.integer(day) == 1L) {
       dados_batch_filtered <- data[start_row:end_row][
-        (TP_PRESENCA_LC == 1) |
-          (TP_PRESENCA_CH == 1)
+        .data[["TP_PRESENCA_LC"]] == 1 | .data[["TP_PRESENCA_CH"]] == 1 # nolint
       ]
     } else if (as.integer(day) == 2L) {
       dados_batch_filtered <- data[start_row:end_row][
-        (TP_PRESENCA_CN == 1) |
-          (TP_PRESENCA_MT == 1)
+        .data[["TP_PRESENCA_CN"]] == 1 | .data[["TP_PRESENCA_MT"]] == 1 # nolint
       ]
     }
-
     presence_filtered <- data.table::rbindlist(list(
       presence_filtered,
       dados_batch_filtered

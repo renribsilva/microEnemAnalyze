@@ -58,8 +58,8 @@ write_tcc <- function(data, score, path_json, ano) {
 
     tabela_real <- area_dt[
       get(col_prova_area) %in% cod_selected & get(col_nota) > 0,
-      .(media = mean(NU_SCORE, na.rm = TRUE)),
-      keyby = .(x = as.integer(round(get(col_nota), 0)))
+      list(media = mean(NU_SCORE, na.rm = TRUE)),
+      keyby = list(x = as.integer(round(get(col_nota), 0)))
     ]
 
     codigos <- unique(dic_df_p1$codigo[dic_df_p1$area == area_nome])
