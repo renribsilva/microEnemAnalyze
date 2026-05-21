@@ -7,11 +7,10 @@
 #' @param data A data.table com os microdados.
 #' @param path_csv Caminho para salvar o arquivo CSV final.
 #' treineiros
-#'
+#' @importFrom rlang .data
 #' @return Retorna a data.table filtrada invisivelmente.
 #' @export
 filter_presence <- function(data, path_csv) {
-
   # --- TÍTULO ---
   cli::cli_h2("Filtração: Presença Mínima")
 
@@ -27,18 +26,18 @@ filter_presence <- function(data, path_csv) {
   }
   cli::cli_process_done()
 
-  ano <- data[1,]$NU_ANO
-  dic_df   <- get(paste0("dic_", ano),   envir = .GlobalEnv)
-  dic_df_P1 <- dic_df[dic_df$tipo == "1", ]
-  cod_selected <- dic_df_P1$codigo
+  ano <- data[1, ]$NU_ANO
+  dic_df <- get(paste0("dic_", ano), envir = .GlobalEnv)
+  dic_df_p1 <- dic_df[dic_df$tipo == "1", ]
+  cod_selected <- dic_df_p1$codigo
 
   cli::cli_process_start("Filtrando in-place (Otimizado)")
 
   at_least_one_presence <- data[
-    (TP_PRESENCA_CN == 1 & CO_PROVA_CN %in% cod_selected) |
-      (TP_PRESENCA_CH == 1 & CO_PROVA_CH %in% cod_selected) |
-      (TP_PRESENCA_LC == 1 & CO_PROVA_LC %in% cod_selected) |
-      (TP_PRESENCA_MT == 1 & CO_PROVA_MT %in% cod_selected)
+    (.data$TP_PRESENCA_CN == 1 & .data$CO_PROVA_CN %in% cod_selected) |
+      (.data$TP_PRESENCA_CH == 1 & .data$CO_PROVA_CH %in% cod_selected) |
+      (.data$TP_PRESENCA_LC == 1 & .data$CO_PROVA_LC %in% cod_selected) |
+      (.data$TP_PRESENCA_MT == 1 & .data$CO_PROVA_MT %in% cod_selected)
   ]
 
   cli::cli_process_done()
@@ -46,7 +45,11 @@ filter_presence <- function(data, path_csv) {
   # Exportação
   cli::cli_process_start("Exportando arquivo CSV")
 
-  final_file <- if(grepl("\\.csv$", path_csv)) path_csv else file.path(path_csv, "at_least_one_presence.csv")
+  final_file <- if (grepl("\\.csv$", path_csv)) {
+    path_csv
+  } else {
+    file.path(path_csv, "at_least_one_presence.csv")
+  }
 
   dir.create(dirname(final_file), showWarnings = FALSE, recursive = TRUE)
   final_file <- normalizePath(final_file, mustWork = FALSE)
@@ -57,5 +60,5 @@ filter_presence <- function(data, path_csv) {
 
   cli::cli_alert_success("Processo concluído: {.path {final_file}}")
 
-  return(invisible(at_least_one_presence))
+  invisible(at_least_one_presence)
 }

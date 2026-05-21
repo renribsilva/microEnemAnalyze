@@ -41,11 +41,11 @@ write_frequency_acertos <- function(data, path_json) {
 
   ano <- data[1,]$NU_ANO
   dic_df  <- get(paste0("dic_", ano), envir = .GlobalEnv)
-  dic_df_P1 <- dic_df[dic_df$tipo == "1", ]
+  dic_df_p1 <- dic_df[dic_df$tipo == "1", ]
 
   # --- Definição dos Pools ---
-  cod_digital <- dic_df_P1$codigo[grepl("Digital", dic_df$cor, ignore.case = TRUE)]
-  cod_regular <- dic_df_P1$codigo[!grepl("Digital", dic_df$cor, ignore.case = TRUE)]
+  cod_digital <- dic_df_p1$codigo[grepl("Digital", dic_df$cor, ignore.case = TRUE)]
+  cod_regular <- dic_df_p1$codigo[!grepl("Digital", dic_df$cor, ignore.case = TRUE)]
 
   cli::cli_process_start("Calculando Frequências (Digital vs Regular)")
 

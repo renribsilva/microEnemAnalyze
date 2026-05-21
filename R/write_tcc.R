@@ -17,8 +17,8 @@ write_tcc <- function(data, score, path_json, ano) {
   consts   <- get("constantes",           envir = .GlobalEnv)
   cli::cli_process_done()
 
-  dic_df_P1 <- dic_df[dic_df$tipo == "1", ]
-  cod_selected <- dic_df_P1$codigo
+  dic_df_p1 <- dic_df[dic_df$tipo == "1", ]
+  cod_selected <- dic_df_p1$codigo
 
   # ------------------------------------------------------------------
   # Arquivo de saída (streaming)
@@ -62,7 +62,7 @@ write_tcc <- function(data, score, path_json, ano) {
       keyby = .(x = as.integer(round(get(col_nota), 0)))
     ]
 
-    codigos <- unique(dic_df_P1$codigo[dic_df_P1$area == area_nome])
+    codigos <- unique(dic_df_p1$codigo[dic_df_p1$area == area_nome])
 
     pbar <- cli::cli_progress_bar(
       total = length(codigos),

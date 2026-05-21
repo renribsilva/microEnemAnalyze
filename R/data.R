@@ -34,7 +34,8 @@
 #' são iguais, pois provêm da mesma amostra. Se isolarmos
 #' \eqn{Y_{i}}, teremos (Muñiz, 1997):
 #'
-#' \deqn{Y_{i}=\frac{DP_{y}}{DP_{x}}X_{i}+\overline{Y}-\frac{DP_{y}}{DP_{x}}\overline{X}}
+#' \deqn{Y_{i}=\frac{DP_{y}}{DP_{x}}X_{i}+
+#' \overline{Y}-\frac{DP_{y}}{DP_{x}}\overline{X}}
 #'
 #' Dessa equação, extraímos as constantes \eqn{k} e \eqn{d}:
 #'
@@ -48,7 +49,7 @@
 #' \deqn{Y_{i}=kX_{i}+d}
 #'
 #'
-'constantes'
+"constantes"
 
 #' Parâmetros dos Itens do ENEM
 #'

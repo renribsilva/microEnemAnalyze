@@ -31,7 +31,7 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
   })
 
   n <- nrow(data)
-  dic_df_P1 <- dic_df[dic_df$tipo == "1", ]
+  dic_df_p1 <- dic_df[dic_df$tipo == "1", ]
   areas_to_process <- if (!is.null(area)) area else c("LC", "CH", "CN", "MT")
 
   for (area_loop in areas_to_process) {
@@ -40,8 +40,8 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
     cli::cli_h2("Área: {.field {area_loop}}")
 
     # Filtra o dicionário de provas e dados dos itens
-    dic_df_P1_area <- dic_df_P1[as.character(dic_df_P1$area) == area_loop, ]
-    itens_df_filtered <- itens_df[itens_df$CO_PROVA %in% dic_df_P1_area$codigo, ]
+    dic_df_p1_area <- dic_df_p1[as.character(dic_df_p1$area) == area_loop, ]
+    itens_df_filtered <- itens_df[itens_df$CO_PROVA %in% dic_df_p1_area$codigo, ]
     cod_itens <- unique(itens_df_filtered$CO_ITEM)
 
     score_df <- matrix(
@@ -78,7 +78,7 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
         next
       }
 
-      if (cod_prova_origem %in% as.numeric(dic_df_P1_area$codigo)) {
+      if (cod_prova_origem %in% as.numeric(dic_df_p1_area$codigo)) {
 
         resp_orig_string <- gsub(" ", "", vetor_respostas[i])
         gab_orig_string <- gsub(" ", "", vetor_gabaritos[i])

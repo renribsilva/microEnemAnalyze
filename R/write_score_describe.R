@@ -51,11 +51,11 @@ write_score_describe <- function(data, path_json, ano) {
 
     ano_dt  <- dt_area[1, ]$NU_ANO
     dic_df  <- get(paste0("dic_", ano_dt), envir = .GlobalEnv)
-    dic_df_P1 <- dic_df[dic_df$tipo == "1", ]
+    dic_df_p1 <- dic_df[dic_df$tipo == "1", ]
 
     # --- Separação e Atribuição mantendo a chave original [[nm]] ---
-    cod_digital <- dic_df_P1[grepl("Digital", cor, ignore.case = TRUE), codigo]
-    cod_regular <- dic_df_P1[!grepl("Digital", cor, ignore.case = TRUE), codigo]
+    cod_digital <- dic_df_p1[grepl("Digital", cor, ignore.case = TRUE), codigo]
+    cod_regular <- dic_df_p1[!grepl("Digital", cor, ignore.case = TRUE), codigo]
 
     lista_final_resultados[[nm]] <- list(
       digital = processar_grupo(cod_digital),
