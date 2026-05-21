@@ -25,7 +25,7 @@ write_score_table <- function(data, path_json) {
   )
 
   cli::cli_h1("Processamento de Frequencias (ENEM)")
-  cli::cli_alert_info("Iniciando processamento de {length(data)} área(s)")
+  cli::cli_alert_info("Iniciando processamento de {length(data)} area(s)")
 
   lista_final_resultados <- list()
 
@@ -63,7 +63,11 @@ write_score_table <- function(data, path_json) {
       ceiling(nota_max / 100) * 100,
       by = 50
     )
-    labels_faixas <- paste0(head(quebras, -1), "-", tail(quebras, -1))
+    labels_faixas <- paste0(
+      utils::head(quebras, -1),
+      "-",
+      utils::tail(quebras, -1)
+    )
 
     faixas <- cut(
       dt[[col_referencia]],
@@ -84,7 +88,7 @@ write_score_table <- function(data, path_json) {
         # Criamos um dataframe para garantir que os status (0, 1, etc)
         # sejam as colunas e as faixas as linhas
         tab_bins <- table(faixas, x, useNA = "no")
-        df_bins <- data.table::as.data.table.matrix(tab_bins)
+        df_bins <- data.table::as.data.table(as.matrix(tab_bins))
 
         # Transformamos o df em lista e injetamos os labels
         bin_data <- as.list(df_bins)
@@ -97,7 +101,7 @@ write_score_table <- function(data, path_json) {
       })
       lista_final_resultados <- c(lista_final_resultados, res_area)
     }
-    cli::cli_alert_success("Área {.strong {nm}} concluída.")
+    cli::cli_alert_success("Area {.strong {nm}} concluida.")
   }
 
   is_file <- grepl("\\.json$", path_json, ignore.case = TRUE)

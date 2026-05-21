@@ -10,6 +10,8 @@ write_score_describe(data, path_json, ano)
 \item{data}{Uma lista nomeada de data.tables.}
 
 \item{path_json}{Caminho para o arquivo .json de saída.}
+
+\item{ano}{Número que indica o ano do exame}
 }
 \description{
 Exportar Estatísticas Descritivas e Densidade por Score

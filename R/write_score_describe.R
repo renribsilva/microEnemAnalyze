@@ -1,6 +1,7 @@
 #' Exportar Estatísticas Descritivas e Densidade por Score
 #' @param data Uma lista nomeada de data.tables.
 #' @param path_json Caminho para o arquivo .json de saída.
+#' @param ano Número que indica o ano do exame
 #' @export
 write_score_describe <- function(data, path_json, ano) {
   cli::cli_h1(
@@ -47,7 +48,7 @@ write_score_describe <- function(data, path_json, ano) {
       ]
       res_agg[, vars := NULL]
 
-      lista_scores <- setNames(vector("list", 46), 0:45)
+      lista_scores <- stats::setNames(vector("list", 46), 0:45)
       for (s in 0:45) {
         row_stats <- res_agg[score == s]
         notas_grupo <- dt_temp[score == s, nota]
@@ -55,7 +56,7 @@ write_score_describe <- function(data, path_json, ano) {
           stats_list <- as.list(row_stats)
           stats_list$score <- NULL
           if (length(notas_grupo) > 1) {
-            dens <- density(
+            dens <- stats::density(
               notas_grupo,
               from = row_stats$min,
               to = row_stats$max,

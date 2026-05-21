@@ -6,6 +6,14 @@
 \usage{
 calc_nota(sample, area, ano)
 }
+\arguments{
+\item{sample}{Um data.table contendo linhas dos microdados
+do ENEM}
+
+\item{area}{String que indica a área do conhecimento: "LC", "CH", "CH", "MT"}
+
+\item{ano}{Número que indica o ano do exame}
+}
 \description{
 Calcular Nota Final (EAP Transformado)
 }

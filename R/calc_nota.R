@@ -1,4 +1,8 @@
 #' Calcular Nota Final (EAP Transformado)
+#' @param sample Um data.table contendo linhas dos microdados
+#' do ENEM
+#' @param area String que indica a área do conhecimento: "LC", "CH", "CH", "MT"
+#' @param ano Número que indica o ano do exame
 #' @export
 calc_nota <- function(sample, area, ano) {
   # constrói o nome do rda

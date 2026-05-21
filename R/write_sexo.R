@@ -72,7 +72,7 @@ write_sexo <- function(data, path_json) {
   )
 
   cli::cli_process_done()
-  cli::cli_alert_success("Processo concluído: {.path {final_file}}")
+  cli::cli_alert_success("Processo concluido: {.path {final_file}}")
 
   invisible(final_file)
 }

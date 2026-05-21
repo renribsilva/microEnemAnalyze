@@ -44,7 +44,7 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
 
   for (area_loop in areas_to_process) {
     # --- SUBTÍTULO POR ÁREA ---
-    cli::cli_h2("Área: {.field {area_loop}}")
+    cli::cli_h2("Area: {.field {area_loop}}")
 
     # Filtra o dicionário de provas e dados dos itens
     dic_df_p1_area <- dic_df_p1[as.character(dic_df_p1$area) == area_loop, ]
@@ -167,7 +167,7 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
             cache_itens[[chave_cache]] <- itens_prova_origem
           } else {
             cli::cli_abort(
-              "Falha na seleção de itens: Caderno {cod_prova_origem}
+              "Falha na selecao de itens: Caderno {cod_prova_origem}
               retornou {nrow(itens_prova_origem)} itens (esperado: 45)."
             )
           }
@@ -175,7 +175,7 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
 
         if (is.null(itens_prova_origem)) {
           stop(sprintf(
-            "Erro: itens da prova %d não está mapeada",
+            "Erro: itens da prova %d nao esta mapeada",
             cod_prova_origem
           ))
         }
@@ -185,7 +185,7 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
         }
 
         if (nrow(itens_prova_origem) != 45) {
-          stop(sprintf("Falha na seleção dos itens"))
+          stop(sprintf("Falha na selecao dos itens"))
         }
 
         indices_anulados <- which(itens_prova_origem$IN_ITEM_ABAN == 1)
@@ -207,7 +207,7 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
           )
         ) {
           stop(sprintf(
-            "Inconsistência crítica na linha %d: Gabaritos não são idênticos.",
+            "Inconsistencia critica na linha %d: Gabaritos nao sao identicos.",
             i
           ))
         }
@@ -313,10 +313,10 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
     data.table::fwrite(score_final, file = final_file)
     cli::cli_process_done()
 
-    cli::cli_alert_success("Área {.field {area_loop}} finalizada.")
+    cli::cli_alert_success("Area {.field {area_loop}} finalizada.")
     gc()
   }
 
-  cli::cli_alert_success("Processamento do ano {.val {ano}} concluído!")
+  cli::cli_alert_success("Processamento do ano {.val {ano}} concluido!")
   invisible(final_file)
 }

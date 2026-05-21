@@ -15,7 +15,7 @@ write_mean_describe <- function(data, path) {
   # Verificação de integridade
   total_na_por_linha <- rowSums(is.na(temp_dt[, ..cols_notas]))
   if (any(total_na_por_linha == length(cols_notas))) {
-    stop("Há participantes com NA em todas as áreas")
+    stop("Ha participantes com NA em todas as areas")
   }
 
   # Tratamento de NAs e Média
@@ -28,7 +28,7 @@ write_mean_describe <- function(data, path) {
 
   # --- CÁLCULO DA CURVA DE DENSIDADE LIMITADA ---
   # Usamos stats_desc$min e stats_desc$max para truncar a estimativa
-  dens <- density(
+  dens <- stats::density(
     temp_dt$MEDIA_GERAL,
     na.rm = TRUE,
     from = stats_desc$min,
@@ -41,7 +41,7 @@ write_mean_describe <- function(data, path) {
       mean = stats_desc$mean,
       min = stats_desc$min, # Adicionado para conferência no JSON
       max = stats_desc$max,
-      p99 = as.numeric(quantile(temp_dt$MEDIA_GERAL, 0.99)),
+      p99 = as.numeric(stats::quantile(temp_dt$MEDIA_GERAL, 0.99)),
       nota_2000 = notas_rank[2000]
     ),
     density_curve = list(
@@ -68,7 +68,7 @@ write_mean_describe <- function(data, path) {
   )
 
   cli::cli_process_done()
-  cli::cli_alert_success("Processo concluído: {.path {final_file}}")
+  cli::cli_alert_success("Processo concluido: {.path {final_file}}")
 
   invisible(temp_dt)
 }

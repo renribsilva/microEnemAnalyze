@@ -28,12 +28,12 @@ write_inscritos <- function(data, path_json) {
 
   if (any(is.na(data$NU_INSCRICAO))) {
     cli::cli_alert_danger("Valores ausentes detectados em {.var NU_INSCRICAO}")
-    stop("Erro: Existem valores NA em NU_INSCRICAO.")
+    stop("Erro: Existem valores NA em NU INSCRICAO.")
   }
   cli::cli_process_done()
 
   # 2. Criação de tabelas de frequências
-  ap <- cli::cli_process_start("Calculando frequências e estatísticas")
+  ap <- cli::cli_process_start("Calculando frequencias e estatisticas")
 
   inscritos <- as.integer(length(data$NU_INSCRICAO))
 
@@ -49,8 +49,8 @@ write_inscritos <- function(data, path_json) {
 
   # 3. Validação de integridade
   if (as.integer(inscritos) != as.integer(total_counts)) {
-    cli::cli_alert_danger("Inconsistência nos totais calculados")
-    stop("Erro: A soma de treineiros não bate com o total de inscritos.")
+    cli::cli_alert_danger("Inconsistencia nos totais calculados")
+    stop("Erro: A soma de treineiros nao bate com o total de inscritos.")
   }
 
   total_row <- c(total_counts, total_props)
@@ -65,7 +65,7 @@ write_inscritos <- function(data, path_json) {
       freq = as.numeric(tabela_treineiros[3, 2]),
       subRows = list(
         list(
-          grupo = "Não treineiros",
+          grupo = "Nao treineiros",
           total = as.numeric(tabela_treineiros[1, 1]),
           freq = as.numeric(tabela_treineiros[1, 2])
         ),
@@ -100,7 +100,7 @@ write_inscritos <- function(data, path_json) {
 
   cli::cli_process_done()
 
-  cli::cli_alert_success("Processo concluído: {.file {final_file}}")
+  cli::cli_alert_success("Processo concluido: {.file {final_file}}")
 
   invisible(final_file)
 }

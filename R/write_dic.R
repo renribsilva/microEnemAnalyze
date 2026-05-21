@@ -9,6 +9,9 @@ write_dic <- function(path_json, ano) {
   # --- TÍTULO ---
   cli::cli_h2("Exportacao de Dicionario de Cadernos - ENEM {ano}")
 
+  force_utf8 <- function(x) {
+    if (is.character(x)) enc2utf8(x) else x
+  }
   # 1. Recuperar objetos
   cli::cli_process_start("Recuperando dados do Global Env")
   tryCatch(

@@ -23,13 +23,13 @@ write_cor_raca <- function(data, path_json) {
 
   # 1. Mapeamento completo (Dicionário)
   mapa_cores <- c(
-    "0" = "Não declarado",
+    "0" = "Nao declarado",
     "1" = "Branca",
     "2" = "Preta",
     "3" = "Parda",
     "4" = "Amarela",
-    "5" = "Indígena",
-    "6" = "Não dispõe da informação"
+    "5" = "Indigena",
+    "6" = "Nao dispoe da informacao"
   )
 
   # 2. Contagem bruta

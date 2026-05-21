@@ -53,7 +53,7 @@ write_comp_redacao <- function(data, path_json) {
     moda_bruta <- as.numeric(names(raw_tab)[which.max(raw_tab)])
 
     # Percentis solicitados (Q1, Q3, P99)
-    quants <- quantile(
+    quants <- stats::quantile(
       valores,
       probs = c(0.25, 0.75, 0.99),
       na.rm = TRUE,

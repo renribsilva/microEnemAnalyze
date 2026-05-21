@@ -24,7 +24,7 @@ write_mean_table <- function(data, path) {
   temp_dt[, MEDIA_GERAL := rowMeans(.SD), .SDcols = cols_notas]
 
   # Ordenar e filtrar os top 2500
-  top_dt <- head(temp_dt[order(-MEDIA_GERAL)], 2500)
+  top_dt <- utils::head(temp_dt[order(-MEDIA_GERAL)], 2500)
 
   # --- ADICIONANDO A COLUNA DE RANKING ---
   # Como o DT já está ordenado, .I gera a sequência 1, 2, 3...

@@ -12,7 +12,7 @@ write_describe_notas <- function(data, path_json) {
 
   # --- Helpers Mínimos ---
   get_mode <- function(x) {
-    ux <- unique(na.omit(x))
+    ux <- unique(stats::na.omit(x))
     ux[which.max(tabulate(match(x, ux)))]
   }
 
@@ -54,11 +54,11 @@ write_describe_notas <- function(data, path_json) {
       tp_max <- df_pool$TP_LINGUA[idx_max]
 
       if (!is.na(tp_min)) {
-        lang_min <- paste0(" (", ifelse(tp_min == 0, "Inglês", "Espanhol"), ")")
+        lang_min <- paste0(" (", ifelse(tp_min == 0, "Ingles", "Espanhol"), ")")
       }
 
       if (!is.na(tp_max)) {
-        lang_max <- paste0(" (", ifelse(tp_max == 0, "Inglês", "Espanhol"), ")")
+        lang_max <- paste0(" (", ifelse(tp_max == 0, "Ingles", "Espanhol"), ")")
       }
     }
 
@@ -66,9 +66,9 @@ write_describe_notas <- function(data, path_json) {
 
     d_n <- as.list(psych::describe(v_n)[1, ])
     d_n$mode <- microEnemAnalize::get_grouped_mode(v_n, bin_width = 25)
-    d_n$q1 <- quantile(v_n, 0.25, na.rm = TRUE)[[1]]
-    d_n$q3 <- quantile(v_n, 0.75, na.rm = TRUE)[[1]]
-    d_n$p99 <- quantile(v_n, probs = 0.99, na.rm = TRUE, type = 1)[[1]]
+    d_n$q1 <- stats::quantile(v_n, 0.25, na.rm = TRUE)[[1]]
+    d_n$q3 <- stats::quantile(v_n, 0.75, na.rm = TRUE)[[1]]
+    d_n$p99 <- stats::quantile(v_n, probs = 0.99, na.rm = TRUE, type = 1)[[1]]
     d_n$cor_min <- paste0(get_cor_from_dic(c_min, dic_df), lang_min)
     d_n$cor_max <- paste0(get_cor_from_dic(c_max, dic_df), lang_max)
     d_n$cod_min <- c_min
@@ -78,9 +78,9 @@ write_describe_notas <- function(data, path_json) {
     v_a <- df_pool[[col_score]]
     d_a <- as.list(psych::describe(v_a)[1, ])
     d_a$mode <- get_mode(v_a)
-    d_a$q1 <- quantile(v_a, 0.25, na.rm = TRUE)[[1]]
-    d_a$q3 <- quantile(v_a, 0.75, na.rm = TRUE)[[1]]
-    d_a$p99 <- quantile(v_a, probs = 0.99, na.rm = TRUE, type = 1)[[1]]
+    d_a$q1 <- stats::quantile(v_a, 0.25, na.rm = TRUE)[[1]]
+    d_a$q3 <- stats::quantile(v_a, 0.75, na.rm = TRUE)[[1]]
+    d_a$p99 <- stats::quantile(v_a, probs = 0.99, na.rm = TRUE, type = 1)[[1]]
 
     list(notas = d_n, acertos = d_a)
   }

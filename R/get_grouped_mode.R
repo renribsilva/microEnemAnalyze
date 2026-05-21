@@ -21,10 +21,6 @@
 #' Onde \eqn{\Delta_1 = f_{mo} - f_{ant}} e \eqn{\Delta_2 = f_{mo} - f_{post}}.
 #'
 #' @export
-#'
-#' @examples
-#' notas <- c(500, 505, 505, 508, 510, 512, 540, 550)
-#' get_grouped_mode(notas, bin_width = 10)
 get_grouped_mode <- function(x, bin_width = 10) {
   # Remover valores ausentes
   x <- x[!is.na(x)]

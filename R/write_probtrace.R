@@ -126,16 +126,6 @@ write_probtrace <- function(path_json = NULL, co_prova = NULL, ano) {
       {
         tracos <- mirt::probtrace(lista_modelos[[codigo]], theta_matrix)
 
-        # Se for o caderno específico, prepara para salvar no Environment
-        if (!is.null(co_prova) && codigo == as.character(co_prova)) {
-          retorno_ambiente <- tracos
-          nome_obj <- paste0("probtrace_", codigo)
-          assign(nome_obj, tracos, envir = .GlobalEnv)
-          cli::cli_alert_success(
-            "Objeto {.var {nome_obj}} criado no Global Env."
-          )
-        }
-
         colunas_acerto <- seq(2, ncol(tracos), by = 2)
         prob_acertos <- tracos[, colunas_acerto]
         ids_reais <- lista_nomes_itens[[codigo]]

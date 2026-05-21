@@ -23,8 +23,17 @@ write_density_notas <- function(data, path_json) {
       return(NULL)
     }
 
-    dens <- density(notas_v, n = 512, from = min(notas_v), to = max(notas_v))
-    y_normal <- dnorm(dens$x, mean = mean(notas_v), sd = sd(notas_v))
+    dens <- stats::density(
+      notas_v,
+      n = 512,
+      from = min(notas_v),
+      to = max(notas_v)
+    )
+    y_normal <- stats::dnorm(
+      dens$x,
+      mean = mean(notas_v),
+      sd = stats::sd(notas_v)
+    )
 
     list(
       datasets = list(

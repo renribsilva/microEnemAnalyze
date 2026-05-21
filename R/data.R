@@ -62,12 +62,22 @@
 #'   \item{g}{Parâmetro de acerto ao acaso (chute)}
 #' }
 #' @source Microdados do INEP.
+#' @name itens_enem
+NULL
+
+#' @rdname itens_enem
 "itens_2009"
+#' @rdname itens_enem
 "itens_2019"
+#' @rdname itens_enem
 "itens_2020"
+#' @rdname itens_enem
 "itens_2021"
+#' @rdname itens_enem
 "itens_2022"
+#' @rdname itens_enem
 "itens_2023"
+#' @rdname itens_enem
 "itens_2024"
 
 #' Código das provas do ENEM
@@ -81,10 +91,20 @@
 #'   \item{cor}{Cor do caderno}
 #' }
 #' @source Microdados do INEP.
+#' @name itens_dic
+NULL
+
+#' @rdname itens_dic
 "dic_2009"
+#' @rdname itens_dic
 "dic_2019"
+#' @rdname itens_dic
 "dic_2020"
+#' @rdname itens_dic
 "dic_2021"
+#' @rdname itens_dic
 "dic_2022"
+#' @rdname itens_dic
 "dic_2023"
+#' @rdname itens_dic
 "dic_2024"

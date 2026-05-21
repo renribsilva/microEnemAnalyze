@@ -10,7 +10,7 @@ Authors@R: c(
     )
   )
 Description: Escreve arquivos json para serem usados em uma aplicação web.
-License: GPLv3
+License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports: 

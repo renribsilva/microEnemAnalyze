@@ -128,15 +128,6 @@ write_iteminfo <- function(path_json = NULL, co_prova = NULL, ano) {
           )
         }
 
-        if (!is.null(co_prova) && codigo == as.character(co_prova)) {
-          retorno_ambiente <- matriz_info
-          nome_obj <- paste0("iteminfo_", codigo)
-          assign(nome_obj, matriz_info, envir = .GlobalEnv)
-          cli::cli_alert_success(
-            "Objeto {.var {nome_obj}} criado no Global Env."
-          )
-        }
-
         ids_reais <- lista_nomes_itens[[codigo]]
         mask_na <- lista_mask_na[[codigo]]
         itens_list <- list()

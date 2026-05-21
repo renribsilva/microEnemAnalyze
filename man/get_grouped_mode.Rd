@@ -30,7 +30,3 @@ adjacentes à classe modal:
 \deqn{Mo = Li + \left( \frac{\Delta_1}{\Delta_1 + \Delta_2} \right) \cdot h}
 Onde \eqn{\Delta_1 = f_{mo} - f_{ant}} e \eqn{\Delta_2 = f_{mo} - f_{post}}.
 }
-\examples{
-notas <- c(500, 505, 505, 508, 510, 512, 540, 550)
-get_grouped_mode(notas, bin_width = 10)
-}

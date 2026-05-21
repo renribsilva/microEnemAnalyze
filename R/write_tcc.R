@@ -47,11 +47,11 @@ write_tcc <- function(data, score, path_json, ano) {
 
     area_nome <- sub("^NU_NOTA_", "", col_nota[1])
 
-    cli::cli_h3("Área: {.field {area_nome}}")
+    cli::cli_h3("Area: {.field {area_nome}}")
 
     const_row <- consts[consts$area == area_nome, ]
     if (nrow(const_row) != 1) {
-      cli::cli_abort("Constantes inválidas para a área: {.val {area_nome}}")
+      cli::cli_abort("Constantes invalidas para a area: {.val {area_nome}}")
     }
 
     col_prova_area <- paste0("CO_PROVA_", area_nome)
@@ -121,7 +121,7 @@ write_tcc <- function(data, score, path_json, ano) {
 
           cor_name <- if (area_nome == "LC") {
             if (lingua == 0) {
-              paste0(cor_name_base, " (Inglês)")
+              paste0(cor_name_base, " (Ingles)")
             } else if (lingua == 1) {
               paste0(cor_name_base, " (Espanhol)")
             } else {
@@ -144,8 +144,8 @@ write_tcc <- function(data, score, path_json, ano) {
           if (nrow(itens_caderno) != 45) {
             stop(
               sprintf(
-                "ERRO CRÍTICO: caderno
-                inválido (n != 45)
+                "ERRO CRITICO: caderno
+                invalido (n != 45)
                 codigo=%s | area=%s | versao=%s | lingua=%s | n_itens=%s",
                 codigo,
                 area_nome,
@@ -171,7 +171,7 @@ write_tcc <- function(data, score, path_json, ano) {
 
           den <- max(escore) - min(escore)
           if (den == 0) {
-            stop("Escore teórico constante", call. = FALSE)
+            stop("Escore teorico constante", call. = FALSE)
           }
 
           escore <- (escore - min(escore)) / den * nrow(itens_mirt)
