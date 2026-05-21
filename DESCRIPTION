@@ -18,7 +18,8 @@ Imports:
     data.table,
     jsonlite,
     mirt,
-    mirtCAT
+    mirtCAT,
+    rlang
 Suggests: 
     bit64,
     devtools,
