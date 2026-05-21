@@ -29,7 +29,7 @@ process_constantes <- function(sample, area, itens_db) {
   keep_idx <- c()
   cli::cli_progress_bar(paste("Processando Scores", area), total = nrow(sample))
 
-  for (i in 1:nrow(sample)) {
+  for (i in seq_len(nrow(sample))) {
     cli::cli_progress_update()
     res <- tryCatch(
       {
@@ -39,7 +39,7 @@ process_constantes <- function(sample, area, itens_db) {
         )
       },
       error = function(e) {
-        return(NULL)
+        NULL
       }
     )
 
@@ -67,15 +67,18 @@ process_constantes <- function(sample, area, itens_db) {
     if (nrow(pars) == 0) {
       next
     } # Evita crash se caderno não existir
-    ls_traceline[[as.character(k)]] <- lapply(1:nrow(pars), function(idx) {
-      p_vector <- cci_3pl(
-        theta,
-        pars$NU_PARAM_A[idx],
-        pars$NU_PARAM_B[idx],
-        pars$NU_PARAM_C[idx]
-      )
-      list(p1 = p_vector, p0 = 1 - p_vector)
-    })
+    ls_traceline[[as.character(k)]] <- lapply(
+      seq_len(nrow(pars)),
+      function(idx) {
+        p_vector <- cci_3pl(
+          theta,
+          pars$NU_PARAM_A[idx],
+          pars$NU_PARAM_B[idx],
+          pars$NU_PARAM_C[idx]
+        )
+        list(p1 = p_vector, p0 = 1 - p_vector)
+      }
+    )
   }
 
   # 3. Verossimilhança Vetorizada (Para evitar o erro de NA e índice)
@@ -84,19 +87,19 @@ process_constantes <- function(sample, area, itens_db) {
     paste("Calculando Likelihood", area),
     total = nrow(sample_f)
   )
-  for (m in 1:nrow(sample_f)) {
+  for (m in seq_len(nrow(sample_f))) {
     cli::cli_progress_update()
     traceline_prova <- ls_traceline[[as.character(co_prova[m])]]
-    list_probs <- lapply(1:length(traceline_prova), function(q) {
+    list_probs <- lapply(seq_along(length(traceline_prova)), function(q) {
       res <- score[m, q]
       it <- traceline_prova[[q]]
       if (is.na(res) || any(is.na(it$p1))) {
         return(rep(1, length(theta)))
       }
       if (res == 1) {
-        return(it$p1)
+        it$p1
       } else {
-        return(it$p0)
+        it$p0
       }
     })
     prod_prob[[m]] <- Reduce(`*`, list_probs)
@@ -106,18 +109,18 @@ process_constantes <- function(sample, area, itens_db) {
 
   # 4. EAP e Constantes
   p_theta <- stats::dnorm(theta, mean = 0, sd = 1)
-  theta_EAP <- sapply(prod_prob, function(l_theta) {
+  theta_eap <- sapply(prod_prob, function(l_theta) {
     posterior <- l_theta * p_theta
     sum(theta * posterior) / sum(posterior)
   })
 
-  media_x <- mean(theta_EAP, na.rm = TRUE)
-  dp_x <- stats::sd(theta_EAP, na.rm = TRUE)
+  media_x <- mean(theta_eap, na.rm = TRUE)
+  dp_x <- stats::sd(theta_eap, na.rm = TRUE)
   media_y <- mean(sample_f[[col_nota]], na.rm = TRUE)
   dp_y <- stats::sd(sample_f[[col_nota]], na.rm = TRUE)
 
   k_const <- dp_y / dp_x
   d_const <- media_y - (k_const * media_x)
 
-  return(list(k = k_const, d = d_const, area = area))
+  list(k = k_const, d = d_const, area = area)
 }

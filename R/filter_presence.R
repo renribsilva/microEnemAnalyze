@@ -7,8 +7,8 @@
 #' @param data A data.table com os microdados.
 #' @param path_csv Caminho para salvar o arquivo CSV final.
 #' treineiros
-#' @importFrom rlang .data
 #' @return Retorna a data.table filtrada invisivelmente.
+#' @importFrom rlang .data
 #' @export
 filter_presence <- function(data, path_csv) {
   # --- TÍTULO ---
