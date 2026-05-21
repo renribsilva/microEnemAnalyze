@@ -4,7 +4,7 @@
 \name{microEnemAnalize-package}
 \alias{microEnemAnalize}
 \alias{microEnemAnalize-package}
-\title{microEnemAnalize: Análise exploratória dos microdados do ENEM (Title Case)}
+\title{MicroEnemAnalyze}
 \description{
 Escreve arquivos json para serem usados em uma aplicação web.
 }

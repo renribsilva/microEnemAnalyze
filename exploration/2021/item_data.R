@@ -9,11 +9,11 @@ path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(hom
 #--------------------------------------------------------------------
 
 score_LC <- fread("exploration/2021/MICRODADOS/score_LC.csv")
-score_CH <- fread("exploration/2021/MICRODADOS/score_CH.csv")
-score_CN <- fread("exploration/2021/MICRODADOS/score_CN.csv")
-score_MT <- fread("exploration/2021/MICRODADOS/score_MT.csv")
+score_ch <- fread("exploration/2021/MICRODADOS/score_ch.csv")
+score_cn <- fread("exploration/2021/MICRODADOS/score_cn.csv")
+score_mt <- fread("exploration/2021/MICRODADOS/score_mt.csv")
 
-data <- list(score_LC, score_CH, score_CN, score_MT)
+data <- list(score_LC, score_ch, score_cn, score_mt)
 
 write_score_table(data = data, path_json = path_json)
 

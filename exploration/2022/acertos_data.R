@@ -8,12 +8,12 @@ path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(hom
 # Escreve tabela com frequências de acerto e erro de todos os itens -
 #--------------------------------------------------------------------
 
-score_LC <- fread("exploration/2022/MICRODADOS/score_LC.csv")
-score_CH <- fread("exploration/2022/MICRODADOS/score_CH.csv")
-score_CN <- fread("exploration/2022/MICRODADOS/score_CN.csv")
-score_MT <- fread("exploration/2022/MICRODADOS/score_MT.csv")
+score_lc <- fread("exploration/2022/MICRODADOS/score_lc.csv")
+score_ch <- fread("exploration/2022/MICRODADOS/score_ch.csv")
+score_cn <- fread("exploration/2022/MICRODADOS/score_cn.csv")
+score_mt <- fread("exploration/2022/MICRODADOS/score_mt.csv")
 
 # Precisa de identificadores
-data <- list(LC = score_LC, CH = score_CH, CN = score_CN, MT = score_MT)
+data <- list(LC = score_lc, CH = score_ch, CN = score_cn, MT = score_mt)
 
 write_score_describe(data = data, path_json = path_json)

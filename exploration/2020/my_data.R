@@ -22,7 +22,7 @@ gab_CH <- my_data$TX_GABARITO_CH
 gab_CN <- my_data$TX_GABARITO_CN
 gab_MT <- my_data$TX_GABARITO_MT
 
-score_LC <- sum(process_score(res_LC, gab_LC))
-score_CH <- sum(process_score(res_CH, gab_CH))
-score_CN <- sum(process_score(res_CN, gab_CN))
-score_MT <- sum(process_score(res_MT, gab_MT))
+score_lc <- sum(process_score(res_LC, gab_LC))
+score_ch <- sum(process_score(res_CH, gab_CH))
+score_cn <- sum(process_score(res_CN, gab_CN))
+score_mt <- sum(process_score(res_MT, gab_MT))

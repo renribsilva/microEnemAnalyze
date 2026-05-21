@@ -3,7 +3,7 @@
 #---------------------------------------------
 
 # Importa os scores
-data <- fread("exploration/2024/MICRODADOS/score_LC.csv")
+data <- fread("exploration/2024/MICRODADOS/score_lc.csv")
 
 path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2024/dificuldade-do-exame/LC/")
 
@@ -24,7 +24,7 @@ write_frequency_acertos(data, path_json = path_json)
 #---------------------------------------------
 
 # Importa os scores
-data <- fread("exploration/2024/MICRODADOS/score_CH.csv")
+data <- fread("exploration/2024/MICRODADOS/score_ch.csv")
 
 path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2024/dificuldade-do-exame/CH/")
 
@@ -45,7 +45,7 @@ write_frequency_acertos(data, path_json = path_json)
 #---------------------------------------------
 
 # Importa os scores
-data <- fread("exploration/2024/MICRODADOS/score_CN.csv")
+data <- fread("exploration/2024/MICRODADOS/score_cn.csv")
 
 path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2024/dificuldade-do-exame/CN/")
 
@@ -66,7 +66,7 @@ write_frequency_acertos(data, path_json = path_json)
 #---------------------------------------------
 
 # Importa os scores
-data <- fread("exploration/2024/MICRODADOS/score_MT.csv")
+data <- fread("exploration/2024/MICRODADOS/score_mt.csv")
 
 path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2024/dificuldade-do-exame/MT/")
 

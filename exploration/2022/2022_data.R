@@ -2,7 +2,9 @@
 # Caminho para gravar o json -
 #-----------------------------
 
-path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2022/")
+path_json <- as.character(
+  "~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2022/"
+)
 
 #-----------------------------
 # Escreve os arquivos json -
@@ -24,12 +26,12 @@ write_iteminfo(path_json = path_json, ano = 2022)
 # Escreve curva característica do teste de todos os cadernos -
 #-------------------------------------------------------------
 
-score_LC <- fread("exploration/2022/MICRODADOS/score_LC.csv")
-score_CH <- fread("exploration/2022/MICRODADOS/score_CH.csv")
-score_CN <- fread("exploration/2022/MICRODADOS/score_CN.csv")
-score_MT <- fread("exploration/2022/MICRODADOS/score_MT.csv")
+score_lc <- fread("exploration/2022/MICRODADOS/score_lc.csv")
+score_ch <- fread("exploration/2022/MICRODADOS/score_ch.csv")
+score_cn <- fread("exploration/2022/MICRODADOS/score_cn.csv")
+score_mt <- fread("exploration/2022/MICRODADOS/score_mt.csv")
 
-score <- list(score_LC,  score_CH, score_CN, score_MT)
+score <- list(score_lc, score_ch, score_cn, score_mt)
 
 # Importa dados
 data <- fread("exploration/2022/MICRODADOS/at_least_one_presence.csv")

@@ -21,7 +21,7 @@ gab_CN <- my_data$TX_GABARITO_CN
 gab_MT <- my_data$TX_GABARITO_MT
 f <- process_score(res_CH, gab_CH)
 
-score_LC <- sum(process_score(res_LC, gab_LC)[process_score(res_LC, gab_LC) == 1])
-score_CH <- sum(process_score(res_CH, gab_CH)[process_score(res_CH, gab_CH) == 1])
-score_CN <- sum(process_score(res_CN, gab_CN)[process_score(res_CN, gab_CN) == 1])
-score_MT <- sum(process_score(res_MT, gab_MT)[process_score(res_MT, gab_MT) == 1])
+score_lc <- sum(process_score(res_LC, gab_LC)[process_score(res_LC, gab_LC) == 1])
+score_ch <- sum(process_score(res_CH, gab_CH)[process_score(res_CH, gab_CH) == 1])
+score_cn <- sum(process_score(res_CN, gab_CN)[process_score(res_CN, gab_CN) == 1])
+score_mt <- sum(process_score(res_MT, gab_MT)[process_score(res_MT, gab_MT) == 1])
