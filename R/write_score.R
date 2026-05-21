@@ -3,14 +3,16 @@
 #' @description Esta função escreve arquivos csv com os scores de todos os
 #' participantes do ENEM, para fins estatísticos.
 #'
-#' @param data Um data frame com as colunas CO_PROVA_, TX_RESPOSTAS_, TX_GABARITO_
-#' @param ano Inteiro ou caractere indicando o ano (ex: 2019) para buscar os objetos itens_ano e dic_ano.
-#' @param path_csv Opcional. String com o caminho do diretório ou nome do arquivo .json final.
+#' @param data Um data.table com as colunas CO_PROVA_,
+#' TX_RESPOSTAS_, TX_GABARITO_
+#' @param ano Inteiro ou caractere indicando o ano
+#' (ex: 2019) para buscar os objetos itens_ano e dic_ano.
+#' @param path_csv Opcional. String com o caminho
+#' do diretório ou nome do arquivo .json final.
 #' @param area Opcional. String com a area a ser processada (ex: LC).
 #'
 #' @export
 write_score <- function(data, path_csv = NULL, ano, area = NULL) {
-
   if (is.null(path_csv)) {
     cli::cli_abort("{.arg path_csv} não pode ser NULL.")
   }
@@ -20,28 +22,34 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
 
   # 1. Recuperar os objetos da memória
   cli::cli_process_start("Recuperando dicionários e itens do ambiente")
-  tryCatch({
-    itens_df <- get(paste0("itens_", as.character(ano)), envir = .GlobalEnv)
-    dic_df   <- get(paste0("dic_", as.character(ano)), envir = .GlobalEnv)
-    cli::cli_process_done()
-  }, error = function(e) {
-    cli::cli_process_failed()
-    cli::cli_alert_danger("Objetos {.var itens_{ano}} ou {.var dic_{ano}} não encontrados no {.code .GlobalEnv}.")
-    stop(e)
-  })
+  tryCatch(
+    {
+      itens_df <- get(paste0("itens_", as.character(ano)), envir = .GlobalEnv)
+      dic_df <- get(paste0("dic_", as.character(ano)), envir = .GlobalEnv)
+      cli::cli_process_done()
+    },
+    error = function(e) {
+      cli::cli_process_failed()
+      cli::cli_alert_danger(
+        "Objetos {.var itens_{ano}} ou {.var dic_{ano}} não encontrados no {.code .GlobalEnv}."
+      )
+      stop(e)
+    }
+  )
 
   n <- nrow(data)
   dic_df_p1 <- dic_df[dic_df$tipo == "1", ]
   areas_to_process <- if (!is.null(area)) area else c("LC", "CH", "CN", "MT")
 
   for (area_loop in areas_to_process) {
-
     # --- SUBTÍTULO POR ÁREA ---
     cli::cli_h2("Área: {.field {area_loop}}")
 
     # Filtra o dicionário de provas e dados dos itens
     dic_df_p1_area <- dic_df_p1[as.character(dic_df_p1$area) == area_loop, ]
-    itens_df_filtered <- itens_df[itens_df$CO_PROVA %in% dic_df_p1_area$codigo, ]
+    itens_df_filtered <- itens_df[
+      itens_df$CO_PROVA %in% dic_df_p1_area$codigo,
+    ]
     cod_itens <- unique(itens_df_filtered$CO_ITEM)
 
     score_df <- matrix(
@@ -63,12 +71,13 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
     vetor_lingua <- data$TP_LINGUA
 
     # Interface de progresso dinâmica
-    cp <- cli::cli_process_start("Corrigindo provas de {.val {n}} participantes")
+    cp <- cli::cli_process_start(
+      "Corrigindo provas de {.val {n}} participantes"
+    )
 
     cache_itens <- list()
 
     for (i in seq_len(n)) {
-
       cod_prova_origem <- as.numeric(vetor_codigos[i])
       lang_cand <- vetor_lingua[i]
 
@@ -79,19 +88,24 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
       }
 
       if (cod_prova_origem %in% as.numeric(dic_df_p1_area$codigo)) {
-
         resp_orig_string <- gsub(" ", "", vetor_respostas[i])
         gab_orig_string <- gsub(" ", "", vetor_gabaritos[i])
 
         if (area_loop == "LC") {
           if (lang_cand == 0) {
             if (nchar(resp_orig_string) > 45) {
-              resp_45 <- paste0(substr(resp_orig_string, 1, 5), substr(resp_orig_string, 11, 9999))
-            } else if (nchar(resp_orig_string) == 45){
+              resp_45 <- paste0(
+                substr(resp_orig_string, 1, 5),
+                substr(resp_orig_string, 11, 9999)
+              )
+            } else if (nchar(resp_orig_string) == 45) {
               resp_45 <- resp_orig_string
             }
             if (nchar(gab_orig_string) > 45) {
-              gab_45 <- paste0(substr(gab_orig_string, 1, 5), substr(gab_orig_string, 11, 9999))
+              gab_45 <- paste0(
+                substr(gab_orig_string, 1, 5),
+                substr(gab_orig_string, 11, 9999)
+              )
             } else if (nchar(gab_orig_string) == 45) {
               gab_45 <- gab_orig_string
             }
@@ -109,18 +123,26 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
           }
         } else {
           resp_45 <- resp_orig_string
-          gab_45  <- gab_orig_string
+          gab_45 <- gab_orig_string
         }
 
         resp_orig_vetor <- strsplit(resp_45, "")[[1]]
         gab_orig_vetor <- strsplit(gab_45, "")[[1]]
 
         if (length(gab_orig_vetor) != 45) {
-          stop(sprintf("Vetor gab_orig_vetor tem tamanho errado (%d) na linha %d.", length(gab_orig_vetor), i))
+          stop(sprintf(
+            "Vetor gab_orig_vetor tem tamanho errado (%d) na linha %d.",
+            length(gab_orig_vetor),
+            i
+          ))
         }
 
         if (length(resp_orig_vetor) != 45) {
-          stop(sprintf("Vetor resp_orig_vetor tem tamanho errado (%d) na linha %d.", length(resp_orig_vetor), i))
+          stop(sprintf(
+            "Vetor resp_orig_vetor tem tamanho errado (%d) na linha %d.",
+            length(resp_orig_vetor),
+            i
+          ))
         }
 
         chave_cache <- paste(cod_prova_origem, gab_45, lang_cand, sep = "_")
@@ -128,7 +150,6 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
         if (!is.null(cache_itens[[chave_cache]])) {
           itens_prova_origem <- cache_itens[[chave_cache]]
         } else {
-
           pool_itens <- itens_df[itens_df$CO_PROVA == cod_prova_origem, ]
 
           itens_prova_origem <- NULL
@@ -142,18 +163,29 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
           #   itens_prova_origem <- pool_itens[is.na(pool_itens$TP_LINGUA) | pool_itens$TP_LINGUA == lang_cand, ]
           # }
 
-          itens_prova_origem <- pool_itens[is.na(pool_itens$TP_LINGUA) | pool_itens$TP_LINGUA == lang_cand, ]
+          itens_prova_origem <- pool_itens[
+            is.na(pool_itens$TP_LINGUA) | pool_itens$TP_LINGUA == lang_cand,
+          ]
 
           # Validação e Ordenação Crítica
           if (!is.null(itens_prova_origem) && nrow(itens_prova_origem) == 45) {
-            itens_prova_origem <- itens_prova_origem[order(itens_prova_origem$CO_POSICAO), ]
+            itens_prova_origem <- itens_prova_origem[
+              order(itens_prova_origem$CO_POSICAO),
+            ]
             cache_itens[[chave_cache]] <- itens_prova_origem
           } else {
-            cli::cli_abort("Falha na seleção de itens: Caderno {cod_prova_origem} retornou {nrow(itens_prova_origem)} itens (esperado: 45).")
+            cli::cli_abort(
+              "Falha na seleção de itens: Caderno {cod_prova_origem} retornou {nrow(itens_prova_origem)} itens (esperado: 45)."
+            )
           }
         }
 
-        if (is.null(itens_prova_origem)) stop(sprintf("Erro: itens da prova %d não está mapeada", cod_prova_origem))
+        if (is.null(itens_prova_origem)) {
+          stop(sprintf(
+            "Erro: itens da prova %d não está mapeada",
+            cod_prova_origem
+          ))
+        }
 
         if (length(resp_orig_vetor) != 45 | length(gab_orig_vetor) != 45) {
           stop(sprintf("Vetor RESP ou GAB tem tamanho errado"))
@@ -165,8 +197,8 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
 
         indices_anulados <- which(itens_prova_origem$IN_ITEM_ABAN == 1)
 
-        col_names  <- as.character(itens_prova_origem$CO_ITEM)
-        gab_vetor  <- as.character(itens_prova_origem$TX_GABARITO)
+        col_names <- as.character(itens_prova_origem$CO_ITEM)
+        gab_vetor <- as.character(itens_prova_origem$TX_GABARITO)
 
         gab_orig_comparacao <- gab_orig_vetor
 
@@ -175,8 +207,16 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
           gab_vetor[indices_anulados] <- "X"
         }
 
-        if (!identical(unname(as.character(gab_vetor)), unname(as.character(gab_orig_comparacao)))) {
-          stop(sprintf("Inconsistência crítica na linha %d: Gabaritos não são idênticos.", i))
+        if (
+          !identical(
+            unname(as.character(gab_vetor)),
+            unname(as.character(gab_orig_comparacao))
+          )
+        ) {
+          stop(sprintf(
+            "Inconsistência crítica na linha %d: Gabaritos não são idênticos.",
+            i
+          ))
         }
 
         resp_vetor <- as.character(resp_orig_vetor)
@@ -209,9 +249,13 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
         if (acertos_calculados == acertos_referencia) {
           score_nu[i, ] <- acertos_referencia
         } else {
-          stop(sprintf("Erro integridade na linha %d: Original %d != Novo %d", i, acertos_referencia, acertos_calculados))
+          stop(sprintf(
+            "Erro integridade na linha %d: Original %d != Novo %d",
+            i,
+            acertos_referencia,
+            acertos_calculados
+          ))
         }
-
       }
 
       if (i %% 5000 == 0) {
@@ -225,17 +269,23 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
     cli::cli_process_done(id = cp)
 
     # --- PREPARAÇÃO PARA EXPORTAÇÃO (CORRIGIDA) ---
-    cli::cli_process_start("Consolidando matriz de scores para {.val {area_loop}}")
+    cli::cli_process_start(
+      "Consolidando matriz de scores para {.val {area_loop}}"
+    )
 
     # 1. Identificar colunas básicas da área atual
-    cols_base <- c("NU_ANO",
-                   paste0("TP_PRESENCA_", area_loop),
-                   paste0("CO_PROVA_", area_loop),
-                   paste0("NU_NOTA_", area_loop),
-                   paste0("TX_RESPOSTAS_", area_loop),
-                   paste0("TX_GABARITO_", area_loop))
+    cols_base <- c(
+      "NU_ANO",
+      paste0("TP_PRESENCA_", area_loop),
+      paste0("CO_PROVA_", area_loop),
+      paste0("NU_NOTA_", area_loop),
+      paste0("TX_RESPOSTAS_", area_loop),
+      paste0("TX_GABARITO_", area_loop)
+    )
 
-    if ("TP_LINGUA" %in% names(data)) cols_base <- c(cols_base, "TP_LINGUA")
+    if ("TP_LINGUA" %in% names(data)) {
+      cols_base <- c(cols_base, "TP_LINGUA")
+    }
 
     # 2. Criar um novo data.table apenas com o necessário (evita lixo do 'data' original)
     # Usamos data.table::as.data.table para garantir uma cópia física em memória
@@ -254,7 +304,11 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
     cli::cli_process_done()
 
     # --- TRATAMENTO DO PATH E ESCRITA ---
-    final_file <- if(grepl("\\.csv$", path_csv)) path_csv else file.path(path_csv, paste0("score_", area_loop, ".csv"))
+    final_file <- if (grepl("\\.csv$", path_csv)) {
+      path_csv
+    } else {
+      file.path(path_csv, paste0("score_", area_loop, ".csv"))
+    }
     dir.create(dirname(final_file), showWarnings = FALSE, recursive = TRUE)
     final_file <- normalizePath(final_file, mustWork = FALSE)
 

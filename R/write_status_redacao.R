@@ -1,11 +1,10 @@
 #' @title Gera JSON sobre a distribuição das notas de Redação
 #'
-#' @param data Um data.frame contendo a coluna TP_STATUS_REDACAO.
+#' @param data Um data.table contendo a coluna TP_STATUS_REDACAO.
 #' @param path_json Caminho da pasta ou arquivo onde o JSON será salvo.
 #'
 #' @export
 write_status_redacao <- function(data, path_json) {
-
   cli::cli_h2("Processamento de Dados: Status")
 
   # --- VALIDAÇÃO ---
@@ -33,11 +32,20 @@ write_status_redacao <- function(data, path_json) {
   cli::cli_process_done()
 
   # --- EXPORTAÇÃO ---
-  final_file <- if(grepl("\\.json$", path_json)) path_json else file.path(path_json, "status_redacao.json")
+  final_file <- if (grepl("\\.json$", path_json)) {
+    path_json
+  } else {
+    file.path(path_json, "status_redacao.json")
+  }
   dir.create(dirname(final_file), showWarnings = FALSE, recursive = TRUE)
 
   cli::cli_process_start("Exportando JSON para {.path {final_file}}")
-  jsonlite::write_json(objeto_redacao, path = final_file, pretty = TRUE, auto_unbox = TRUE)
+  jsonlite::write_json(
+    objeto_redacao,
+    path = final_file,
+    pretty = TRUE,
+    auto_unbox = TRUE
+  )
   cli::cli_process_done()
 
   cli::cli_alert_success("Finalizado!")

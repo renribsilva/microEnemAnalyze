@@ -2,9 +2,9 @@
 #'
 #' @param path_json String com o caminho da pasta ou nome do arquivo de saída
 #' @param ano Inteiro ou string representando o ano (ex: 2019)
+#' @import data.table
 #' @export
-write_itens <- function (path_json, ano) {
-
+write_itens <- function(path_json, ano) {
   cli::cli_h2("Exportação de Itens (Dicionário de Parâmetros) - ENEM {ano}")
 
   # 1. Recuperar objeto
@@ -14,7 +14,7 @@ write_itens <- function (path_json, ano) {
     stop("Objeto inexistente.")
   }
 
-  itens_df <- as.data.frame(get(obj_name, envir = .GlobalEnv))
+  itens_df <- data.table::as.data.table(get(obj_name, envir = .GlobalEnv))
 
   # 2. Limpeza de Encoding (Apenas em colunas de texto)
   cli::cli_process_start("Limpando caracteres inválidos (UTF-8)")
@@ -33,7 +33,7 @@ write_itens <- function (path_json, ano) {
   cli::cli_process_done()
 
   # 3. Tratamento do Path
-  final_file <- if(grepl("\\.json$", path_json, ignore.case = TRUE)) {
+  final_file <- if (grepl("\\.json$", path_json, ignore.case = TRUE)) {
     path_json
   } else {
     file.path(path_json, paste0("itens_", ano, ".json"))
@@ -49,14 +49,16 @@ write_itens <- function (path_json, ano) {
     itens_df,
     pretty = TRUE,
     auto_unbox = TRUE,
-    dataframe = 'columns',
+    dataframe = "columns",
     na = "null"
   )
 
   writeLines(json_string, final_file, useBytes = FALSE)
 
   cli::cli_process_done()
-  cli::cli_alert_success("Sucesso! Arquivo pronto para o Next.js: {.path {final_file}}")
+  cli::cli_alert_success(
+    "Sucesso! Arquivo pronto para o Next.js: {.path {final_file}}"
+  )
 
   return(invisible(final_file))
 }

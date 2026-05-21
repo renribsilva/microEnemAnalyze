@@ -3,9 +3,9 @@
 #' @param score Lista de data.tables (um por área) com NU_SCORE e NU_NOTA_
 #' @param path_json Caminho base ou nome do arquivo para salvar
 #' @param ano Ano do exame
+#' @import data.table
 #' @export
 write_tcc <- function(data, score, path_json, ano) {
-
   cli::cli_h1("Processamento Consolidado: TCC Teórico + Empírico (Streaming)")
 
   # ------------------------------------------------------------------
@@ -13,8 +13,8 @@ write_tcc <- function(data, score, path_json, ano) {
   # ------------------------------------------------------------------
   cli::cli_process_start("Recuperando objetos do Global Env")
   itens_df <- get(paste0("itens_", ano), envir = .GlobalEnv)
-  dic_df   <- get(paste0("dic_", ano),   envir = .GlobalEnv)
-  consts   <- get("constantes",           envir = .GlobalEnv)
+  dic_df <- get(paste0("dic_", ano), envir = .GlobalEnv)
+  consts <- get("constantes", envir = .GlobalEnv)
   cli::cli_process_done()
 
   dic_df_p1 <- dic_df[dic_df$tipo == "1", ]
@@ -41,9 +41,10 @@ write_tcc <- function(data, score, path_json, ano) {
   # Loop por área
   # ------------------------------------------------------------------
   for (area_dt in score) {
-
     col_nota <- names(area_dt)[grepl("^NU_NOTA_", names(area_dt))]
-    if (length(col_nota) == 0) next
+    if (length(col_nota) == 0) {
+      next
+    }
 
     area_nome <- sub("^NU_NOTA_", "", col_nota[1])
 
@@ -70,12 +71,16 @@ write_tcc <- function(data, score, path_json, ano) {
     )
 
     for (codigo in codigos) {
-
       cli::cli_progress_update(id = pbar)
 
       col_nota_area <- paste0("NU_NOTA_", area_nome)
 
-      data_filtrado <- data[get(col_prova_area) %in% cod_selected & !is.na(get(col_nota_area)) & get(col_nota_area) > 0]
+      data_filtrado <- data[
+        get(col_prova_area) %in%
+          cod_selected &
+          !is.na(get(col_nota_area)) &
+          get(col_nota_area) > 0
+      ]
 
       notas <- data_filtrado[[col_nota_area]]
 
@@ -114,9 +119,7 @@ write_tcc <- function(data, score, path_json, ano) {
       linguas <- if (area_nome == "LC") c(0, 1) else "X"
 
       for (v_digital in versoes) {
-
         for (lingua in linguas) {
-
           cor_name_base <- dic_df$cor[dic_df$codigo == codigo][1]
 
           v_digital_ajustada <- v_digital
@@ -169,7 +172,11 @@ write_tcc <- function(data, score, path_json, ano) {
             stop(
               sprintf(
                 "ERRO CRÍTICO: caderno inválido (n != 45)\n  codigo=%s | area=%s | versao=%s | lingua=%s | n_itens=%s",
-                codigo, area_nome, v_digital, lingua, nrow(itens_caderno)
+                codigo,
+                area_nome,
+                v_digital,
+                lingua,
+                nrow(itens_caderno)
               ),
               call. = FALSE
             )
@@ -177,18 +184,20 @@ write_tcc <- function(data, score, path_json, ano) {
 
           key_name <- paste(codigo, lingua, v_digital_ajustada, sep = "_")
 
-          itens_mirt <- data.frame(
+          itens_mirt <- data.table::data.table(
             a1 = as.numeric(itens_caderno$NU_PARAM_A),
-            d  = -as.numeric(itens_caderno$NU_PARAM_A) *
+            d = -as.numeric(itens_caderno$NU_PARAM_A) *
               as.numeric(itens_caderno$NU_PARAM_B),
-            g  = as.numeric(itens_caderno$NU_PARAM_C)
+            g = as.numeric(itens_caderno$NU_PARAM_C)
           )
 
           mod_test <- mirtCAT::generate.mirt_object(itens_mirt, "3PL")
           escore <- mirt::expected.test(mod_test, Theta_metrico)
 
           den <- max(escore) - min(escore)
-          if (den == 0) stop("Escore teórico constante", call. = FALSE)
+          if (den == 0) {
+            stop("Escore teórico constante", call. = FALSE)
+          }
 
           escore <- (escore - min(escore)) / den * nrow(itens_mirt)
 
@@ -205,10 +214,12 @@ write_tcc <- function(data, score, path_json, ano) {
               versao_digital = v_digital_ajustada,
               b_medio_enem = round(
                 mean(itens_caderno$NU_PARAM_B, na.rm = TRUE) *
-                  const_row$k + const_row$d, 1
+                  const_row$k +
+                  const_row$d,
+                1
               )
             ),
-            data_teorico  = round(as.vector(escore), 2),
+            data_teorico = round(as.vector(escore), 2),
             data_empirico = round(df_merge$media, 2)
           )
 

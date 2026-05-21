@@ -27,38 +27,38 @@ names <- c("TP_ENSINO",
 
 data <- fread("exploration/2009/MICRODADOS/microdados_enem_2009/DADOS/MICRODADOS_ENEM_2009.csv", select = names)
 names(data)
-data_LC <- data %>%
+data_LC <- data |>
   dplyr::filter(TP_ENSINO == 1,      # Escola Pública
          TP_ST_CONCLUSAO == 1,      # Concluintes
          TP_PRESENCA_LC == 1,
-         Q73 == "A") %>%
+         Q73 == "A") |>
   slice(1:300000)
 
 write.csv(data_LC, file = "exploration/2009/MICRODADOS/sample_constantes_LC.csv")
 
-data_CH <- data %>%
+data_CH <- data |>
   dplyr::filter(TP_ENSINO == 1,      # Escola Pública
          TP_ST_CONCLUSAO == 1,      # Concluintes
          TP_PRESENCA_CH == 1,
-         Q73 == "A") %>%
+         Q73 == "A") |>
   slice(1:300000)
 
 write.csv(data_CH, file = "exploration/2009/MICRODADOS/sample_constantes_CH.csv")
 
-data_CN <- data %>%
+data_CN <- data |>
   dplyr::filter(TP_ENSINO == 1,      # Escola Pública
          TP_ST_CONCLUSAO == 1,      # Concluintes
          TP_PRESENCA_CN == 1,
-         Q73 == "A") %>%
+         Q73 == "A") |>
   slice(1:300000)
 
 write.csv(data_CN, file = "exploration/2009/MICRODADOS/sample_constantes_CN.csv")
 
-data_MT <- data %>%
+data_MT <- data |>
   dplyr::filter(TP_ENSINO == 1,      # Escola Pública
          TP_ST_CONCLUSAO == 1,      # Concluintes
          TP_PRESENCA_MT == 1,
-         Q73 == "A") %>%
+         Q73 == "A") |>
   slice(1:300000)
 
 write.csv(data_MT, file = "exploration/2009/MICRODADOS/sample_constantes_MT.csv")

@@ -3,13 +3,12 @@
 #' @description Esta função calcula frequências da variável cor ou raça do microdados do EENM
 #' e exporta um JSON formatado para uso no Chart.js.
 #'
-#' @param data Um data.frame contendo a coluna TP_COR_RACA.
+#' @param data Um data.table contendo a coluna TP_COR_RACA.
 #' @param path_json Caminho da pasta onde o arquivo JSON será salvo.
 #'
 #' @return Salva um arquivo JSON no diretório especificado.
 #' @export
 write_cor_raca <- function(data, path_json) {
-
   cli::cli_h2("Processamento de Dados: Cor ou Raça")
 
   # Validação básica
@@ -37,8 +36,8 @@ write_cor_raca <- function(data, path_json) {
   contagem <- table(as.character(data$TP_COR_RACA))
 
   # 3. Cruzamos os dados existentes com os nomes do dicionário
-  # Isso garante que apenas o que EXISTE no dado entre no data.frame
-  df_treemap <- data.frame(
+  # Isso garante que apenas o que EXISTE no dado entre no data.table
+  df_treemap <- data.table::data.table(
     codigo = names(contagem),
     abs = as.numeric(contagem)
   )
@@ -67,10 +66,19 @@ write_cor_raca <- function(data, path_json) {
 
   # Exportação
   cli::cli_process_start("Exportando arquivo JSON")
-  final_file <- if(grepl("\\.json$", path_json)) path_json else file.path(path_json, "cor_raca.json")
+  final_file <- if (grepl("\\.json$", path_json)) {
+    path_json
+  } else {
+    file.path(path_json, "cor_raca.json")
+  }
   dir.create(dirname(final_file), showWarnings = FALSE, recursive = TRUE)
 
-  jsonlite::write_json(objeto_cor_raca, path = final_file, pretty = TRUE, auto_unbox = TRUE)
+  jsonlite::write_json(
+    objeto_cor_raca,
+    path = final_file,
+    pretty = TRUE,
+    auto_unbox = TRUE
+  )
   cli::cli_process_done()
 
   cli::cli_alert_success("Arquivo salvo em: {.path {final_file}}")

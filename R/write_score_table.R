@@ -10,15 +10,24 @@
 #' @return Retorna invisivelmente a lista processada. Estrutura do JSON:
 #' \code{id_item -> { counts: {...}, bins: { labels: [], "0": [], "1": [] } }}.
 #'
+#' @import data.table
 #' @importFrom data.table is.data.table
 #' @importFrom jsonlite write_json
 #' @importFrom cli cli_h1 cli_alert_info cli_alert_success cli_process_start cli_process_done
 #' @importFrom utils head tail
 #' @export
 write_score_table <- function(data, path_json) {
-
-  prefixos_ignore <- c("NU_ANO", "NU_INSCRICAO", "TP_LINGUA", "NU_SCORE", "TP_PRESENCA",
-                       "CO_PROVA", "NU_NOTA", "TX_RESPOSTAS", "TX_GABARITO")
+  prefixos_ignore <- c(
+    "NU_ANO",
+    "NU_INSCRICAO",
+    "TP_LINGUA",
+    "NU_SCORE",
+    "TP_PRESENCA",
+    "CO_PROVA",
+    "NU_NOTA",
+    "TX_RESPOSTAS",
+    "TX_GABARITO"
+  )
 
   cli::cli_h1("Processamento de Frequências (ENEM)")
   cli::cli_alert_info("Iniciando processamento de {length(data)} área(s)")
@@ -26,18 +35,19 @@ write_score_table <- function(data, path_json) {
   lista_final_resultados <- list()
 
   for (i in seq_along(data)) {
-
     dt_area <- data[[i]]
 
-    ano <- dt_area[1,]$NU_ANO
-    dic_df   <- get(paste0("dic_", ano),   envir = .GlobalEnv)
+    ano <- dt_area[1, ]$NU_ANO
+    dic_df <- get(paste0("dic_", ano), envir = .GlobalEnv)
     dic_df_p1 <- dic_df[dic_df$tipo == "1", ]
     cod_selected <- dic_df_p1$codigo
 
     names_dt <- names(dt_area)
 
     idx_nota <- grep("NU_NOTA_", names_dt)
-    if (length(idx_nota) == 0) next
+    if (length(idx_nota) == 0) {
+      next
+    }
 
     col_referencia <- names_dt[idx_nota[1]]
     nm <- gsub("NU_NOTA_", "", col_referencia)
@@ -53,17 +63,25 @@ write_score_table <- function(data, path_json) {
     # --- LÓGICA DE FAIXAS ---
     nota_min <- min(dt[[col_referencia]], na.rm = TRUE)
     nota_max <- max(dt[[col_referencia]], na.rm = TRUE)
-    quebras  <- seq(floor(nota_min/100)*100, ceiling(nota_max/100)*100, by = 50)
+    quebras <- seq(
+      floor(nota_min / 100) * 100,
+      ceiling(nota_max / 100) * 100,
+      by = 50
+    )
     labels_faixas <- paste0(head(quebras, -1), "-", tail(quebras, -1))
 
-    faixas <- cut(dt[[col_referencia]], breaks = quebras, labels = labels_faixas, include.lowest = TRUE)
+    faixas <- cut(
+      dt[[col_referencia]],
+      breaks = quebras,
+      labels = labels_faixas,
+      include.lowest = TRUE
+    )
 
     regex_ignore <- paste0("^(", paste(prefixos_ignore, collapse = "|"), ")")
     cols_para_calcular <- names_dt[!grepl(regex_ignore, names_dt)]
 
     if (length(cols_para_calcular) > 0) {
       res_area <- lapply(dt[, ..cols_para_calcular], function(x) {
-
         # 1. Contagens Totais
         total_counts <- as.list(table(x, useNA = "no"))
 
@@ -71,7 +89,7 @@ write_score_table <- function(data, path_json) {
         # Criamos um dataframe para garantir que os status (0, 1, etc)
         # sejam as colunas e as faixas as linhas
         tab_bins <- table(faixas, x, useNA = "no")
-        df_bins <- as.data.frame.matrix(tab_bins)
+        df_bins <- data.table::as.data.table.matrix(tab_bins)
 
         # Transformamos o df em lista e injetamos os labels
         bin_data <- as.list(df_bins)
@@ -88,11 +106,20 @@ write_score_table <- function(data, path_json) {
   }
 
   is_file <- grepl("\\.json$", path_json, ignore.case = TRUE)
-  final_file <- if(is_file) path_json else file.path(path_json, "score_table.json")
+  final_file <- if (is_file) {
+    path_json
+  } else {
+    file.path(path_json, "score_table.json")
+  }
   dir.create(dirname(final_file), showWarnings = FALSE, recursive = TRUE)
 
   cli::cli_process_start("Salvando arquivo JSON")
-  jsonlite::write_json(lista_final_resultados, path = final_file, pretty = TRUE, auto_unbox = TRUE)
+  jsonlite::write_json(
+    lista_final_resultados,
+    path = final_file,
+    pretty = TRUE,
+    auto_unbox = TRUE
+  )
   cli::cli_process_done()
 
   return(invisible(lista_final_resultados))

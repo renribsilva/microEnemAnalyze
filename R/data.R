@@ -2,7 +2,7 @@
 #' @description Constantes de transformação da escala dos itens
 #' divulgados nos microdados para a escala oficial do Enem
 #'
-#' @format Um objeto do tipo `data.frame` com as constantes de cada
+#' @format Um objeto do tipo `data.table` com as constantes de cada
 #' área.
 #'
 #' Temos duas escalas: a escala oficial do Enem, cuja
@@ -55,7 +55,7 @@
 #'
 #' Dataset contendo os parâmetros A, B e C dos itens processados.
 #'
-#' @format Um data.frame (ou data.table) com as colunas:
+#' @format Um data.table (ou data.table) com as colunas:
 #' \describe{
 #'   \item{a1}{Parâmetro de discriminação}
 #'   \item{d}{Intercepto calculado como -a*b}
@@ -74,7 +74,7 @@
 #'
 #' Dataset contendo o código das provas do ENEM.
 #'
-#' @format Um data.frame (ou data.table) com as colunas:
+#' @format Um data.table (ou data.table) com as colunas:
 #' \describe{
 #'   \item{ano}{Ano da prova}
 #'   \item{codigo}{Código do caderno}

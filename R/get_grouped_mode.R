@@ -20,6 +20,7 @@
 #' \deqn{Mo = Li + \left( \frac{\Delta_1}{\Delta_1 + \Delta_2} \right) \cdot h}
 #' Onde \eqn{\Delta_1 = f_{mo} - f_{ant}} e \eqn{\Delta_2 = f_{mo} - f_{post}}.
 #'
+#' @import data.table
 #' @export
 #'
 #' @examples
@@ -39,7 +40,7 @@ get_grouped_mode <- function(x, bin_width = 10) {
   intervals <- cut(x, breaks = breaks, right = FALSE)
 
   # 2. Calcula a tabela de frequências
-  tab <- as.data.frame(table(intervals))
+  tab <- data.table::as.data.table(table(intervals))
 
   # 3. Identifica a classe modal (a que tem maior frequência)
   idx_mo <- which.max(tab$Freq)

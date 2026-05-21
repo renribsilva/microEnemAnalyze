@@ -10,14 +10,23 @@
 #' @return Retorna a lista processada invisivelmente. O JSON gerado segue a estrutura:
 #' \code{codigo_item -> { x: [notas], y: [proporcoes] }}.
 #'
+#' @import data.table
 #' @importFrom data.table is.data.table .N
 #' @importFrom jsonlite write_json
 #' @importFrom cli cli_h1 cli_alert_info cli_alert_success cli_process_start cli_process_done cli_alert_warning
 #' @export
 write_score_graph <- function(data, path_json) {
-
-  prefixos_ignore <- c("NU_ANO", "NU_INSCRICAO", "TP_LINGUA", "NU_SCORE", "TP_PRESENCA",
-                       "CO_PROVA", "NU_NOTA", "TX_RESPOSTAS", "TX_GABARITO")
+  prefixos_ignore <- c(
+    "NU_ANO",
+    "NU_INSCRICAO",
+    "TP_LINGUA",
+    "NU_SCORE",
+    "TP_PRESENCA",
+    "CO_PROVA",
+    "NU_NOTA",
+    "TX_RESPOSTAS",
+    "TX_GABARITO"
+  )
 
   cli::cli_h1("CCI Empírica: Processamento por Item")
   cli::cli_alert_info("Iniciando análise de {length(data)} área(s)")
@@ -25,18 +34,19 @@ write_score_graph <- function(data, path_json) {
   lista_final_resultados <- list()
 
   for (i in seq_along(data)) {
-
     dt_area <- data[[i]]
 
-    ano <- dt_area[1,]$NU_ANO
-    dic_df   <- get(paste0("dic_", ano),   envir = .GlobalEnv)
+    ano <- dt_area[1, ]$NU_ANO
+    dic_df <- get(paste0("dic_", ano), envir = .GlobalEnv)
     dic_df_p1 <- dic_df[dic_df$tipo == "1", ]
     cod_selected <- dic_df_p1$codigo
 
     names_dt <- names(dt_area)
 
     idx_nota <- grep("NU_NOTA_", names_dt)
-    if (length(idx_nota) == 0) next
+    if (length(idx_nota) == 0) {
+      next
+    }
 
     col_referencia <- names_dt[idx_nota[1]]
     nm <- gsub("NU_NOTA_", "", col_referencia)
@@ -66,15 +76,22 @@ write_score_graph <- function(data, path_json) {
 
     # Processamento por Item
     res_area <- lapply(cols_para_calcular, function(code) {
-
       # Lógica Empírica: Frequência 1 / (0+1+7+8)
-      tabela_real <- dt[, .(
-        p = sum(get(code) == "1", na.rm = TRUE) /
-          sum(get(code) %in% c("0", "1", "7", "8"), na.rm = TRUE)
-      ), keyby = .(x = as.integer(round(get(col_referencia), 0)))]
+      tabela_real <- dt[,
+        .(
+          p = sum(get(code) == "1", na.rm = TRUE) /
+            sum(get(code) %in% c("0", "1", "7", "8"), na.rm = TRUE)
+        ),
+        keyby = .(x = as.integer(round(get(col_referencia), 0)))
+      ]
 
       # Merge para escala completa
-      df_merge <- merge(data.frame(x = escala_x), tabela_real, by = "x", all.x = TRUE)
+      df_merge <- merge(
+        data.table::data.table(x = escala_x),
+        tabela_real,
+        by = "x",
+        all.x = TRUE
+      )
 
       list(
         x = escala_x,
@@ -90,11 +107,21 @@ write_score_graph <- function(data, path_json) {
 
   # --- EXPORTAÇÃO ---
   is_file <- grepl("\\.json$", path_json, ignore.case = TRUE)
-  final_file <- if(is_file) path_json else file.path(path_json, "score_graph.json")
+  final_file <- if (is_file) {
+    path_json
+  } else {
+    file.path(path_json, "score_graph.json")
+  }
   dir.create(dirname(final_file), showWarnings = FALSE, recursive = TRUE)
 
   cli::cli_process_start("Salvando JSON: {.path {basename(final_file)}}")
-  jsonlite::write_json(lista_final_resultados, path = final_file, pretty = TRUE, auto_unbox = TRUE, na = "null")
+  jsonlite::write_json(
+    lista_final_resultados,
+    path = final_file,
+    pretty = TRUE,
+    auto_unbox = TRUE,
+    na = "null"
+  )
   cli::cli_process_done()
 
   cli::cli_alert_success("Processamento finalizado com sucesso.")

@@ -2,9 +2,9 @@
 #'
 #' @param data Data.table contendo a coluna NU_SCORE.
 #' @param path_json Caminho do arquivo ou diretório de destino.
+#' @import data.table
 #' @export
 write_frequency_acertos <- function(data, path_json) {
-
   cli::cli_h2("Processamento de Frequência (Acertos)")
 
   col_prova <- grep("^CO_PROVA_", names(data), value = TRUE)
@@ -13,13 +13,15 @@ write_frequency_acertos <- function(data, path_json) {
   # --- Função de Cálculo Interna ---
   calc_freq <- function(codigos_pool) {
     df_pool <- data[get(col_prova) %in% codigos_pool & !is.na(get(col_score))]
-    if (nrow(df_pool) == 0) return(NULL)
+    if (nrow(df_pool) == 0) {
+      return(NULL)
+    }
 
     acertos <- df_pool[[col_score]]
     tab_abs <- table(factor(acertos, levels = 0:45))
     tab_rel <- prop.table(tab_abs) * 100
 
-    df_f <- data.frame(
+    df_f <- data.table::data.table(
       x = as.numeric(names(tab_abs)),
       abs = as.integer(tab_abs),
       rel = as.numeric(tab_rel)
@@ -29,23 +31,33 @@ write_frequency_acertos <- function(data, path_json) {
       datasets = list(
         list(
           label = "Frequência Absoluta",
-          data = lapply(1:nrow(df_f), function(i) list(x = df_f$x[i], y = df_f$abs[i]))
+          data = lapply(1:nrow(df_f), function(i) {
+            list(x = df_f$x[i], y = df_f$abs[i])
+          })
         ),
         list(
           label = "Frequência Relativa (%)",
-          data = lapply(1:nrow(df_f), function(i) list(x = df_f$x[i], y = df_f$rel[i]))
+          data = lapply(1:nrow(df_f), function(i) {
+            list(x = df_f$x[i], y = df_f$rel[i])
+          })
         )
       )
     )
   }
 
-  ano <- data[1,]$NU_ANO
-  dic_df  <- get(paste0("dic_", ano), envir = .GlobalEnv)
+  ano <- data[1, ]$NU_ANO
+  dic_df <- get(paste0("dic_", ano), envir = .GlobalEnv)
   dic_df_p1 <- dic_df[dic_df$tipo == "1", ]
 
   # --- Definição dos Pools ---
-  cod_digital <- dic_df_p1$codigo[grepl("Digital", dic_df$cor, ignore.case = TRUE)]
-  cod_regular <- dic_df_p1$codigo[!grepl("Digital", dic_df$cor, ignore.case = TRUE)]
+  cod_digital <- dic_df_p1$codigo[grepl(
+    "Digital",
+    dic_df$cor,
+    ignore.case = TRUE
+  )]
+  cod_regular <- dic_df_p1$codigo[
+    !grepl("Digital", dic_df$cor, ignore.case = TRUE)
+  ]
 
   cli::cli_process_start("Calculando Frequências (Digital vs Regular)")
 
@@ -56,10 +68,19 @@ write_frequency_acertos <- function(data, path_json) {
   cli::cli_process_done()
 
   # --- Exportação ---
-  final_file <- if(grepl("\\.json$", path_json)) path_json else file.path(path_json, "frequency_acertos.json")
+  final_file <- if (grepl("\\.json$", path_json)) {
+    path_json
+  } else {
+    file.path(path_json, "frequency_acertos.json")
+  }
   dir.create(dirname(final_file), showWarnings = FALSE, recursive = TRUE)
 
-  jsonlite::write_json(lista_completa, path = final_file, pretty = TRUE, auto_unbox = TRUE)
+  jsonlite::write_json(
+    lista_completa,
+    path = final_file,
+    pretty = TRUE,
+    auto_unbox = TRUE
+  )
   cli::cli_process_done()
 
   cli::cli_alert_success("Frequências salvas em: {.path {final_file}}")

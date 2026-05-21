@@ -1,20 +1,23 @@
 #' Exportar Estatísticas Descritivas e Densidade por Score
 #' @param data Uma lista nomeada de data.tables.
 #' @param path_json Caminho para o arquivo .json de saída.
+#' @import data.table
 #' @export
 write_score_describe <- function(data, path_json, ano) {
-
-  cli::cli_h1("Descrição estatística: Processamento por Score (Digital vs Regular)")
+  cli::cli_h1(
+    "Descrição estatística: Processamento por Score (Digital vs Regular)"
+  )
   lista_final_resultados <- list()
 
   for (i in seq_along(data)) {
-
     dt_area <- data[[i]]
 
     # --- Identificação da Área ---
     names_dt <- names(dt_area)
     idx_nota <- grep("NU_NOTA_", names_dt)
-    if (length(idx_nota) == 0) next
+    if (length(idx_nota) == 0) {
+      next
+    }
 
     col_referencia <- names_dt[idx_nota[1]]
     nm <- gsub("NU_NOTA_", "", col_referencia)
@@ -24,12 +27,22 @@ write_score_describe <- function(data, path_json, ano) {
 
     # --- Função interna para evitar repetição de código ---
     processar_grupo <- function(codigos_selecionados) {
-      dt_temp <- dt_area[get(col_prova) %in% codigos_selecionados & !is.na(get(col_referencia)) & get(col_referencia) > 0,
-                         .(nota = as.numeric(get(col_referencia)), score = as.integer(NU_SCORE))]
+      dt_temp <- dt_area[
+        get(col_prova) %in%
+          codigos_selecionados &
+          !is.na(get(col_referencia)) &
+          get(col_referencia) > 0,
+        .(nota = as.numeric(get(col_referencia)), score = as.integer(NU_SCORE))
+      ]
 
-      if (nrow(dt_temp) == 0) return(NULL)
+      if (nrow(dt_temp) == 0) {
+        return(NULL)
+      }
 
-      res_agg <- dt_temp[, as.data.frame(psych::describe(nota)), keyby = .(score)]
+      res_agg <- dt_temp[,
+        data.table::as.data.table(psych::describe(nota)),
+        keyby = .(score)
+      ]
       res_agg[, vars := NULL]
 
       lista_scores <- setNames(vector("list", 46), 0:45)
@@ -40,8 +53,16 @@ write_score_describe <- function(data, path_json, ano) {
           stats_list <- as.list(row_stats)
           stats_list$score <- NULL
           if (length(notas_grupo) > 1) {
-            dens <- density(notas_grupo, from = row_stats$min, to = row_stats$max, n = ((row_stats$max - row_stats$min) * 10) + 1)
-            stats_list$density <- list(x = seq(row_stats$min, row_stats$max, by = 0.1), y = dens$y)
+            dens <- density(
+              notas_grupo,
+              from = row_stats$min,
+              to = row_stats$max,
+              n = ((row_stats$max - row_stats$min) * 10) + 1
+            )
+            stats_list$density <- list(
+              x = seq(row_stats$min, row_stats$max, by = 0.1),
+              y = dens$y
+            )
           }
           lista_scores[[as.character(s)]] <- stats_list
         }
@@ -49,8 +70,8 @@ write_score_describe <- function(data, path_json, ano) {
       return(lista_scores)
     }
 
-    ano_dt  <- dt_area[1, ]$NU_ANO
-    dic_df  <- get(paste0("dic_", ano_dt), envir = .GlobalEnv)
+    ano_dt <- dt_area[1, ]$NU_ANO
+    dic_df <- get(paste0("dic_", ano_dt), envir = .GlobalEnv)
     dic_df_p1 <- dic_df[dic_df$tipo == "1", ]
 
     # --- Separação e Atribuição mantendo a chave original [[nm]] ---
@@ -66,9 +87,19 @@ write_score_describe <- function(data, path_json, ano) {
   }
 
   # --- Exportação (Igual ao original) ---
-  final_file <- if(grepl("\\.json$", path_json)) path_json else file.path(path_json, "score_describe.json")
+  final_file <- if (grepl("\\.json$", path_json)) {
+    path_json
+  } else {
+    file.path(path_json, "score_describe.json")
+  }
   dir.create(dirname(final_file), showWarnings = FALSE, recursive = TRUE)
-  jsonlite::write_json(lista_final_resultados, path = final_file, pretty = TRUE, auto_unbox = TRUE, na = "null")
+  jsonlite::write_json(
+    lista_final_resultados,
+    path = final_file,
+    pretty = TRUE,
+    auto_unbox = TRUE,
+    na = "null"
+  )
 
   return(invisible(lista_final_resultados))
 }

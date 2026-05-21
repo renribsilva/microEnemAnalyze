@@ -3,13 +3,12 @@
 #' @description Esta função processa os dados do ENEM, valida a integridade dos inscritos
 #' e exporta um arquivo JSON estruturado para uso em dashboards.
 #'
-#' @param data Um data.table ou data.frame contendo as colunas NU_INSCRICAO e IN_TREINEIRO.
+#' @param data Um data.table ou data.table contendo as colunas NU_INSCRICAO e IN_TREINEIRO.
 #' @param path_json O diretório onde o arquivo 'inscritos.json' será salvo.
 #'
 #' @return Retorna o caminho do arquivo gerado (invisivelmente).
 #' @export
 write_inscritos <- function(data, path_json) {
-
   # --- TÍTULO ---
   cli::cli_h2("Processamento de Inscritos e Treineiros")
 
@@ -40,9 +39,12 @@ write_inscritos <- function(data, path_json) {
   treineiros_counts <- table(data$IN_TREINEIRO)
   treineiros_prop <- prop.table(treineiros_counts)
 
-  tabela_treineiros <- t(as.data.table(rbind(treineiros_counts, treineiros_prop)))
+  tabela_treineiros <- t(as.data.table(rbind(
+    treineiros_counts,
+    treineiros_prop
+  )))
   total_counts <- sum(tabela_treineiros[, 1])
-  total_props  <- sum(tabela_treineiros[, 2])
+  total_props <- sum(tabela_treineiros[, 2])
 
   # 3. Validação de integridade
   if (as.integer(inscritos) != as.integer(total_counts)) {
@@ -59,14 +61,18 @@ write_inscritos <- function(data, path_json) {
     list(
       grupo = "Inscritos",
       total = as.numeric(tabela_treineiros[3, 1]),
-      freq  = as.numeric(tabela_treineiros[3, 2]),
+      freq = as.numeric(tabela_treineiros[3, 2]),
       subRows = list(
-        list(grupo = "Não treineiros",
-             total = as.numeric(tabela_treineiros[1, 1]),
-             freq  = as.numeric(tabela_treineiros[1, 2])),
-        list(grupo = "Treineiros",
-             total = as.numeric(tabela_treineiros[2, 1]),
-             freq  = as.numeric(tabela_treineiros[2, 2]))
+        list(
+          grupo = "Não treineiros",
+          total = as.numeric(tabela_treineiros[1, 1]),
+          freq = as.numeric(tabela_treineiros[1, 2])
+        ),
+        list(
+          grupo = "Treineiros",
+          total = as.numeric(tabela_treineiros[2, 1]),
+          freq = as.numeric(tabela_treineiros[2, 2])
+        )
       )
     )
   )
@@ -75,12 +81,21 @@ write_inscritos <- function(data, path_json) {
   # 5. Exportação
   cli::cli_process_start("Salvando arquivo final")
 
-  final_file <- if(grepl("\\.json$", path_json)) path_json else file.path(path_json, "inscritos.json")
+  final_file <- if (grepl("\\.json$", path_json)) {
+    path_json
+  } else {
+    file.path(path_json, "inscritos.json")
+  }
 
   dir.create(dirname(final_file), showWarnings = FALSE, recursive = TRUE)
   final_file <- normalizePath(final_file, mustWork = FALSE)
 
-  jsonlite::write_json(objeto_inscritos, path = final_file, pretty = TRUE, auto_unbox = TRUE)
+  jsonlite::write_json(
+    objeto_inscritos,
+    path = final_file,
+    pretty = TRUE,
+    auto_unbox = TRUE
+  )
 
   cli::cli_process_done()
 

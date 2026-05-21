@@ -4,13 +4,12 @@
 #' ENEM, calcula frequências relativas e exporta um JSON
 #' formatado para uso no Chart.js.
 #'
-#' @param data Um data.frame contendo a coluna TP_FAIXA_ETARIA.
+#' @param data Um data.table contendo a coluna TP_FAIXA_ETARIA.
 #' @param path_json Caminho da pasta onde o arquivo JSON será salvo.
 #'
 #' @return Salva um arquivo JSON no diretório especificado.
 #' @export
 write_fx_etaria <- function(data, path_json) {
-
   # --- TÍTULO DO PROCESSO ---
   cli::cli_h2("Processamento de Dados: Faixa Etária")
 
@@ -22,7 +21,9 @@ write_fx_etaria <- function(data, path_json) {
   }
 
   if (!is.character(path_json)) {
-    cli::cli_alert_danger("Erro de validação: {.var path_json} precisa ser character.")
+    cli::cli_alert_danger(
+      "Erro de validação: {.var path_json} precisa ser character."
+    )
     stop("Execução interrompida.")
   }
 
@@ -30,9 +31,16 @@ write_fx_etaria <- function(data, path_json) {
   cli::cli_process_start("Calculando frequências e agrupando faixas")
 
   labels_etaria <- c(
-    "Menor de 20 anos", "20-25 anos", "26-30 anos", "31-35 anos",
-    "36-40 anos", "41-45 anos", "46-50 anos", "51-55 anos",
-    "56-60 anos", "Maior de 60 anos"
+    "Menor de 20 anos",
+    "20-25 anos",
+    "26-30 anos",
+    "31-35 anos",
+    "36-40 anos",
+    "41-45 anos",
+    "46-50 anos",
+    "51-55 anos",
+    "56-60 anos",
+    "Maior de 60 anos"
   )
 
   fx_etaria_abs <- table(data$TP_FAIXA_ETARIA)
@@ -58,12 +66,21 @@ write_fx_etaria <- function(data, path_json) {
   cli::cli_process_done()
 
   # --- EXPORTAÇÃO ---
-  final_file <- if(grepl("\\.json$", path_json)) path_json else file.path(path_json, "faixa_etaria.json")
+  final_file <- if (grepl("\\.json$", path_json)) {
+    path_json
+  } else {
+    file.path(path_json, "faixa_etaria.json")
+  }
   dir.create(dirname(final_file), showWarnings = FALSE, recursive = TRUE)
   final_file <- normalizePath(final_file, mustWork = FALSE)
 
   cli::cli_process_start("Exportando arquivo JSON para {.path {final_file}}")
-  jsonlite::write_json(objeto_etaria, path = final_file, pretty = TRUE, auto_unbox = TRUE)
+  jsonlite::write_json(
+    objeto_etaria,
+    path = final_file,
+    pretty = TRUE,
+    auto_unbox = TRUE
+  )
   cli::cli_process_done()
 
   cli::cli_alert_success("Finalizado com sucesso!")
