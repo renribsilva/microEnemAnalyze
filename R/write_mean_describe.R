@@ -19,6 +19,7 @@ write_mean_describe <- function(data, path) {
   }
 
   # Tratamento de NAs e Média
+  cli::cli_alert_info("Tratando NAs e calculando medias...")
   data.table::setnafill(temp_dt, fill = 0, cols = cols_notas)
   temp_dt[, MEDIA_GERAL := rowMeans(.SD), .SDcols = cols_notas]
 

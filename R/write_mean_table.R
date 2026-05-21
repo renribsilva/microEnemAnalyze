@@ -44,7 +44,7 @@ write_mean_table <- function(data, path) {
     # Passamos r (resposta), g (gabarito) e l (língua) para o mapply
     top_dt[
       ,
-      list(score_col) := mapply(
+      (score_col) := mapply(
         function(r, g, l, area_atual) {
           g_final <- g
           r_final <- r
