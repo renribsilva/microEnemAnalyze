@@ -61,7 +61,7 @@ write_presence_day <- function(data, path_json, day) {
   cols_to_keep <- intersect(cols_necessarias, names(data))
 
   cli::cli_process_start("Reduzindo dimensionalidade dos dados")
-  data <- data[, ..cols_to_keep]
+  data <- data[, cols_to_keep, with = FALSE]
   cli::cli_process_done()
 
   # Preparação dos dados

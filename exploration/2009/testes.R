@@ -1,9 +1,13 @@
 library(dplyr)
 
-sample <- fread("exploration/2019/MICRODADOS/microdados_enem_2019/DADOS/MICRODADOS_ENEM_2019.csv", nrows = 100)
+sample <- fread(
+  "~/Downloads/
+  microdados_enem_2019/DADOS/MICRODADOS_ENEM_2019.csv",
+  nrows = 100
+)
 
-data <- sample %>%
-  dplyr::filter(NU_NOTA_MT > 0) %>%
+data <- sample |>
+  dplyr::filter(NU_NOTA_MT > 0) |>
   slice(6)
 
 data$NU_NOTA_MT

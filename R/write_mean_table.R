@@ -13,7 +13,7 @@ write_mean_table <- function(data, path) {
   )
 
   # Verificação de integridade
-  total_na_por_linha <- rowSums(is.na(temp_dt[, ..cols_notas]))
+  total_na_por_linha <- rowSums(is.na(temp_dt[, cols_notas, with = FALSE]))
   if (any(total_na_por_linha == length(cols_notas))) {
     stop("Ha participantes com NA em todas as areas")
   }
@@ -110,7 +110,7 @@ write_mean_table <- function(data, path) {
   cli::cli_process_start("Gravando JSON em {.path {final_file}}")
   # Garante que as colunas exportadas sigam a ordem da lista cols_to_export
   jsonlite::write_json(
-    top_dt[, ..cols_to_export],
+    top_dt[, cols_to_export, with = FALSE],
     path = final_file,
     pretty = TRUE
   )

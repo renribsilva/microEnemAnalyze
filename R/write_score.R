@@ -285,7 +285,7 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
     # (evita lixo do 'data' original)
     # Usamos data.table::as.data.table para garantir uma
     # cópia física em memória
-    score_final <- data.table::as.data.table(data[, ..cols_base])
+    score_final <- data.table::as.data.table(data[, cols_base, with = FALSE])
 
     # 3. Atribuir o score bruto (NU_SCORE)
     score_final[, NU_SCORE := as.vector(score_nu)]

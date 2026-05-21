@@ -80,7 +80,7 @@ write_score_table <- function(data, path_json) {
     cols_para_calcular <- names_dt[!grepl(regex_ignore, names_dt)]
 
     if (length(cols_para_calcular) > 0) {
-      res_area <- lapply(dt[, ..cols_para_calcular], function(x) {
+      res_area <- lapply(dt[, cols_para_calcular, with = FALSE], function(x) {
         # 1. Contagens Totais
         total_counts <- as.list(table(x, useNA = "no"))
 

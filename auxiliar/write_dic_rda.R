@@ -5,7 +5,7 @@
 library(data.table)
 
 itens_2009 <- fread(
-  input = "exploration/2009/MICRODADOS/
+  input = "~/Downloads/
   microdados_enem_2009/DADOS/ITENS_PROVA_2009.csv",
   encoding = "UTF-8"
 )
@@ -99,7 +99,7 @@ usethis::use_data(dic_2009, overwrite = TRUE)
 library(data.table)
 
 itens_2019 <- fread(
-  input = "exploration/2019/MICRODADOS/
+  input = "~/Downloads/
   microdados_enem_2019/DADOS/ITENS_PROVA_2019.csv",
   encoding = "UTF-8"
 )
@@ -181,7 +181,7 @@ usethis::use_data(dic_2019, overwrite = TRUE)
 library(data.table)
 
 itens_2020 <- fread(
-  input = "exploration/2020/MICRODADOS/
+  input = "~/Downloads/
   microdados_enem_2020/DADOS/ITENS_PROVA_2020.csv",
   encoding = "UTF-8"
 )
@@ -263,7 +263,7 @@ usethis::use_data(dic_2020, overwrite = TRUE)
 library(data.table)
 
 itens_2021 <- fread(
-  input = "exploration/2021/MICRODADOS/
+  input = "~/Downloads/
   microdados_enem_2021/DADOS/ITENS_PROVA_2021.csv",
   encoding = "UTF-8"
 )
@@ -345,7 +345,7 @@ usethis::use_data(dic_2021, overwrite = TRUE)
 library(data.table)
 
 itens_2022 <- fread(
-  input = "exploration/2022/MICRODADOS/
+  input = "~/Downloads/
   microdados_enem_2022/DADOS/ITENS_PROVA_2022.csv",
   encoding = "UTF-8"
 )
@@ -427,7 +427,7 @@ usethis::use_data(dic_2022, overwrite = TRUE)
 library(data.table)
 
 itens_2023 <- fread(
-  input = "exploration/2023/MICRODADOS/
+  input = "~/Downloads/
   microdados_enem_2023/DADOS/ITENS_PROVA_2023.csv",
   encoding = "UTF-8"
 )
@@ -521,7 +521,7 @@ usethis::use_data(dic_2023, overwrite = TRUE)
 library(data.table)
 
 itens_2024 <- fread(
-  input = "exploration/2024/MICRODADOS/
+  input = "~/Downloads/
   microdados_enem_2024/DADOS/ITENS_PROVA_2024.csv",
   encoding = "UTF-8"
 )

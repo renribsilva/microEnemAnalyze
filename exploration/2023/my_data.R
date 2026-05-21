@@ -4,7 +4,7 @@ library(dplyr)
 #-----------2023--------------
 
 data <- fread("exploration/2023/MICRODADOS/microdados_enem_2023/DADOS/MICRODADOS_ENEM_2023.csv")
-my_data <- data %>%
+my_data <- data |>
   dplyr::filter(NU_NOTA_MT == 833.2 & NO_MUNICIPIO_PROVA == "Votuporanga")
 
 c <- substr(my_data$TX_GABARITO_LC, 0, 5)

@@ -5,7 +5,7 @@ library(dplyr)
 
 # CADERNO 516
 data <- fread("exploration/2019/MICRODADOS/microdados_enem_2019/DADOS/MICRODADOS_ENEM_2019.csv")
-my_data <- data %>%
+my_data <- data |>
   dplyr::filter(NU_NOTA_MT == 795.4 & NO_MUNICIPIO_PROVA == "Votuporanga")
 
 a <- substr(my_data$TX_RESPOSTAS_LC, 0, 5)
