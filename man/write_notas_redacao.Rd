@@ -7,7 +7,7 @@
 write_notas_redacao(data, path_json)
 }
 \arguments{
-\item{data}{Um data.frame contendo a coluna NU_NOTA_REDACAO.}
+\item{data}{Um data.table contendo a coluna NU_NOTA_REDACAO.}
 
 \item{path_json}{Caminho da pasta ou arquivo onde o JSON será salvo.}
 }

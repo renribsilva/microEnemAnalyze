@@ -12,11 +12,15 @@ write_score_graph(data, path_json)
 \item{path_json}{Caminho completo para o arquivo .json de saída.}
 }
 \value{
-Retorna a lista processada invisivelmente. O JSON gerado segue a estrutura:
+Retorna a lista processada invisivelmente. O JSON gerado
+segue a estrutura:
 \code{codigo_item -> { x: [notas], y: [proporcoes] }}.
 }
 \description{
-Esta função processa microdados do ENEM para calcular a probabilidade observada
-de acerto (curva empírica) por item, utilizando uma escala imutável de 1 em 1 ponto.
-O cálculo da proporção considera apenas respostas válidas (0, 1, 7, 8) e notas > 0.
+Esta função processa microdados do ENEM para calcular a probabilidade
+observada
+de acerto (curva empírica) por item, utilizando uma escala
+imutável de 1 em 1 ponto.
+O cálculo da proporção considera apenas respostas válidas
+(0, 1, 7, 8) e notas > 0.
 }

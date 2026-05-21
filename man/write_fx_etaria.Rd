@@ -7,7 +7,7 @@
 write_fx_etaria(data, path_json)
 }
 \arguments{
-\item{data}{Um data.frame contendo a coluna TP_FAIXA_ETARIA.}
+\item{data}{Um data.table contendo a coluna TP_FAIXA_ETARIA.}
 
 \item{path_json}{Caminho da pasta onde o arquivo JSON será salvo.}
 }

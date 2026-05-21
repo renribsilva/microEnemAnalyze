@@ -5,7 +5,7 @@
 \alias{constantes}
 \title{Constantes de transformação}
 \format{
-Um objeto do tipo `data.frame` com as constantes de cada
+Um objeto do tipo `data.table` com as constantes de cada
 área.
 
 Temos duas escalas: a escala oficial do Enem, cuja

@@ -7,7 +7,7 @@
 write_sexo(data, path_json)
 }
 \arguments{
-\item{data}{Um data.frame contendo a coluna TP_SEXO.}
+\item{data}{Um data.table contendo a coluna TP_SEXO.}
 
 \item{path_json}{Caminho da pasta onde o arquivo JSON será salvo.}
 }

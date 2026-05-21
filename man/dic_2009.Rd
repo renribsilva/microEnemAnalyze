@@ -5,7 +5,7 @@
 \alias{dic_2009}
 \title{Código das provas do ENEM}
 \format{
-Um data.frame (ou data.table) com as colunas:
+Um data.table (ou data.table) com as colunas:
 \describe{
   \item{ano}{Ano da prova}
   \item{codigo}{Código do caderno}

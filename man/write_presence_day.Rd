@@ -9,7 +9,8 @@ write_presence_day(data, path_json, day)
 \arguments{
 \item{data}{Uma data.table contendo os candidatos filtrados.}
 
-\item{path_json}{O diretório ou caminho completo onde o arquivo JSON será salvo.}
+\item{path_json}{O diretório ou caminho completo onde o
+arquivo JSON será salvo.}
 
 \item{day}{Dia de realização da prova: 1 ou 2 (numeric ou double)}
 }
@@ -17,6 +18,7 @@ write_presence_day(data, path_json, day)
 Retorna o caminho do arquivo gerado (invisivelmente).
 }
 \description{
-Processa dados de presença, valida a integridade dos inscritos filtrados
+Processa dados de presença, valida a integridade
+dos inscritos filtrados
 e exporta os resultados para um arquivo JSON estruturado.
 }

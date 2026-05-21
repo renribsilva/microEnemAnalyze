@@ -7,10 +7,12 @@
 write_comp_redacao(data, path_json)
 }
 \arguments{
-\item{data}{Um data.frame contendo as colunas de competências, nota e status.}
+\item{data}{Um data.table contendo as colunas de competências,
+nota e status.}
 
 \item{path_json}{Caminho para salvar o arquivo JSON.}
 }
 \description{
-Processa NU_NOTA_COMP1-5 e NU_NOTA_REDACAO com labels padronizados (by 20).
+Processa NU_NOTA_COMP1-5 e NU_NOTA_REDACAO com labels
+padronizados (by 20).
 }

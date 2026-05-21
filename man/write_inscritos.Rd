@@ -7,7 +7,8 @@
 write_inscritos(data, path_json)
 }
 \arguments{
-\item{data}{Um data.table ou data.frame contendo as colunas NU_INSCRICAO e IN_TREINEIRO.}
+\item{data}{Um data.table ou data.table contendo as
+colunas NU_INSCRICAO e IN_TREINEIRO.}
 
 \item{path_json}{O diretório onde o arquivo 'inscritos.json' será salvo.}
 }
@@ -15,6 +16,7 @@ write_inscritos(data, path_json)
 Retorna o caminho do arquivo gerado (invisivelmente).
 }
 \description{
-Esta função processa os dados do ENEM, valida a integridade dos inscritos
+Esta função processa os dados do ENEM,
+valida a integridade dos inscritos
 e exporta um arquivo JSON estruturado para uso em dashboards.
 }

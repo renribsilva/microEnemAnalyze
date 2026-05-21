@@ -16,5 +16,6 @@ Uma matriz de uma linha com o processamento (invisível).
 }
 \description{
 Compara uma string de respostas contra um gabarito, preservando o comprimento
-original (incluindo "9", "." e "*"). Atribui o resultado a 'score' no GlobalEnv.
+original (incluindo "9", "." e "*"). Atribui o resultado a 'score'
+no GlobalEnv.
 }

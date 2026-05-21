@@ -7,7 +7,7 @@
 write_cor_raca(data, path_json)
 }
 \arguments{
-\item{data}{Um data.frame contendo a coluna TP_COR_RACA.}
+\item{data}{Um data.table contendo a coluna TP_COR_RACA.}
 
 \item{path_json}{Caminho da pasta onde o arquivo JSON será salvo.}
 }
@@ -15,6 +15,7 @@ write_cor_raca(data, path_json)
 Salva um arquivo JSON no diretório especificado.
 }
 \description{
-Esta função calcula frequências da variável cor ou raça do microdados do EENM
+Esta função calcula frequências da variável
+cor ou raça do microdados do EENM
 e exporta um JSON formatado para uso no Chart.js.
 }

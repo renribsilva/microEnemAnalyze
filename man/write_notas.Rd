@@ -9,7 +9,8 @@ write_notas(data, path_json)
 \arguments{
 \item{data}{Data.table com a coluna NU_NOTA}
 
-\item{path_json}{String. Caminho completo do arquivo (ex: "caminho/describe.json").}
+\item{path_json}{String. Caminho completo do arquivo
+(ex: "caminho/describe.json").}
 }
 \description{
 Exportar TCCs de todos os cadernos em um único JSON

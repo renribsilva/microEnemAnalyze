@@ -7,11 +7,14 @@
 write_score(data, path_csv = NULL, ano, area = NULL)
 }
 \arguments{
-\item{data}{Um data frame com as colunas CO_PROVA_, TX_RESPOSTAS_, TX_GABARITO_}
+\item{data}{Um data.table com as colunas CO_PROVA_,
+TX_RESPOSTAS_, TX_GABARITO_}
 
-\item{path_csv}{Opcional. String com o caminho do diretório ou nome do arquivo .json final.}
+\item{path_csv}{Opcional. String com o caminho
+do diretório ou nome do arquivo .json final.}
 
-\item{ano}{Inteiro ou caractere indicando o ano (ex: 2019) para buscar os objetos itens_ano e dic_ano.}
+\item{ano}{Inteiro ou caractere indicando o ano
+(ex: 2019) para buscar os objetos itens_ano e dic_ano.}
 
 \item{area}{Opcional. String com a area a ser processada (ex: LC).}
 }

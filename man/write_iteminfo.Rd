@@ -7,13 +7,17 @@
 write_iteminfo(path_json = NULL, co_prova = NULL, ano)
 }
 \arguments{
-\item{path_json}{Opcional. String com o caminho do diretório ou nome do arquivo .json final.}
+\item{path_json}{Opcional. String com o caminho do diretório ou
+nome do arquivo .json final.}
 
-\item{co_prova}{Opcional. Código do caderno específico (CO_PROVA) para processamento individual.}
+\item{co_prova}{Opcional. Código do caderno específico (CO_PROVA)
+para processamento individual.}
 
-\item{ano}{Inteiro ou caractere indicando o ano para buscar os objetos itens_ano e dic_ano.}
+\item{ano}{Inteiro ou caractere indicando o ano para buscar
+os objetos itens_ano e dic_ano.}
 }
 \description{
-Esta função processa modelos MIRT para cadernos do ENEM, extrai as curvas de informação
-do item e exporta os dados em formato JSON compatível com a estrutura do ApexCharts ou Chart.js.
+Esta função processa modelos MIRT para cadernos
+do ENEM, extrai as curvas de informação do item e exporta os
+dados em formato JSON compatível com a estrutura do ApexCharts ou Chart.js.
 }

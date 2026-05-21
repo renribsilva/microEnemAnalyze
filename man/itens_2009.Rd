@@ -5,7 +5,7 @@
 \alias{itens_2009}
 \title{Parâmetros dos Itens do ENEM}
 \format{
-Um data.frame (ou data.table) com as colunas:
+Um data.table (ou data.table) com as colunas:
 \describe{
   \item{a1}{Parâmetro de discriminação}
   \item{d}{Intercepto calculado como -a*b}
