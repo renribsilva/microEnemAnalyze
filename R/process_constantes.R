@@ -78,8 +78,8 @@ process_constantes <- function(sample, area, itens_db) {
 
   # 4. EAP e Constantes
   p_theta <- stats::dnorm(theta, mean = 0, sd = 1)
-  theta_EAP <- sapply(prod_prob, function(L_theta) {
-    posterior <- L_theta * p_theta
+  theta_EAP <- sapply(prod_prob, function(l_theta) {
+    posterior <- l_theta * p_theta
     sum(theta * posterior) / sum(posterior)
   })
 
