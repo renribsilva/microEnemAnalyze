@@ -1,6 +1,6 @@
 #' Calcular Nota Final (EAP Transformado)
 #' @importFrom stats dnorm
-#' @importFrom cli cli_progress_bar
+#' @import cli
 #' @export
 calc_nota <- function(sample, area, ano) {
   # constrói o nome do rda
