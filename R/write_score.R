@@ -304,7 +304,7 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
     final_file <- if (grepl("\\.csv$", path_csv)) {
       path_csv
     } else {
-      file.path(path_csv, paste0("score_", area_loop, ".csv"))
+      file.path(path_csv, paste0("score_", tolower(area_loop), ".csv"))
     }
     dir.create(dirname(final_file), showWarnings = FALSE, recursive = TRUE)
     final_file <- normalizePath(final_file, mustWork = FALSE)
