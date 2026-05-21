@@ -14,14 +14,14 @@
 #' @export
 write_score <- function(data, path_csv = NULL, ano, area = NULL) {
   if (is.null(path_csv)) {
-    cli::cli_abort("{.arg path_csv} não pode ser NULL.")
+    cli::cli_abort("{.arg path_csv} nao pode ser NULL.")
   }
 
   # --- TÍTULO PRINCIPAL ---
   cli::cli_h1("Processamento de Scores ENEM {ano}")
 
   # 1. Recuperar os objetos da memória
-  cli::cli_process_start("Recuperando dicionários e itens do ambiente")
+  cli::cli_process_start("Recuperando dicionarios e itens do ambiente")
   tryCatch(
     {
       itens_df <- get(paste0("itens_", as.character(ano)), envir = .GlobalEnv)
@@ -31,7 +31,8 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
     error = function(e) {
       cli::cli_process_failed()
       cli::cli_alert_danger(
-        "Objetos {.var itens_{ano}} ou {.var dic_{ano}} não encontrados no {.code .GlobalEnv}."
+        "Objetos {.var itens_{ano}} ou {.var dic_{ano}} nao
+        encontrados no {.code .GlobalEnv}."
       )
       stop(e)
     }
@@ -154,15 +155,6 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
 
           itens_prova_origem <- NULL
 
-          # Verifica se a coluna existe e se NÃO é toda composta por NAs
-          # tem_versao_digital <- "TP_VERSAO_DIGITAL" %in% names(pool_itens) && !all(is.na(pool_itens$TP_VERSAO_DIGITAL))
-
-          # if (tem_versao_digital) {
-          #   itens_prova_origem <- pool_itens[pool_itens$TP_VERSAO_DIGITAL == lang_cand, ]
-          # } else {
-          #   itens_prova_origem <- pool_itens[is.na(pool_itens$TP_LINGUA) | pool_itens$TP_LINGUA == lang_cand, ]
-          # }
-
           itens_prova_origem <- pool_itens[
             is.na(pool_itens$TP_LINGUA) | pool_itens$TP_LINGUA == lang_cand,
           ]
@@ -175,7 +167,8 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
             cache_itens[[chave_cache]] <- itens_prova_origem
           } else {
             cli::cli_abort(
-              "Falha na seleção de itens: Caderno {cod_prova_origem} retornou {nrow(itens_prova_origem)} itens (esperado: 45)."
+              "Falha na seleção de itens: Caderno {cod_prova_origem}
+              retornou {nrow(itens_prova_origem)} itens (esperado: 45)."
             )
           }
         }
@@ -187,7 +180,7 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
           ))
         }
 
-        if (length(resp_orig_vetor) != 45 | length(gab_orig_vetor) != 45) {
+        if (length(resp_orig_vetor) != 45 || length(gab_orig_vetor) != 45) {
           stop(sprintf("Vetor RESP ou GAB tem tamanho errado"))
         }
 
@@ -261,7 +254,8 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
       if (i %% 5000 == 0) {
         cli::cli_status_update(
           id = cp,
-          msg = "Processando {.field {area_loop}}: {i} / {n} ({round(i/n*100)}%)"
+          msg = "Processando {.field {area_loop}}: {i}
+          / {n} ({round(i/n*100)}%)"
         )
       }
     }
@@ -287,15 +281,18 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
       cols_base <- c(cols_base, "TP_LINGUA")
     }
 
-    # 2. Criar um novo data.table apenas com o necessário (evita lixo do 'data' original)
-    # Usamos data.table::as.data.table para garantir uma cópia física em memória
+    # 2. Criar um novo data.table apenas com o necessário
+    # (evita lixo do 'data' original)
+    # Usamos data.table::as.data.table para garantir uma
+    # cópia física em memória
     score_final <- data.table::as.data.table(data[, ..cols_base])
 
     # 3. Atribuir o score bruto (NU_SCORE)
     score_final[, NU_SCORE := as.vector(score_nu)]
 
     # 4. Converter a matriz de itens para data.table e juntar
-    # IMPORTANTE: as.data.table(score_df) garante que usamos apenas os itens da área atual
+    # IMPORTANTE: as.data.table(score_df) garante que usamos
+    # apenas os itens da área atual
     itens_dt <- data.table::as.data.table(score_df)
 
     # Junk as colunas de itens ao score_final
@@ -321,5 +318,5 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
   }
 
   cli::cli_alert_success("Processamento do ano {.val {ano}} concluído!")
-  return(invisible(final_file))
+  invisible(final_file)
 }

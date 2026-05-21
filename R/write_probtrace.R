@@ -31,7 +31,7 @@ write_probtrace <- function(path_json = NULL, co_prova = NULL, ano) {
       cli::cli_process_done()
     },
     error = function(e) {
-      cli::cli_alert_danger("Objetos itens_{ano} ou dic_{ano} não encontrados.")
+      cli::cli_alert_danger("Objetos itens_{ano} ou dic_{ano} nao encontrados.")
       stop(e)
     }
   )
@@ -42,7 +42,7 @@ write_probtrace <- function(path_json = NULL, co_prova = NULL, ano) {
     dic_df <- dic_df[dic_df$codigo == co_prova_char, ]
     if (nrow(dic_df) == 0) {
       cli::cli_alert_danger(
-        "Código {.val {co_prova}} não encontrado no dicionário."
+        "Codigo {.val {co_prova}} nao encontrado no dicionario."
       )
       return(NULL)
     }
@@ -54,7 +54,7 @@ write_probtrace <- function(path_json = NULL, co_prova = NULL, ano) {
   lista_nomes_itens <- list()
   lista_mask_na <- list() # Guardar máscara de NAs para cada prova
   theta_vetor <- seq(-6, 6, by = 0.1)
-  Theta <- matrix(theta_vetor)
+  theta_matrix <- matrix(theta_vetor)
   cli::cli_process_done()
 
   # 3. Geração dos Modelos
@@ -124,7 +124,7 @@ write_probtrace <- function(path_json = NULL, co_prova = NULL, ano) {
   for (codigo in names(lista_modelos)) {
     tryCatch(
       {
-        tracos <- mirt::probtrace(lista_modelos[[codigo]], Theta)
+        tracos <- mirt::probtrace(lista_modelos[[codigo]], theta_matrix)
 
         # Se for o caderno específico, prepara para salvar no Environment
         if (!is.null(co_prova) && codigo == as.character(co_prova)) {
@@ -143,8 +143,9 @@ write_probtrace <- function(path_json = NULL, co_prova = NULL, ano) {
 
         itens_list <- list()
 
-        for (i in 1:ncol(prob_acertos)) {
-          # Se o item originalmente não tinha parâmetros, forçamos NA no vetor de probabilidade
+        for (i in seq_len(ncol(prob_acertos))) {
+          # Se o item originalmente não tinha parâmetros,
+          # forçamos NA no vetor de probabilidade
           if (mask_na[i]) {
             itens_list[[ids_reais[i]]] <- rep(NA, nrow(prob_acertos))
           } else {
@@ -179,7 +180,8 @@ write_probtrace <- function(path_json = NULL, co_prova = NULL, ano) {
       recursive = TRUE
     )
 
-    # na = "null" garante que os NAs que forçamos virem null para o JavaScript não desenhar nada
+    # na = "null" garante que os NAs que forçamos virem null
+    # para o JavaScript não desenhar nada
     jsonlite::write_json(
       output_final,
       path = final_path_clean,
@@ -189,15 +191,15 @@ write_probtrace <- function(path_json = NULL, co_prova = NULL, ano) {
       na = "null"
     )
     cli::cli_process_done()
-    cli::cli_alert_success("Processo concluído: {.path {final_path_clean}}")
+    cli::cli_alert_success("Processo concluido: {.path {final_path_clean}}")
   }
 
   # Lógica de Retorno
   if (!is.null(retorno_ambiente)) {
-    return(invisible(retorno_ambiente))
+    invisible(retorno_ambiente)
   } else if (!is.null(path_json)) {
-    return(invisible(final_path_clean))
+    invisible(final_path_clean)
   } else {
-    return(invisible(output_final))
+    invisible(output_final)
   }
 }

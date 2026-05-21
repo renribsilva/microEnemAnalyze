@@ -3,12 +3,14 @@
 #' @description Processa NU_NOTA_COMP1-5 e NU_NOTA_REDACAO com labels
 #' padronizados (by 20).
 #'
-#' @param data Um data.table contendo as colunas de competências, nota e status.
+#' @param data Um data.table contendo as colunas de competências,
+#' nota e status.
 #' @param path_json Caminho para salvar o arquivo JSON.
+#' @import cli
 #'
 #' @export
 write_comp_redacao <- function(data, path_json) {
-  cli::cli_h2("Processamento Integral: Competências + Nota Total")
+  cli::cli_h2("Processamento Integral: Competencias + Nota Total")
 
   # --- CONFIGURAÇÃO DE COLUNAS ---
   cols_comp <- paste0("NU_NOTA_COMP", 1:5)
@@ -18,13 +20,13 @@ write_comp_redacao <- function(data, path_json) {
   colunas_necessarias <- c(todas_as_notas, "TP_STATUS_REDACAO")
 
   if (!all(colunas_necessarias %in% names(data))) {
-    cli::cli_alert_danger("Erro: Colunas necessárias ausentes.")
-    stop("Execução interrompida.")
+    cli::cli_alert_danger("Erro: Colunas necessarias ausentes.")
+    stop("Execucao interrompida.")
   }
 
   # --- PROCESSAMENTO ---
   cli::cli_process_start(
-    "Calculando métricas com labels fixos (0-200/1000 by 20)"
+    "Calculando metricas com labels fixos (0-200/1000 by 20)"
   )
 
   resultados_final <- lapply(todas_as_notas, function(col) {
@@ -108,8 +110,8 @@ write_comp_redacao <- function(data, path_json) {
   cli::cli_process_done()
 
   cli::cli_alert_success(
-    "Sucesso! Estatísticas e frequências (step 20) exportadas corretamente."
+    "Sucesso! Estatisticas e frequencias (step 20) exportadas corretamente."
   )
 
-  return(invisible(final_file))
+  invisible(final_file)
 }

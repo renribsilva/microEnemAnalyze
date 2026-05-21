@@ -2,7 +2,6 @@
 #'
 #' @param data Data.table com a coluna NU_NOTA_...
 #' @param path_json Caminho do arquivo JSON.
-#' @import data.table
 #' @export
 write_density_notas <- function(data, path_json) {
   cli::cli_h2("Processamento de Densidade (Chart.js)")
@@ -80,5 +79,5 @@ write_density_notas <- function(data, path_json) {
   )
 
   cli::cli_alert_success("Arquivo salvo com sucesso em: {.path {final_file}}")
-  return(invisible(final_file))
+  invisible(final_file)
 }

@@ -10,11 +10,6 @@
 #' @return Retorna invisivelmente a lista processada. Estrutura do JSON:
 #' \code{id_item -> { counts: {...}, bins: { labels: [], "0": [], "1": [] } }}.
 #'
-#' @import data.table
-#' @importFrom data.table is.data.table
-#' @importFrom jsonlite write_json
-#' @importFrom cli cli_h1 cli_alert_info cli_alert_success cli_process_start cli_process_done
-#' @importFrom utils head tail
 #' @export
 write_score_table <- function(data, path_json) {
   prefixos_ignore <- c(
@@ -29,7 +24,7 @@ write_score_table <- function(data, path_json) {
     "TX_GABARITO"
   )
 
-  cli::cli_h1("Processamento de Frequências (ENEM)")
+  cli::cli_h1("Processamento de Frequencias (ENEM)")
   cli::cli_alert_info("Iniciando processamento de {length(data)} área(s)")
 
   lista_final_resultados <- list()
@@ -122,5 +117,5 @@ write_score_table <- function(data, path_json) {
   )
   cli::cli_process_done()
 
-  return(invisible(lista_final_resultados))
+  invisible(lista_final_resultados)
 }

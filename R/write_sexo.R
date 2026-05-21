@@ -27,7 +27,7 @@ write_sexo <- function(data, path_json) {
   cli::cli_process_done()
 
   # Processamento
-  cli::cli_process_start("Calculando frequências de sexo")
+  cli::cli_process_start("Calculando frequencias de sexo")
 
   labels_sexo <- c(
     "Feminino",
@@ -74,5 +74,5 @@ write_sexo <- function(data, path_json) {
   cli::cli_process_done()
   cli::cli_alert_success("Processo concluído: {.path {final_file}}")
 
-  return(invisible(final_file))
+  invisible(final_file)
 }

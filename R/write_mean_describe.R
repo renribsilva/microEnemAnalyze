@@ -1,11 +1,16 @@
 #' Exportar Estatísticas das Notas do ENEM
 #' @param data Um data.table bruto
 #' @param path Caminho do arquivo JSON ou diretório
-#' @import data.table jsonlite psych cli
+#' @export
 write_mean_describe <- function(data, path) {
-
-  temp_dt <- copy(data)
-  cols_notas <- c("NU_NOTA_LC", "NU_NOTA_CH", "NU_NOTA_CN", "NU_NOTA_MT", "NU_NOTA_REDACAO")
+  temp_dt <- data
+  cols_notas <- c(
+    "NU_NOTA_LC",
+    "NU_NOTA_CH",
+    "NU_NOTA_CN",
+    "NU_NOTA_MT",
+    "NU_NOTA_REDACAO"
+  )
 
   # Verificação de integridade
   total_na_por_linha <- rowSums(is.na(temp_dt[, ..cols_notas]))
@@ -14,7 +19,7 @@ write_mean_describe <- function(data, path) {
   }
 
   # Tratamento de NAs e Média
-  setnafill(temp_dt, fill = 0, cols = cols_notas)
+  data.table::setnafill(temp_dt, fill = 0, cols = cols_notas)
   temp_dt[, MEDIA_GERAL := rowMeans(.SD), .SDcols = cols_notas]
 
   # Gerar Estatísticas base
@@ -48,13 +53,22 @@ write_mean_describe <- function(data, path) {
   # --- TRATAMENTO DO PATH ---
   cli::cli_process_start("Exportando arquivo JSON")
 
-  final_file <- if(grepl("\\.json$", path)) path else file.path(path, "mean_describe.json")
+  final_file <- if (grepl("\\.json$", path)) {
+    path
+  } else {
+    file.path(path, "mean_describe.json")
+  }
   dir.create(dirname(final_file), showWarnings = FALSE, recursive = TRUE)
 
-  jsonlite::write_json(output, path = final_file, pretty = TRUE, auto_unbox = TRUE)
+  jsonlite::write_json(
+    output,
+    path = final_file,
+    pretty = TRUE,
+    auto_unbox = TRUE
+  )
 
   cli::cli_process_done()
   cli::cli_alert_success("Processo concluído: {.path {final_file}}")
 
-  return(invisible(temp_dt))
+  invisible(temp_dt)
 }

@@ -10,9 +10,6 @@
 #' @param itens_db Um data.table contendo os parâmetros
 #' dos itens (A, B, C) e códigos de prova.
 #'
-#' @importFrom stats dnorm sd
-#' @import cli
-#'
 #' @return Uma lista contendo a constante de escala (k),
 #' a constante de deslocamento (d) e a área processada.
 #' @export

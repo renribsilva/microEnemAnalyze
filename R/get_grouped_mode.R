@@ -20,7 +20,6 @@
 #' \deqn{Mo = Li + \left( \frac{\Delta_1}{\Delta_1 + \Delta_2} \right) \cdot h}
 #' Onde \eqn{\Delta_1 = f_{mo} - f_{ant}} e \eqn{\Delta_2 = f_{mo} - f_{post}}.
 #'
-#' @import data.table
 #' @export
 #'
 #' @examples

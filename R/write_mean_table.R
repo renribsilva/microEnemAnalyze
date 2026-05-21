@@ -1,21 +1,26 @@
 #' Exportar Top 2000 Scores Achatados com Ranking
 #' @param data Um data.table processado (com MEDIA_GERAL e TX_RESPOSTAS)
 #' @param path Caminho do arquivo JSON de saída
-#' @import data.table jsonlite
+#' @export
 write_mean_table <- function(data, path) {
-
   temp_dt <- data
-  cols_notas <- c("NU_NOTA_LC", "NU_NOTA_CH", "NU_NOTA_CN", "NU_NOTA_MT", "NU_NOTA_REDACAO")
+  cols_notas <- c(
+    "NU_NOTA_LC",
+    "NU_NOTA_CH",
+    "NU_NOTA_CN",
+    "NU_NOTA_MT",
+    "NU_NOTA_REDACAO"
+  )
 
   # Verificação de integridade
   total_na_por_linha <- rowSums(is.na(temp_dt[, ..cols_notas]))
   if (any(total_na_por_linha == length(cols_notas))) {
-    stop("Há participantes com NA em todas as áreas")
+    stop("Ha participantes com NA em todas as areas")
   }
 
   # Tratamento de NAs e Média
-  cli::cli_alert_info("Tratando NAs e calculando médias...")
-  setnafill(temp_dt, fill = 0, cols = cols_notas)
+  cli::cli_alert_info("Tratando NAs e calculando medias...")
+  data.table::setnafill(temp_dt, fill = 0, cols = cols_notas)
   temp_dt[, MEDIA_GERAL := rowMeans(.SD), .SDcols = cols_notas]
 
   # Ordenar e filtrar os top 2500
@@ -33,46 +38,53 @@ write_mean_table <- function(data, path) {
     gab_col <- paste0("TX_GABARITO_", a)
     score_col <- paste0("SCORE_", a)
 
-    cli::cli_process_start("Processando scores da área: {.strong {a}}")
+    cli::cli_process_start("Processando scores da area: {.strong {a}}")
 
     # Passamos r (resposta), g (gabarito) e l (língua) para o mapply
-    top_dt[, (score_col) := mapply(function(r, g, l, area_atual) {
+    top_dt[
+      ,
+      (score_col) := mapply(
+        function(r, g, l, area_atual) {
+          g_final <- g
+          r_final <- r
 
-      g_final <- g
-      r_final <- r
+          # Tratamento específico para Linguagens
+          if (area_atual == "LC") {
+            # Só corta o GABARITO se ele estiver com o tamanho cheio
+            # do ENEM (50)
+            if (nchar(g) != 45) {
+              if (l == 0) {
+                g_final <- paste0(substr(g, 1, 5), substr(g, 11, 50))
+              } else {
+                g_final <- substr(g, 6, 50)
+              }
+            }
 
-      # Tratamento específico para Linguagens
-      if (area_atual == "LC") {
-
-        # Só corta o GABARITO se ele estiver com o tamanho cheio do ENEM (50)
-        if (nchar(g) != 45) {
-          if (l == 0) {
-            g_final <- paste0(substr(g, 1, 5), substr(g, 11, 50))
-          } else {
-            g_final <- substr(g, 6, 50)
+            # Só corta a RESPOSTA se, por algum motivo, ela também vier com 50
+            if (nchar(r) != 45) {
+              if (l == 0) {
+                r_final <- paste0(substr(r, 1, 5), substr(r, 11, 50))
+              } else {
+                r_final <- substr(r, 6, 50)
+              }
+            }
           }
-        }
 
-        # Só corta a RESPOSTA se, por algum motivo, ela também vier com 50
-        if (nchar(r) != 45) {
-          if (l == 0) {
-            r_final <- paste0(substr(r, 1, 5), substr(r, 11, 50))
-          } else {
-            r_final <- substr(r, 6, 50)
-          }
-        }
-      }
+          # Se nchar for 45, ele ignora os IFS acima e usa r e g originais
+          res_matriz <- process_score(r_final, g_final)
 
-      # Se nchar for 45, ele ignora os IFS acima e usa r e g originais
-      res_matriz <- process_score(r_final, g_final)
+          # Limpeza padrão
+          res_limpo <- res_matriz[res_matriz != 9]
+          res_limpo[res_limpo %in% c(7, 8)] <- 0
 
-      # Limpeza padrão
-      res_limpo <- res_matriz[res_matriz != 9]
-      res_limpo[res_limpo %in% c(7, 8)] <- 0
-
-      return(paste0(res_limpo, collapse = ""))
-
-    }, get(res_col), get(gab_col), TP_LINGUA, MoreArgs = list(area_atual = a))]
+          paste0(res_limpo, collapse = "")
+        },
+        get(res_col),
+        get(gab_col),
+        TP_LINGUA,
+        MoreArgs = list(area_atual = a)
+      )
+    ]
 
     cli::cli_process_done()
   }
@@ -88,15 +100,23 @@ write_mean_table <- function(data, path) {
   )
 
   # --- TRATAMENTO DO PATH E EXPORTAÇÃO ---
-  final_file <- if(grepl("\\.json$", path)) path else file.path(path, "mean_table.json")
+  final_file <- if (grepl("\\.json$", path)) {
+    path
+  } else {
+    file.path(path, "mean_table.json")
+  }
   dir.create(dirname(final_file), showWarnings = FALSE, recursive = TRUE)
 
   cli::cli_process_start("Gravando JSON em {.path {final_file}}")
   # Garante que as colunas exportadas sigam a ordem da lista cols_to_export
-  jsonlite::write_json(top_dt[, ..cols_to_export], path = final_file, pretty = TRUE)
+  jsonlite::write_json(
+    top_dt[, ..cols_to_export],
+    path = final_file,
+    pretty = TRUE
+  )
   cli::cli_process_done()
 
-  cli::cli_alert_success("Processo concluído com sucesso!")
+  cli::cli_alert_success("Processo concluido com sucesso!")
 
-  return(invisible(top_dt))
+  invisible(top_dt)
 }

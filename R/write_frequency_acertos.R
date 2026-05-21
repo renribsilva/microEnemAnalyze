@@ -2,10 +2,9 @@
 #'
 #' @param data Data.table contendo a coluna NU_SCORE.
 #' @param path_json Caminho do arquivo ou diretório de destino.
-#' @import data.table
 #' @export
 write_frequency_acertos <- function(data, path_json) {
-  cli::cli_h2("Processamento de Frequência (Acertos)")
+  cli::cli_h2("Processamento de Frequencia (Acertos)")
 
   col_prova <- grep("^CO_PROVA_", names(data), value = TRUE)
   col_score <- "NU_SCORE"
@@ -30,14 +29,14 @@ write_frequency_acertos <- function(data, path_json) {
     list(
       datasets = list(
         list(
-          label = "Frequência Absoluta",
-          data = lapply(1:nrow(df_f), function(i) {
+          label = "Frequencia Absoluta",
+          data = lapply(seq_len(nrow(df_f)), function(i) {
             list(x = df_f$x[i], y = df_f$abs[i])
           })
         ),
         list(
-          label = "Frequência Relativa (%)",
-          data = lapply(1:nrow(df_f), function(i) {
+          label = "Frequencia Relativa (%)",
+          data = lapply(seq_len(nrow(df_f)), function(i) {
             list(x = df_f$x[i], y = df_f$rel[i])
           })
         )
@@ -59,7 +58,7 @@ write_frequency_acertos <- function(data, path_json) {
     !grepl("Digital", dic_df$cor, ignore.case = TRUE)
   ]
 
-  cli::cli_process_start("Calculando Frequências (Digital vs Regular)")
+  cli::cli_process_start("Calculando Frequencias (Digital vs Regular)")
 
   lista_completa <- list(
     digital = calc_freq(cod_digital),
@@ -83,6 +82,6 @@ write_frequency_acertos <- function(data, path_json) {
   )
   cli::cli_process_done()
 
-  cli::cli_alert_success("Frequências salvas em: {.path {final_file}}")
-  return(invisible(final_file))
+  cli::cli_alert_success("Frequencias salvas em: {.path {final_file}}")
+  invisible(final_file)
 }

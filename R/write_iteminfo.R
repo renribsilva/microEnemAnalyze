@@ -15,7 +15,7 @@
 #' @export
 write_iteminfo <- function(path_json = NULL, co_prova = NULL, ano) {
   # --- TÍTULO ---
-  cli::cli_h2("Processamento de Curvas de Informação (Item Info) - ENEM {ano}")
+  cli::cli_h2("Processamento de Curvas de Informacao (Item Info) - ENEM {ano}")
 
   # 1. Recuperar os objetos da memória
   cli::cli_process_start("Buscando objetos no Global Environment")
@@ -26,7 +26,7 @@ write_iteminfo <- function(path_json = NULL, co_prova = NULL, ano) {
       cli::cli_process_done()
     },
     error = function(e) {
-      cli::cli_alert_danger("Objetos itens_{ano} ou dic_{ano} não encontrados.")
+      cli::cli_alert_danger("Objetos itens_{ano} ou dic_{ano} nao encontrados.")
       stop(e)
     }
   )
@@ -36,7 +36,7 @@ write_iteminfo <- function(path_json = NULL, co_prova = NULL, ano) {
     dic_df <- dic_df[dic_df$codigo == co_prova_char, ]
     if (nrow(dic_df) == 0) {
       cli::cli_alert_danger(
-        "Código {.val {co_prova}} não encontrado no dicionário."
+        "Codigo {.val {co_prova}} nao encontrado no dicionario."
       )
       return(NULL)
     }
@@ -48,7 +48,7 @@ write_iteminfo <- function(path_json = NULL, co_prova = NULL, ano) {
   lista_nomes_itens <- list()
   lista_mask_na <- list()
   theta_vetor <- seq(-6, 6, by = 0.1)
-  Theta <- matrix(theta_vetor)
+  theta_matrix <- matrix(theta_vetor)
   cli::cli_process_done()
 
   # 3. Geração dos Modelos
@@ -108,7 +108,7 @@ write_iteminfo <- function(path_json = NULL, co_prova = NULL, ano) {
   )
 
   retorno_ambiente <- NULL
-  cp_ext <- cli::cli_process_start("Extraindo curvas de informação")
+  cp_ext <- cli::cli_process_start("Extraindo curvas de informacao")
 
   for (codigo in names(lista_modelos)) {
     tryCatch(
@@ -118,11 +118,14 @@ write_iteminfo <- function(path_json = NULL, co_prova = NULL, ano) {
 
         # mirt::iteminfo calcula a info para cada item individualmente
         # Criamos uma matriz para armazenar: linhas = theta, colunas = itens
-        matriz_info <- matrix(0, nrow = nrow(Theta), ncol = n_itens)
+        matriz_info <- matrix(0, nrow = nrow(theta_matrix), ncol = n_itens)
 
         for (j in 1:n_itens) {
           # Extraímos a info do item j do modelo
-          matriz_info[, j] <- mirt::iteminfo(mirt::extract.item(mod, j), Theta)
+          matriz_info[, j] <- mirt::iteminfo(
+            mirt::extract.item(mod, j),
+            theta_matrix
+          )
         }
 
         if (!is.null(co_prova) && codigo == as.character(co_prova)) {
@@ -140,7 +143,7 @@ write_iteminfo <- function(path_json = NULL, co_prova = NULL, ano) {
 
         for (i in 1:n_itens) {
           if (mask_na[i]) {
-            itens_list[[ids_reais[i]]] <- rep(NA, nrow(Theta))
+            itens_list[[ids_reais[i]]] <- rep(NA, nrow(theta_matrix))
           } else {
             itens_list[[ids_reais[i]]] <- as.vector(matriz_info[, i])
           }
@@ -182,14 +185,14 @@ write_iteminfo <- function(path_json = NULL, co_prova = NULL, ano) {
       na = "null"
     )
     cli::cli_process_done()
-    cli::cli_alert_success("Processo concluído: {.path {final_path_clean}}")
+    cli::cli_alert_success("Processo concluido: {.path {final_path_clean}}")
   }
 
   if (!is.null(retorno_ambiente)) {
-    return(invisible(retorno_ambiente))
+    invisible(retorno_ambiente)
   } else if (!is.null(path_json)) {
-    return(invisible(final_path_clean))
+    invisible(final_path_clean)
   } else {
-    return(invisible(output_final))
+    invisible(output_final)
   }
 }

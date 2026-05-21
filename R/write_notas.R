@@ -1,12 +1,12 @@
 #' Exportar TCCs de todos os cadernos em um único JSON
 #'
 #' @param data Data.table com a coluna NU_NOTA
-#' @param path_json String. Caminho completo do arquivo (ex: "caminho/describe.json").
+#' @param path_json String. Caminho completo do arquivo
+#' (ex: "caminho/describe.json").
 #' @export
 write_notas <- function(data, path_json) {
-
   # --- TÍTULO ---
-  cli::cli_h2("Exportação de Vetor de Notas")
+  cli::cli_h2("Exportacao de Vetor de Notas")
 
   # Processamento
   cli::cli_process_start("Filtrando e preparando notas")
@@ -16,17 +16,26 @@ write_notas <- function(data, path_json) {
   cli::cli_process_done()
 
   # --- TRATAMENTO DO PATH ---
-  final_file <- if(grepl("\\.json$", path_json)) path_json else file.path(path_json, "notas.json")
+  final_file <- if (grepl("\\.json$", path_json)) {
+    path_json
+  } else {
+    file.path(path_json, "notas.json")
+  }
 
   dir.create(dirname(final_file), showWarnings = FALSE, recursive = TRUE)
   final_file <- normalizePath(final_file, mustWork = FALSE)
 
   # Exportação
   cli::cli_process_start("Exportando arquivo JSON")
-  jsonlite::write_json(notas_filtrado, path = final_file, pretty = TRUE, auto_unbox = TRUE)
+  jsonlite::write_json(
+    notas_filtrado,
+    path = final_file,
+    pretty = TRUE,
+    auto_unbox = TRUE
+  )
   cli::cli_process_done()
 
-  cli::cli_alert_success("Processo concluído: {.path {final_file}}")
+  cli::cli_alert_success("Processo concluido: {.path {final_file}}")
 
-  return(invisible(final_file))
+  invisible(final_file)
 }

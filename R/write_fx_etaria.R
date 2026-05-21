@@ -11,7 +11,7 @@
 #' @export
 write_fx_etaria <- function(data, path_json) {
   # --- TÍTULO DO PROCESSO ---
-  cli::cli_h2("Processamento de Dados: Faixa Etária")
+  cli::cli_h2("Processamento de Dados: Faixa Etaria")
 
   # --- VALIDAÇÃO ---
   if (!data.table::is.data.table(data)) {
@@ -22,13 +22,13 @@ write_fx_etaria <- function(data, path_json) {
 
   if (!is.character(path_json)) {
     cli::cli_alert_danger(
-      "Erro de validação: {.var path_json} precisa ser character."
+      "Erro de validacao: {.var path_json} precisa ser character."
     )
-    stop("Execução interrompida.")
+    stop("Execucao interrompida.")
   }
 
   # --- PROCESSAMENTO ---
-  cli::cli_process_start("Calculando frequências e agrupando faixas")
+  cli::cli_process_start("Calculando frequencias e agrupando faixas")
 
   labels_etaria <- c(
     "Menor de 20 anos",
@@ -85,5 +85,5 @@ write_fx_etaria <- function(data, path_json) {
 
   cli::cli_alert_success("Finalizado com sucesso!")
 
-  return(invisible(final_file))
+  invisible(final_file)
 }

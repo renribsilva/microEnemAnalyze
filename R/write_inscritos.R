@@ -1,9 +1,11 @@
 #' @title Gerar JSON de Inscritos e Treineiros
 #'
-#' @description Esta função processa os dados do ENEM, valida a integridade dos inscritos
+#' @description Esta função processa os dados do ENEM,
+#' valida a integridade dos inscritos
 #' e exporta um arquivo JSON estruturado para uso em dashboards.
 #'
-#' @param data Um data.table ou data.table contendo as colunas NU_INSCRICAO e IN_TREINEIRO.
+#' @param data Um data.table ou data.table contendo as
+#' colunas NU_INSCRICAO e IN_TREINEIRO.
 #' @param path_json O diretório onde o arquivo 'inscritos.json' será salvo.
 #'
 #' @return Retorna o caminho do arquivo gerado (invisivelmente).
@@ -21,7 +23,6 @@ write_inscritos <- function(data, path_json) {
   }
 
   if (typeof(data) != "data.table") {
-    # cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
     data <- data.table::as.data.table(data)
   }
 
@@ -39,7 +40,7 @@ write_inscritos <- function(data, path_json) {
   treineiros_counts <- table(data$IN_TREINEIRO)
   treineiros_prop <- prop.table(treineiros_counts)
 
-  tabela_treineiros <- t(as.data.table(rbind(
+  tabela_treineiros <- t(data.table::as.data.table(rbind(
     treineiros_counts,
     treineiros_prop
   )))
@@ -101,5 +102,5 @@ write_inscritos <- function(data, path_json) {
 
   cli::cli_alert_success("Processo concluído: {.file {final_file}}")
 
-  return(invisible(final_file))
+  invisible(final_file)
 }

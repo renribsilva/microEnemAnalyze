@@ -1,11 +1,10 @@
 #' Exportar Estatísticas Descritivas e Densidade por Score
 #' @param data Uma lista nomeada de data.tables.
 #' @param path_json Caminho para o arquivo .json de saída.
-#' @import data.table
 #' @export
 write_score_describe <- function(data, path_json, ano) {
   cli::cli_h1(
-    "Descrição estatística: Processamento por Score (Digital vs Regular)"
+    "Descricao estatistica: Processamento por Score (Digital vs Regular)"
   )
   lista_final_resultados <- list()
 
@@ -23,10 +22,13 @@ write_score_describe <- function(data, path_json, ano) {
     nm <- gsub("NU_NOTA_", "", col_referencia)
     col_prova <- paste0("CO_PROVA_", nm)
 
-    cli::cli_process_start("Processando área: {.strong {nm}}")
+    cli::cli_process_start("Processando area: {.strong {nm}}")
 
     # --- Função interna para evitar repetição de código ---
     processar_grupo <- function(codigos_selecionados) {
+      nota <- NULL
+      score <- NULL
+      vars <- NULL
       dt_temp <- dt_area[
         get(col_prova) %in%
           codigos_selecionados &
@@ -67,7 +69,7 @@ write_score_describe <- function(data, path_json, ano) {
           lista_scores[[as.character(s)]] <- stats_list
         }
       }
-      return(lista_scores)
+      lista_scores
     }
 
     ano_dt <- dt_area[1, ]$NU_ANO
@@ -101,5 +103,5 @@ write_score_describe <- function(data, path_json, ano) {
     na = "null"
   )
 
-  return(invisible(lista_final_resultados))
+  invisible(lista_final_resultados)
 }

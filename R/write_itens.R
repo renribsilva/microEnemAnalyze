@@ -2,33 +2,33 @@
 #'
 #' @param path_json String com o caminho da pasta ou nome do arquivo de saída
 #' @param ano Inteiro ou string representando o ano (ex: 2019)
-#' @import data.table
 #' @export
 write_itens <- function(path_json, ano) {
-  cli::cli_h2("Exportação de Itens (Dicionário de Parâmetros) - ENEM {ano}")
+  cli::cli_h2("Exportacao de Itens (Dicionario de Parametros) - ENEM {ano}")
 
   # 1. Recuperar objeto
   obj_name <- paste0("itens_", as.character(ano))
   if (!exists(obj_name, envir = .GlobalEnv)) {
-    cli::cli_alert_danger("Erro: Objeto {.val {obj_name}} não encontrado.")
+    cli::cli_alert_danger("Erro: Objeto {.val {obj_name}} nao encontrado.")
     stop("Objeto inexistente.")
   }
 
   itens_df <- data.table::as.data.table(get(obj_name, envir = .GlobalEnv))
 
   # 2. Limpeza de Encoding (Apenas em colunas de texto)
-  cli::cli_process_start("Limpando caracteres inválidos (UTF-8)")
+  cli::cli_process_start("Limpando caracteres invalidos (UTF-8)")
 
   itens_df[] <- lapply(itens_df, function(x) {
     if (is.character(x) || is.factor(x)) {
       x <- as.character(x)
-      # Corrige erros como "ergncia" convertendo de latin1 e limpando bytes órfãos
+      # Corrige erros como "ergncia" convertendo de latin1
+      # e limpando bytes órfãos
       x <- iconv(x, from = "latin1", to = "UTF-8", sub = "")
       x <- iconv(x, from = "UTF-8", to = "UTF-8", sub = "")
       return(x)
     }
     # Se for numérico, retorna intacto (mantém os NAs originais como NA)
-    return(x)
+    x
   })
   cli::cli_process_done()
 
@@ -60,5 +60,5 @@ write_itens <- function(path_json, ano) {
     "Sucesso! Arquivo pronto para o Next.js: {.path {final_file}}"
   )
 
-  return(invisible(final_file))
+  invisible(final_file)
 }

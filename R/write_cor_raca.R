@@ -1,6 +1,7 @@
 #' @title Gera JSON sobre cor ou raça dos participantes do ENEM
 #'
-#' @description Esta função calcula frequências da variável cor ou raça do microdados do EENM
+#' @description Esta função calcula frequências da variável
+#' cor ou raça do microdados do EENM
 #' e exporta um JSON formatado para uso no Chart.js.
 #'
 #' @param data Um data.table contendo a coluna TP_COR_RACA.
@@ -9,7 +10,7 @@
 #' @return Salva um arquivo JSON no diretório especificado.
 #' @export
 write_cor_raca <- function(data, path_json) {
-  cli::cli_h2("Processamento de Dados: Cor ou Raça")
+  cli::cli_h2("Processamento de Dados: Cor ou Raca")
 
   # Validação básica
   cli::cli_process_start("Validando estrutura dos dados")
@@ -18,7 +19,7 @@ write_cor_raca <- function(data, path_json) {
   }
   cli::cli_process_done()
 
-  cli::cli_process_start("Calculando frequências e estruturando Treemap")
+  cli::cli_process_start("Calculando frequencias e estruturando Treemap")
 
   # 1. Mapeamento completo (Dicionário)
   mapa_cores <- c(
@@ -82,5 +83,5 @@ write_cor_raca <- function(data, path_json) {
   cli::cli_process_done()
 
   cli::cli_alert_success("Arquivo salvo em: {.path {final_file}}")
-  return(invisible(final_file))
+  invisible(final_file)
 }

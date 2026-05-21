@@ -1,19 +1,19 @@
 #' Exportar Curva Empírica por Item (CCI)
 #'
-#' Esta função processa microdados do ENEM para calcular a probabilidade observada
-#' de acerto (curva empírica) por item, utilizando uma escala imutável de 1 em 1 ponto.
-#' O cálculo da proporção considera apenas respostas válidas (0, 1, 7, 8) e notas > 0.
+#' Esta função processa microdados do ENEM para calcular a probabilidade
+#' observada
+#' de acerto (curva empírica) por item, utilizando uma escala
+#' imutável de 1 em 1 ponto.
+#' O cálculo da proporção considera apenas respostas válidas
+#' (0, 1, 7, 8) e notas > 0.
 #'
 #' @param data Uma lista nomeada de \code{data.table}s (ex: list(MT = dt_mt)).
 #' @param path_json Caminho completo para o arquivo .json de saída.
 #'
-#' @return Retorna a lista processada invisivelmente. O JSON gerado segue a estrutura:
+#' @return Retorna a lista processada invisivelmente. O JSON gerado
+#' segue a estrutura:
 #' \code{codigo_item -> { x: [notas], y: [proporcoes] }}.
 #'
-#' @import data.table
-#' @importFrom data.table is.data.table .N
-#' @importFrom jsonlite write_json
-#' @importFrom cli cli_h1 cli_alert_info cli_alert_success cli_process_start cli_process_done cli_alert_warning
 #' @export
 write_score_graph <- function(data, path_json) {
   prefixos_ignore <- c(
@@ -28,8 +28,8 @@ write_score_graph <- function(data, path_json) {
     "TX_GABARITO"
   )
 
-  cli::cli_h1("CCI Empírica: Processamento por Item")
-  cli::cli_alert_info("Iniciando análise de {length(data)} área(s)")
+  cli::cli_h1("CCI Empirica: Processamento por Item")
+  cli::cli_alert_info("Iniciando analise de {length(data)} area(s)")
 
   lista_final_resultados <- list()
 
@@ -54,7 +54,7 @@ write_score_graph <- function(data, path_json) {
     # Identifica a coluna de prova dinâmica (ex: CO_PROVA_CN)
     col_prova <- paste0("CO_PROVA_", nm)
 
-    cli::cli_process_start("Processando área: {.strong {nm}}")
+    cli::cli_process_start("Processando area: {.strong {nm}}")
 
     # --- FILTRAGEM DO DT (APENAS NOTAS > 0) ---
     dt <- dt_area[get(col_prova) %in% cod_selected & get(col_referencia) > 0]
@@ -125,5 +125,5 @@ write_score_graph <- function(data, path_json) {
   cli::cli_process_done()
 
   cli::cli_alert_success("Processamento finalizado com sucesso.")
-  return(invisible(lista_final_resultados))
+  invisible(lista_final_resultados)
 }

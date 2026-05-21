@@ -3,10 +3,9 @@
 #' @param score Lista de data.tables (um por área) com NU_SCORE e NU_NOTA_
 #' @param path_json Caminho base ou nome do arquivo para salvar
 #' @param ano Ano do exame
-#' @import data.table
 #' @export
 write_tcc <- function(data, score, path_json, ano) {
-  cli::cli_h1("Processamento Consolidado: TCC Teórico + Empírico (Streaming)")
+  cli::cli_h1("Processamento Consolidado: TCC Teorico + Empirico (Streaming)")
 
   # ------------------------------------------------------------------
   # Objetos globais
@@ -67,7 +66,8 @@ write_tcc <- function(data, score, path_json, ano) {
 
     pbar <- cli::cli_progress_bar(
       total = length(codigos),
-      format = "  {cli::pb_spin} Processando cadernos [{pb_current}/{pb_total}] {pb_percent} | ETA: {pb_eta}"
+      format = "  {cli::pb_spin} Processando
+      cadernos [{pb_current}/{pb_total}] {pb_percent} | ETA: {pb_eta}"
     )
 
     for (codigo in codigos) {
@@ -101,18 +101,10 @@ write_tcc <- function(data, score, path_json, ano) {
         all.x = TRUE
       )
 
-      Theta_metrico <- matrix(
+      theta_metrico <- matrix(
         (escala_x - const_row$d) / const_row$k,
         ncol = 1
       )
-
-      # tem_digital <- "TP_VERSAO_DIGITAL" %in% names(itens_df)
-      # versoes <- if (tem_digital) {
-      #   unique(na.omit(itens_df$TP_VERSAO_DIGITAL[itens_df$CO_PROVA == codigo]))
-      # } else {
-      #   "X"
-      # }
-      # if (length(versoes) == 0) versoes <- "X"
 
       versoes <- "X"
 
@@ -141,10 +133,6 @@ write_tcc <- function(data, score, path_json, ano) {
 
           itens_caderno <- itens_df[itens_df$CO_PROVA == codigo, ]
 
-          # if (tem_digital && (v_digital != "X")) {
-          #   itens_caderno <- itens_caderno[itens_caderno$TP_VERSAO_DIGITAL == v_digital, ]
-          # }
-
           if (area_nome == "LC") {
             itens_caderno <- itens_caderno[
               is.na(TP_LINGUA) | TP_LINGUA == lingua,
@@ -153,25 +141,12 @@ write_tcc <- function(data, score, path_json, ano) {
 
           itens_caderno <- itens_caderno[order(CO_POSICAO), ]
 
-          # if (nrow(itens_caderno) != 45) {
-          #   if (tem_digital && (v_digital != "X") && (lingua != v_digital)) {
-          #     cli::cli_alert_warning("Pulando caderno inválido: {codigo} | {area_nome} | Itens: {nrow(itens_caderno)}")
-          #     next
-          #   } else {
-          #     stop(
-          #       sprintf(
-          #         "ERRO CRÍTICO: caderno inválido (n != 45)\n  codigo=%s | area=%s | versao=%s | lingua=%s | n_itens=%s",
-          #         codigo, area_nome, v_digital, lingua, nrow(itens_caderno)
-          #       ),
-          #       call. = FALSE
-          #     )
-          #   }
-          # }
-
           if (nrow(itens_caderno) != 45) {
             stop(
               sprintf(
-                "ERRO CRÍTICO: caderno inválido (n != 45)\n  codigo=%s | area=%s | versao=%s | lingua=%s | n_itens=%s",
+                "ERRO CRÍTICO: caderno
+                inválido (n != 45)
+                codigo=%s | area=%s | versao=%s | lingua=%s | n_itens=%s",
                 codigo,
                 area_nome,
                 v_digital,
@@ -192,7 +167,7 @@ write_tcc <- function(data, score, path_json, ano) {
           )
 
           mod_test <- mirtCAT::generate.mirt_object(itens_mirt, "3PL")
-          escore <- mirt::expected.test(mod_test, Theta_metrico)
+          escore <- mirt::expected.test(mod_test, theta_metrico)
 
           den <- max(escore) - min(escore)
           if (den == 0) {
