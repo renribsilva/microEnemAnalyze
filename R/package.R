@@ -17,5 +17,5 @@ utils::globalVariables(c(
   "cor",
   "codigo",
   # write_tcc
-  "CO_POSICAO"
+  "CO_POSICAO",
 ))

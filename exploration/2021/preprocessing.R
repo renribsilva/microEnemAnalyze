@@ -3,30 +3,18 @@
 #----------------------------------------------------------------------
 
 # Importa os microdados
-table <- fread("exploration/2021/MICRODADOS/microdados_enem_2021/DADOS/MICRODADOS_ENEM_2021.csv")
-# sort(unique(table$CO_PROVA_LC))
-# sort(unique(table$CO_PROVA_CH))
-# sort(unique(table$CO_PROVA_CN))
-# sort(unique(table$CO_PROVA_MT))
-# Caminho para gravar o csv
-path_csv <- as.character("exploration/2021/MICRODADOS/at_least_one_presence.csv")
+table <- fread(
+  input = "~/Downloads/
+  microdados_enem_2021/DADOS/MICRODADOS_ENEM_2021.csv",
+  encoding = "UTF-8"
+)
+
+path_csv <- as.character(
+  "exploration/2021/MICRODADOS/at_least_one_presence.csv"
+)
 
 # Escreve um csv menor, filtrado para presentes em ao menos um dia da prova
 filter_presence(table, path_csv = path_csv)
-
-#-----------------------------------------------------
-# Importa os microdados e filtra para não treineiros -
-#-----------------------------------------------------
-
-# Importa os microdados
-# table <- fread("exploration/2021/MICRODADOS/microdados_enem_2021/DADOS/MICRODADOS_ENEM_2021.csv")
-
-# Caminho para gravar o csv
-# path_csv <- as.character("exploration/2021/MICRODADOS/at_least_one_presence_nt.csv")
-
-# Escreve um csv menor, filtrado para presentes em ao menos
-# um dia da prova e não treineiros
-# filter_presence(table, path_csv = path_csv, nt = TRUE)
 
 #-------------------------------------------------
 # Escreve arquivos csv com scores para cada área -
