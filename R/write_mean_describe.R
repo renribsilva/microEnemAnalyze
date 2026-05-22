@@ -12,6 +12,8 @@ write_mean_describe <- function(data, path) {
     "NU_NOTA_REDACAO"
   )
 
+  new_col_media <- "MEDIA_GERAL"
+
   # Verificação de integridade
   total_na_por_linha <- rowSums(is.na(temp_dt[, cols_notas, with = FALSE]))
   if (any(total_na_por_linha == length(cols_notas))) {
@@ -21,7 +23,7 @@ write_mean_describe <- function(data, path) {
   # Tratamento de NAs e Média
   cli::cli_alert_info("Tratando NAs e calculando medias...")
   data.table::setnafill(temp_dt, fill = 0, cols = cols_notas)
-  temp_dt[, MEDIA_GERAL := rowMeans(.SD), .SDcols = cols_notas] # nolint: object_usage_linter
+  temp_dt[, get(new_col_media) := rowMeans(.SD), .SDcols = cols_notas] # nolint: object_usage_linter
 
   # Gerar Estatísticas base
   stats_desc <- psych::describe(temp_dt$MEDIA_GERAL)

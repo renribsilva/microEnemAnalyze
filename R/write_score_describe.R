@@ -30,6 +30,7 @@ write_score_describe <- function(data, path_json, ano) {
       nota <- NULL
       score <- NULL
       vars <- NULL
+      new_col_score <- "NU_SCORE"
       dt_temp <- dt_area[
         get(col_prova) %in%
           codigos_selecionados &
@@ -37,7 +38,7 @@ write_score_describe <- function(data, path_json, ano) {
           get(col_referencia) > 0,
         list(
           nota = as.numeric(get(col_referencia)),
-          score = as.integer(NU_SCORE) # nolint: object_usage_linter
+          score = as.integer(get(new_col_score))
         )
       ]
 
@@ -80,9 +81,18 @@ write_score_describe <- function(data, path_json, ano) {
     dic_df <- get(paste0("dic_", ano_dt), envir = .GlobalEnv)
     dic_df_p1 <- dic_df[dic_df$tipo == "1", ]
 
+    col_cor <- "cor"
+    col_codigo <- "codigo"
+
     # --- Separação e Atribuição mantendo a chave original [[nm]] ---
-    cod_digital <- dic_df_p1[grepl("Digital", cor, ignore.case = TRUE), codigo] # nolint: object_usage_linter
-    cod_regular <- dic_df_p1[!grepl("Digital", cor, ignore.case = TRUE), codigo] # nolint: object_usage_linter
+    cod_digital <- dic_df_p1[
+      grepl("Digital", get(col_cor), ignore.case = TRUE),
+      get(col_codigo)
+    ]
+    cod_regular <- dic_df_p1[
+      !grepl("Digital", get(col_cor), ignore.case = TRUE),
+      get(col_codigo)
+    ]
 
     lista_final_resultados[[nm]] <- list(
       digital = processar_grupo(cod_digital),

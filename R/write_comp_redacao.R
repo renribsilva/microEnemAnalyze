@@ -12,6 +12,16 @@
 write_comp_redacao <- function(data, path_json) {
   cli::cli_h2("Processamento Integral: Competencias + Nota Total")
 
+  # verificando data
+  if (!data.table::is.data.table(data)) {
+    cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
+    data <- data.table::as.data.table(data)
+  }
+
+  if (!is.character(path_json)) {
+    cli::cli_abort("{.arg path_csv} precisa ser do tipo character.")
+  }
+
   # --- CONFIGURAÇÃO DE COLUNAS ---
   cols_comp <- paste0("NU_NOTA_COMP", 1:5)
   cols_total <- "NU_NOTA_REDACAO"

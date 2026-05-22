@@ -55,10 +55,11 @@ write_tcc <- function(data, score, path_json, ano) {
     }
 
     col_prova_area <- paste0("CO_PROVA_", area_nome)
+    new_col_score <- "NU_SCORE"
 
     tabela_real <- area_dt[
       get(col_prova_area) %in% cod_selected & get(col_nota) > 0,
-      list(media = mean(NU_SCORE, na.rm = TRUE)), # nolint: object_usage_linter
+      list(media = mean(get(new_col_score), na.rm = TRUE)),
       keyby = list(x = as.integer(round(get(col_nota), 0)))
     ]
 
@@ -133,13 +134,16 @@ write_tcc <- function(data, score, path_json, ano) {
 
           itens_caderno <- itens_df[itens_df$CO_PROVA == codigo, ]
 
+          col_lingua <- "TP_LINGUA"
+          col_posicao <- "CO_POSICAO"
+
           if (area_nome == "LC") {
             itens_caderno <- itens_caderno[
-              is.na(TP_LINGUA) | TP_LINGUA == lingua, # nolint: object_usage_linter
+              is.na(get(col_lingua)) | get(col_lingua) == lingua,
             ]
           }
 
-          itens_caderno <- itens_caderno[order(CO_POSICAO), ] # nolint: object_usage_linter
+          itens_caderno <- itens_caderno[order(get(col_posicao)), ]
 
           if (nrow(itens_caderno) != 45) {
             stop(

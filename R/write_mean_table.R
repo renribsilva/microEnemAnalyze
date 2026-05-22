@@ -13,6 +13,9 @@ write_mean_table <- function(data, path) {
     "NU_NOTA_REDACAO"
   )
 
+  new_col_media <- "MEDIA_GERAL"
+  new_col_ranking <- "RANKING"
+
   # Verificação de integridade
   total_na_por_linha <- rowSums(is.na(temp_dt[, cols_notas, with = FALSE]))
   if (any(total_na_por_linha == length(cols_notas))) {
@@ -22,18 +25,17 @@ write_mean_table <- function(data, path) {
   # Tratamento de NAs e Média
   cli::cli_alert_info("Tratando NAs e calculando medias...")
   data.table::setnafill(temp_dt, fill = 0, cols = cols_notas)
-  temp_dt[, MEDIA_GERAL := rowMeans(.SD), .SDcols = cols_notas] # nolint: object_usage_linter
+  temp_dt[, get(new_col_media) := rowMeans(.SD), .SDcols = cols_notas] # nolint: object_usage_linter
 
   # Ordenar e filtrar os top 2500
-  top_dt <- utils::head(temp_dt[order(-MEDIA_GERAL)], 2500) # nolint: object_usage_linter
+  top_dt <- utils::head(temp_dt[order(-get(new_col_media))], 2500)
 
-  # --- ADICIONANDO A COLUNA DE RANKING ---
   # Como o DT já está ordenado, .I gera a sequência 1, 2, 3...
-  top_dt[, RANKING := .I] # nolint: object_usage_linter
+  top_dt[, get(new_col_ranking) := .I] # nolint: object_usage_linter
 
   areas <- c("LC", "CH", "CN", "MT")
 
-  # 2. Loop de Processamento dos Scores com CLI
+  # Loop de Processamento dos Scores com CLI
   for (a in areas) {
     res_col <- paste0("TX_RESPOSTAS_", a)
     gab_col <- paste0("TX_GABARITO_", a)
@@ -43,7 +45,8 @@ write_mean_table <- function(data, path) {
     cli::cli_process_start("Processando scores da area: {.strong {a}}")
 
     # Passamos r (resposta), g (gabarito) e l (língua) para o mapply
-    top_dt[,
+    top_dt[
+      ,
       # nolint start: object_usage_linter
       (score_col) := mapply(
         # nolint end
