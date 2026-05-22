@@ -77,8 +77,7 @@ calc_nota <- function(sample, area, ano) {
     # Identificamos quais posições da string/score devem sumir
     idx_anulados <- which(pars$IN_ITEM_ABAN == 1)
 
-    score_i <- process_score(resp, gaba) # nolint
-
+    score_i <- process_score(resp, gaba) # nolint: object_usage_linter
     if (length(idx_anulados) > 0) {
       score_i <- score_i[-idx_anulados] # Remove do score
       pars <- pars[-idx_anulados, ] # Remove do banco

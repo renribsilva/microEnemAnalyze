@@ -288,7 +288,7 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
     score_final <- data.table::as.data.table(data[, cols_base, with = FALSE])
 
     # 3. Atribuir o score bruto (NU_SCORE)
-    score_final[, NU_SCORE := as.vector(score_nu)]
+    score_final[, NU_SCORE := as.vector(score_nu)] # nolint: object_usage_linter
 
     # 4. Converter a matriz de itens para data.table e juntar
     # IMPORTANTE: as.data.table(score_df) garante que usamos

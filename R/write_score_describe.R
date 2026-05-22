@@ -37,7 +37,7 @@ write_score_describe <- function(data, path_json, ano) {
           get(col_referencia) > 0,
         list(
           nota = as.numeric(get(col_referencia)),
-          score = as.integer(NU_SCORE)
+          score = as.integer(NU_SCORE) # nolint: object_usage_linter
         )
       ]
 
@@ -49,7 +49,7 @@ write_score_describe <- function(data, path_json, ano) {
         data.table::as.data.table(psych::describe(nota)),
         keyby = list(score)
       ]
-      res_agg[, vars := NULL]
+      res_agg[, vars := NULL] # nolint: objecti_usage_linter
 
       lista_scores <- stats::setNames(vector("list", 46), 0:45)
       for (s in 0:45) {
@@ -81,8 +81,8 @@ write_score_describe <- function(data, path_json, ano) {
     dic_df_p1 <- dic_df[dic_df$tipo == "1", ]
 
     # --- Separação e Atribuição mantendo a chave original [[nm]] ---
-    cod_digital <- dic_df_p1[grepl("Digital", cor, ignore.case = TRUE), codigo]
-    cod_regular <- dic_df_p1[!grepl("Digital", cor, ignore.case = TRUE), codigo]
+    cod_digital <- dic_df_p1[grepl("Digital", cor, ignore.case = TRUE), codigo] # nolint: object_usage_linter
+    cod_regular <- dic_df_p1[!grepl("Digital", cor, ignore.case = TRUE), codigo] # nolint: object_usage_linter
 
     lista_final_resultados[[nm]] <- list(
       digital = processar_grupo(cod_digital),

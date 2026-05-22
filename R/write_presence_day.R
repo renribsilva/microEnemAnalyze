@@ -84,11 +84,11 @@ write_presence_day <- function(data, path_json, day) {
 
     if (as.integer(day) == 1L) {
       dados_batch_filtered <- data[start_row:end_row][
-        .data[["TP_PRESENCA_LC"]] == 1 | .data[["TP_PRESENCA_CH"]] == 1 # nolint
+        .data[["TP_PRESENCA_LC"]] == 1 | .data[["TP_PRESENCA_CH"]] == 1 # nolint: object_usage_linter
       ]
     } else if (as.integer(day) == 2L) {
       dados_batch_filtered <- data[start_row:end_row][
-        .data[["TP_PRESENCA_CN"]] == 1 | .data[["TP_PRESENCA_MT"]] == 1 # nolint
+        .data[["TP_PRESENCA_CN"]] == 1 | .data[["TP_PRESENCA_MT"]] == 1 # nolint: object_usage_linter
       ]
     }
     presence_filtered <- data.table::rbindlist(list(

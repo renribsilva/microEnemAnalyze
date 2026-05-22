@@ -22,14 +22,14 @@ write_mean_table <- function(data, path) {
   # Tratamento de NAs e Média
   cli::cli_alert_info("Tratando NAs e calculando medias...")
   data.table::setnafill(temp_dt, fill = 0, cols = cols_notas)
-  temp_dt[, MEDIA_GERAL := rowMeans(.SD), .SDcols = cols_notas] # nolint
+  temp_dt[, MEDIA_GERAL := rowMeans(.SD), .SDcols = cols_notas] # nolint: object_usage_linter
 
   # Ordenar e filtrar os top 2500
-  top_dt <- utils::head(temp_dt[order(-MEDIA_GERAL)], 2500) # nolint
+  top_dt <- utils::head(temp_dt[order(-MEDIA_GERAL)], 2500) # nolint: object_usage_linter
 
   # --- ADICIONANDO A COLUNA DE RANKING ---
   # Como o DT já está ordenado, .I gera a sequência 1, 2, 3...
-  top_dt[, RANKING := .I] # nolint
+  top_dt[, RANKING := .I] # nolint: object_usage_linter
 
   areas <- c("LC", "CH", "CN", "MT")
 
@@ -44,7 +44,9 @@ write_mean_table <- function(data, path) {
     # Passamos r (resposta), g (gabarito) e l (língua) para o mapply
     top_dt[
       ,
+      # nolint start: object_usage_linter
       (score_col) := mapply(
+        # nolint end
         function(r, g, l, area_atual) {
           g_final <- g
           r_final <- r
@@ -82,7 +84,7 @@ write_mean_table <- function(data, path) {
         },
         get(res_col),
         get(gab_col),
-        TP_LINGUA, # nolint
+        TP_LINGUA, # nolint: objetc_usage_linter
         MoreArgs = list(area_atual = a)
       )
     ]
