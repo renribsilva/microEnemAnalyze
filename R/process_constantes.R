@@ -24,6 +24,7 @@ process_constantes <- function(sample, area, itens_db) {
   score_list <- list()
   co_prova_list <- character()
   keep_idx <- c()
+
   cli::cli_progress_bar(paste("Processando Scores", area), total = nrow(sample))
 
   for (i in seq_len(nrow(sample))) {
@@ -46,16 +47,20 @@ process_constantes <- function(sample, area, itens_db) {
       keep_idx <- c(keep_idx, i)
     }
   }
+
   score <- do.call(rbind, score_list)
   co_prova <- co_prova_list
   sample_f <- sample[keep_idx, ]
+
   cli::cli_progress_done()
 
   # 2. Traceline
   theta <- seq(-4, 4, length.out = 40)
+
   cci_3pl <- function(theta, a, b, c) {
     c + ((1 - c) / (1 + exp(-a * (theta - b))))
   }
+
   ls_traceline <- list()
 
   for (k in unique(co_prova)) {
@@ -80,14 +85,16 @@ process_constantes <- function(sample, area, itens_db) {
 
   # 3. Verossimilhança Vetorizada (Para evitar o erro de NA e índice)
   prod_prob <- list()
+
   cli::cli_progress_bar(
     paste("Calculando Likelihood", area),
     total = nrow(sample_f)
   )
+
   for (m in seq_len(nrow(sample_f))) {
     cli::cli_progress_update()
     traceline_prova <- ls_traceline[[as.character(co_prova[m])]]
-    list_probs <- lapply(seq_along(length(traceline_prova)), function(q) {
+    list_probs <- lapply(seq_along(traceline_prova), function(q) {
       res <- score[m, q]
       it <- traceline_prova[[q]]
       if (is.na(res) || any(is.na(it$p1))) {

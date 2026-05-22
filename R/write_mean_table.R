@@ -38,12 +38,12 @@ write_mean_table <- function(data, path) {
     res_col <- paste0("TX_RESPOSTAS_", a)
     gab_col <- paste0("TX_GABARITO_", a)
     score_col <- paste0("SCORE_", a)
+    lingua_col <- "TP_LINGUA"
 
     cli::cli_process_start("Processando scores da area: {.strong {a}}")
 
     # Passamos r (resposta), g (gabarito) e l (língua) para o mapply
-    top_dt[
-      ,
+    top_dt[,
       # nolint start: object_usage_linter
       (score_col) := mapply(
         # nolint end
@@ -55,7 +55,7 @@ write_mean_table <- function(data, path) {
           if (area_atual == "LC") {
             # Só corta o GABARITO se ele estiver com o tamanho cheio
             # do ENEM (50)
-            if (nchar(g) != 45) {
+            if (nchar(g) == 50) {
               if (l == 0) {
                 g_final <- paste0(substr(g, 1, 5), substr(g, 11, 50))
               } else {
@@ -64,13 +64,21 @@ write_mean_table <- function(data, path) {
             }
 
             # Só corta a RESPOSTA se, por algum motivo, ela também vier com 50
-            if (nchar(r) != 45) {
+            if (nchar(r) == 50) {
               if (l == 0) {
                 r_final <- paste0(substr(r, 1, 5), substr(r, 11, 50))
               } else {
                 r_final <- substr(r, 6, 50)
               }
             }
+          }
+
+          if (nchar(r_final) != nchar(g_final)) {
+            stop(sprintf(
+              "Comprimentos diferentes: Resposta (%d) vs Gabarito (%d).",
+              nchar(r_final),
+              nchar(g_final)
+            ))
           }
 
           # Se nchar for 45, ele ignora os IFS acima e usa r e g originais
@@ -84,7 +92,7 @@ write_mean_table <- function(data, path) {
         },
         get(res_col),
         get(gab_col),
-        TP_LINGUA, # nolint: objetc_usage_linter
+        get(lingua_col),
         MoreArgs = list(area_atual = a)
       )
     ]

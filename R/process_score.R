@@ -16,8 +16,8 @@ process_score <- function(res, gab) {
   if (tamanho_res != tamanho_gab) {
     stop(sprintf(
       "Comprimentos diferentes: Resposta (%d) vs Gabarito (%d).",
-      nchar(res),
-      nchar(gab)
+      tamannho_res,
+      tamanho_gab
     ))
   }
 
