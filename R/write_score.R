@@ -234,7 +234,7 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
           gab_45_referencia <- paste0(gab_45_vetor_ref, collapse = "")
         }
 
-        score_orig <- process_score(resp_45, gab_45_referencia)
+        score_orig <- process_score(resp_45, gab_45_referencia) # nolint: object_usage_linter
 
         acertos_calculados <- sum(score_df[i, col_names] == 1, na.rm = TRUE)
         acertos_referencia <- sum(score_orig == 1, na.rm = TRUE)

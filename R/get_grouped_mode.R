@@ -29,15 +29,14 @@ get_grouped_mode <- function(x, bin_width = 10) {
     return(NA_real_)
   }
 
-  # 1. Cria os intervalos (bins)
-  # Garantimos que o limite superior cubra o valor máximo
+  # Garante que o limite superior cubra o valor máximo
   breaks <- seq(floor(min(x)), ceiling(max(x)) + bin_width, by = bin_width)
   intervals <- cut(x, breaks = breaks, right = FALSE)
 
-  # 2. Calcula a tabela de frequências
+  # Calcula a tabela de frequências
   tab <- data.table::as.data.table(table(intervals))
 
-  # 3. Identifica a classe modal (a que tem maior frequência)
+  # Identifica a classe modal (a que tem maior frequência)
   idx_mo <- which.max(tab$Freq)
   f_mo <- tab$Freq[idx_mo]
 
@@ -57,7 +56,7 @@ get_grouped_mode <- function(x, bin_width = 10) {
     return(li + (bin_width / 2))
   }
 
-  # 4. Aplica a Fórmula de Czuber
+  # Aplica a Fórmula de Czuber
   mode_grouped <- li + (d1 / (d1 + d2)) * bin_width
 
   as.numeric(mode_grouped)

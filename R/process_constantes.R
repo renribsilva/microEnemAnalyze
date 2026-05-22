@@ -31,7 +31,7 @@ process_constantes <- function(sample, area, itens_db) {
     res <- tryCatch(
       {
         list(
-          sc = process_score(sample[[col_resp]][i], sample[[col_gaba]][i]),
+          sc = process_score(sample[[col_resp]][i], sample[[col_gaba]][i]), # nolint: object_usage_linter
           co = sample[[col_prov]][i]
         )
       },

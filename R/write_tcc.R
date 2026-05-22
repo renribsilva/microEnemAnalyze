@@ -58,7 +58,7 @@ write_tcc <- function(data, score, path_json, ano) {
 
     tabela_real <- area_dt[
       get(col_prova_area) %in% cod_selected & get(col_nota) > 0,
-      list(media = mean(NU_SCORE, na.rm = TRUE)),
+      list(media = mean(NU_SCORE, na.rm = TRUE)), # nolint: object_usage_linter
       keyby = list(x = as.integer(round(get(col_nota), 0)))
     ]
 
@@ -135,11 +135,11 @@ write_tcc <- function(data, score, path_json, ano) {
 
           if (area_nome == "LC") {
             itens_caderno <- itens_caderno[
-              is.na(TP_LINGUA) | TP_LINGUA == lingua,
+              is.na(TP_LINGUA) | TP_LINGUA == lingua, # nolint: object_usage_linter
             ]
           }
 
-          itens_caderno <- itens_caderno[order(CO_POSICAO), ]
+          itens_caderno <- itens_caderno[order(CO_POSICAO), ] # nolint: object_usage_linter
 
           if (nrow(itens_caderno) != 45) {
             stop(

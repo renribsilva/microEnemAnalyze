@@ -16,6 +16,7 @@ filter_presence <- function(data, path_csv) {
 
   # Validação básica
   cli::cli_process_start("Validando argumentos")
+
   if (!data.table::is.data.table(data)) {
     cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
     data <- data.table::as.data.table(data)
@@ -24,20 +25,31 @@ filter_presence <- function(data, path_csv) {
   if (!is.character(path_csv)) {
     cli::cli_abort("{.arg path_csv} precisa ser do tipo character.")
   }
+
   cli::cli_process_done()
 
   ano <- data[1, ]$NU_ANO
-  dic_df <- get(paste0("dic_", ano), envir = .GlobalEnv)
+  dic_df <- get(paste0("dic_", ano))
   dic_df_p1 <- dic_df[dic_df$tipo == "1", ]
   cod_selected <- dic_df_p1$codigo
 
   cli::cli_process_start("Filtrando in-place (Otimizado)")
 
+  col_presenca_lc <- "TP_PRESENCA_LC"
+  col_presenca_ch <- "TP_PRESENCA_CH"
+  col_presenca_cn <- "TP_PRESENCA_CN"
+  col_presenca_mt <- "TP_PRESENCA_MT"
+
+  col_prova_lc <- "CO_PROVA_LC"
+  col_prova_ch <- "CO_PROVA_CH"
+  col_prova_cn <- "CO_PROVA_CN"
+  col_prova_mt <- "CO_PROVA_MT"
+
   at_least_one_presence <- data[
-    (.data$TP_PRESENCA_CN == 1 & .data$CO_PROVA_CN %in% cod_selected) | # nolint: object_usage_linter
-      (.data$TP_PRESENCA_CH == 1 & .data$CO_PROVA_CH %in% cod_selected) |
-      (.data$TP_PRESENCA_LC == 1 & .data$CO_PROVA_LC %in% cod_selected) |
-      (.data$TP_PRESENCA_MT == 1 & .data$CO_PROVA_MT %in% cod_selected)
+    (get(col_presenca_cn) == 1 & get(col_prova_cn) %in% cod_selected) |
+      (get(col_presenca_ch) == 1 & get(col_prova_ch) %in% cod_selected) |
+      (get(col_presenca_lc) == 1 & get(col_prova_lc) %in% cod_selected) |
+      (get(col_presenca_mt) == 1 & get(col_prova_mt) %in% cod_selected)
   ]
 
   cli::cli_process_done()

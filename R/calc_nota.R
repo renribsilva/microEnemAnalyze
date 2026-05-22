@@ -5,7 +5,32 @@
 #' @param ano Número que indica o ano do exame
 #' @export
 calc_nota <- function(sample, area, ano) {
-  # constrói o nome do rda
+  # --- TÍTULO ---
+  cli::cli_h2("Calculando nota...")
+
+  # verifica se sample é data.table
+  if (!data.table::is.data.table(sample)) {
+    cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
+    sample <- data.table::as.data.table(sample)
+  }
+
+  # verifica se ano e área foram definidos
+  if (is.null(area)) {
+    stop(
+      "Area nao definida. E necessario definir uma das seguintes
+      areas: 'LC', 'CH', 'CN', 'MT'"
+    )
+  }
+
+  # verifica se ano e área foram definidos
+  if (is.null(ano)) {
+    stop(
+      "Ano nao definido. E necessario definir um ano igual
+      ou maior que 2019"
+    )
+  }
+
+  # constrói o nome do rda dinamicamente
   nome_itens <- paste0("itens_", ano)
 
   # verifica se o arquivo rda exite
@@ -13,7 +38,7 @@ calc_nota <- function(sample, area, ano) {
     stop(paste("Objeto", nome_itens, "nao encontrado."))
   }
 
-  # importa o arquivo rda
+  # importa o caderno de itens .rda
   itens_db_total <- get(nome_itens)
 
   # constrói os nomes das colunas dinamicamente
@@ -27,7 +52,6 @@ calc_nota <- function(sample, area, ano) {
   cci_3pl <- function(theta, a, b, c) {
     c + ((1 - c) / (1 + exp(-a * (theta - b))))
   }
-
   prod_prob <- list()
 
   cli::cli_progress_bar(paste("Calculando Notas", area), total = nrow(sample))
@@ -44,7 +68,10 @@ calc_nota <- function(sample, area, ano) {
     pars <- itens_db_total[itens_db_total$CO_PROVA == cod_prova, ]
     if (nrow(pars) == 0) {
       prod_prob[[i]] <- NULL
-      next
+      stop(
+        "Comprimento do caderno de itens e zero.
+        Verifique se o codigo da prova e valido."
+      )
     }
 
     # Ordenação inicial para garantir Inglês/Espanhol
@@ -83,29 +110,38 @@ calc_nota <- function(sample, area, ano) {
       pars <- pars[-idx_anulados, ] # Remove do banco
     }
 
-    # 4. CÁLCULO DA LIKELIHOOD (LINHA POR LINHA)
-    n_itens <- min(length(score_i), nrow(pars))
-    list_probs <- lapply(1:n_itens, function(q) {
-      res <- score_i[q]
-      p_item <- pars[q, ]
-
-      # Se o item não tem parâmetro ou a resposta
-      # é inválida, probabilidade neutra (1)
-      if (is.na(res) || is.na(p_item$NU_PARAM_A)) {
-        return(rep(1, length(theta)))
-      }
-
-      p1 <- cci_3pl(
-        theta,
-        p_item$NU_PARAM_A,
-        p_item$NU_PARAM_B,
-        p_item$NU_PARAM_C
+    if (length(score_i) != nrow(pars)) {
+      stop(
+        "Numero de itens do cardeno e diferente do numero
+        de itens do score."
       )
-      if (res == 1) p1 else (1 - p1)
-    })
+    }
+
+    list_probs <- lapply(
+      seq_along(score_i),
+      function(q) {
+        res <- score_i[q]
+        p_item <- pars[q, ]
+
+        # Se o item não tem parâmetro ou a resposta
+        # é inválida, probabilidade neutra (1)
+        if (is.na(res) || is.na(p_item$NU_PARAM_A)) {
+          return(rep(1, length(theta)))
+        }
+
+        p1 <- cci_3pl(
+          theta,
+          p_item$NU_PARAM_A,
+          p_item$NU_PARAM_B,
+          p_item$NU_PARAM_C
+        )
+        if (res == 1) p1 else (1 - p1)
+      }
+    )
 
     prod_prob[[i]] <- Reduce(`*`, list_probs)
   }
+
   cli::cli_progress_done()
 
   # 5. EAP E TRANSFORMAÇÃO

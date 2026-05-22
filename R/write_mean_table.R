@@ -74,7 +74,7 @@ write_mean_table <- function(data, path) {
           }
 
           # Se nchar for 45, ele ignora os IFS acima e usa r e g originais
-          res_matriz <- process_score(r_final, g_final)
+          res_matriz <- process_score(r_final, g_final) # nolint: object_usage_linter
 
           # Limpeza padrão
           res_limpo <- res_matriz[res_matriz != 9]
