@@ -12,6 +12,9 @@
 write_comp_redacao <- function(data, path_json) {
   cli::cli_h2("Processamento Integral: Competencias + Nota Total")
 
+  # Validação básica
+  cli::cli_process_start("Validando argumentos")
+
   # verificando data
   if (!data.table::is.data.table(data)) {
     cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
@@ -21,6 +24,8 @@ write_comp_redacao <- function(data, path_json) {
   if (!is.character(path_json)) {
     cli::cli_abort("{.arg path_csv} precisa ser do tipo character.")
   }
+
+  cli::cli_process_done()
 
   # --- CONFIGURAÇÃO DE COLUNAS ---
   cols_comp <- paste0("NU_NOTA_COMP", 1:5)
@@ -52,17 +57,17 @@ write_comp_redacao <- function(data, path_json) {
     labels_fixos <- seq(0, limite_max, by = 20)
 
     # Factor garante que todos os labels de 20 em 20 apareçam, mesmo com freq 0
-    freq_tab <- base::table(factor(valores, levels = labels_fixos))
+    freq_tab <- table(factor(valores, levels = labels_fixos))
 
     # 2. ESTATÍSTICAS (Dados Crus)
     # psych::describe fornece skew e kurtosis
     desc <- psych::describe(valores)
 
     # Moda absoluta do dado bruto (valor exato mais frequente)
-    raw_tab <- base::table(valores)
+    raw_tab <- table(valores)
     moda_bruta <- as.numeric(names(raw_tab)[which.max(raw_tab)])
 
-    # Percentis solicitados (Q1, Q3, P99)
+    # Percentis (Q1, Q3, P99)
     quants <- stats::quantile(
       valores,
       probs = c(0.25, 0.75, 0.99),

@@ -5,13 +5,13 @@
 # Importa os scores
 data <- fread("exploration/2023/MICRODADOS/score_lc.csv")
 
-path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2023/dificuldade-do-exame/LC/")
+path_json <- as.character(
+  "~/Área\ de\ trabalho/DEV/NEXT/microenem/
+  src/app/(home)/JSON/2023/dificuldade-do-exame/LC/"
+)
 
 # Escreve a descrição unidimensional dos dados
 write_describe_notas(data, path_json = path_json)
-
-# Escreve um array contendo todas as notas
-# write_notas(data, path_json = path_json)
 
 # Escreve a densidade da distribuião das notas
 write_density_notas(data, path_json = path_json)
@@ -26,13 +26,13 @@ write_frequency_acertos(data, path_json = path_json)
 # Importa os scores
 data <- fread("exploration/2023/MICRODADOS/score_ch.csv")
 
-path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2023/dificuldade-do-exame/CH/")
+path_json <- as.character(
+  "~/Área\ de\ trabalho/DEV/NEXT/microenem/
+  src/app/(home)/JSON/2023/dificuldade-do-exame/CH/"
+)
 
 # Escreve a descrição unidimensional dos dados
 write_describe_notas(data, path_json = path_json)
-
-# Escreve um array contendo todas as notas
-# write_notas(data, path_json = path_json)
 
 # Escreve a densidade da distribuião das notas
 write_density_notas(data, path_json = path_json)
@@ -47,13 +47,13 @@ write_frequency_acertos(data, path_json = path_json)
 # Importa os scores
 data <- fread("exploration/2023/MICRODADOS/score_cn.csv")
 
-path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2023/dificuldade-do-exame/CN/")
+path_json <- as.character(
+  "~/Área\ de\ trabalho/DEV/NEXT/microenem/
+  src/app/(home)/JSON/2023/dificuldade-do-exame/CN/"
+)
 
 # Escreve a descrição unidimensional dos dados
 write_describe_notas(data, path_json = path_json)
-
-# Escreve um array contendo todas as notas
-# write_notas(data, path_json = path_json)
 
 # Escreve a densidade da distribuião das notas
 write_density_notas(data, path_json = path_json)
@@ -68,17 +68,16 @@ write_frequency_acertos(data, path_json = path_json)
 # Importa os scores
 data <- fread("exploration/2023/MICRODADOS/score_mt.csv")
 
-path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2023/dificuldade-do-exame/MT/")
+path_json <- as.character(
+  "~/Área\ de\ trabalho/DEV/NEXT/microenem/
+  src/app/(home)/JSON/2023/dificuldade-do-exame/MT/"
+)
 
 # Escreve a descrição unidimensional dos dados
 write_describe_notas(data, path_json = path_json)
-
-# Escreve um array contendo todas as notas
-# write_notas(data, path_json = path_json)
 
 # Escreve a densidade da distribuião das notas
 write_density_notas(data, path_json = path_json)
 
 # Escreve a frequência de acertos
 write_frequency_acertos(data, path_json = path_json)
-

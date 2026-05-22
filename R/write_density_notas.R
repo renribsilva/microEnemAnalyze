@@ -6,6 +6,21 @@
 write_density_notas <- function(data, path_json) {
   cli::cli_h2("Processamento de Densidade (Chart.js)")
 
+  # Validação básica
+  cli::cli_process_start("Validando estrutura dos dados")
+
+  # verificando data
+  if (!data.table::is.data.table(data)) {
+    cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
+    data <- data.table::as.data.table(data)
+  }
+
+  if (!is.character(path_json)) {
+    cli::cli_abort("{.arg path_csv} precisa ser do tipo character.")
+  }
+
+  cli::cli_process_done()
+
   col_prova <- grep("^CO_PROVA_", names(data), value = TRUE)
   col_nota <- grep("^NU_NOTA_", names(data), value = TRUE)
 
@@ -59,6 +74,7 @@ write_density_notas <- function(data, path_json) {
     dic_df$cor,
     ignore.case = TRUE
   )]
+
   cod_regular <- dic_df_p1$codigo[
     !grepl("Digital", dic_df$cor, ignore.case = TRUE)
   ]

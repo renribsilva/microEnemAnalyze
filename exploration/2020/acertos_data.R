@@ -2,7 +2,10 @@
 # Caminho para gravar o json -
 #-----------------------------
 
-path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2020/notas-e-acertos/")
+path_json <- as.character(
+  "~/Área\ de\ trabalho/DEV/NEXT/microenem/
+  src/app/(home)/JSON/2020/notas-e-acertos/"
+)
 
 #--------------------------------------------------------------------
 # Escreve tabela com frequências de acerto e erro de todos os itens -

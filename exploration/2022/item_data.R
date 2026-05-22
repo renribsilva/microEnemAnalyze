@@ -2,7 +2,10 @@
 # Caminho para gravar o json -
 #-----------------------------
 
-path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2022/resposta-ao-item/")
+path_json <- as.character(
+  "~/Área\ de\ trabalho/DEV/NEXT/microenem/
+  src/app/(home)/JSON/2022/resposta-ao-item/"
+)
 
 #--------------------------------------------------------------------
 # Escreve tabela com frequências de acerto e erro de todos os itens -
@@ -18,4 +21,3 @@ data <- list(score_lc, score_ch, score_cn, score_mt)
 write_score_table(data = data, path_json = path_json)
 
 write_score_graph(data = data, path_json = path_json)
-

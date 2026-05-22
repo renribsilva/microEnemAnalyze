@@ -14,10 +14,10 @@ write_notas_redacao <- function(data, path_json) {
   }
 
   # --- PROCESSAMENTO COM TABLE ---
-  cli::cli_process_start("Calculando frequencias (base::table)")
+  cli::cli_process_start("Calculando frequencias")
 
   # Gera a contagem de cada nota (0, 40, 80... 1000)
-  tab_redacao <- base::table(
+  tab_redacao <- table(
     data$NU_NOTA_REDACAO[data$TP_STATUS_REDACAO == 1],
     useNA = "no"
   )

@@ -14,10 +14,10 @@ write_status_redacao <- function(data, path_json) {
   }
 
   # --- PROCESSAMENTO COM TABLE ---
-  cli::cli_process_start("Calculando frequencias (base::table)")
+  cli::cli_process_start("Calculando frequencias")
 
   # Gera a contagem de cada nota (0, 40, 80... 1000)
-  tab_redacao <- base::table(data$TP_STATUS_REDACAO, useNA = "no")
+  tab_redacao <- table(data$TP_STATUS_REDACAO, useNA = "no")
 
   # Estrutura exata para o Chart.js
   objeto_redacao <- list(

@@ -2,13 +2,19 @@
 # Importa os at_least_one_presence.csv -
 #---------------------------------------
 
-data <- fread("exploration/2020/MICRODADOS/microdados_enem_2020/DADOS/MICRODADOS_ENEM_2020.csv")
+data <- fread(
+  input = "~/Downloads/
+  microdados_enem_2020/DADOS/MICRODADOS_ENEM_2020.csv",
+  encoding = "UTF-8"
+)
 
 #-----------------------------
 # Caminho para gravar o json -
 #-----------------------------
 
-path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2020/redacao/")
+path_json <- as.character(
+  "~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2020/redacao/"
+)
 
 #--------------------------------------
 # Escreve tabela com dados da redação -

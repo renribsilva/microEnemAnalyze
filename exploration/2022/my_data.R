@@ -3,24 +3,29 @@ library(dplyr)
 
 #-----------2022--------------
 
-data <- fread("exploration/2022/MICRODADOS/microdados_enem_2022/DADOS/MICRODADOS_ENEM_2022.csv")
+data <- fread(
+  input = "~/Downloads/
+  microdados_enem_2022/DADOS/MICRODADOS_ENEM_2022.csv",
+  encoding = "UTF-8"
+)
+
 my_data <- data |>
   dplyr::filter(NU_NOTA_MT == 771.8 & NO_MUNICIPIO_PROVA == "Votuporanga")
 
 c <- substr(my_data$TX_GABARITO_LC, 0, 5)
 d <- substr(my_data$TX_GABARITO_LC, 11, 99999)
 
-res_LC <- my_data$TX_RESPOSTAS_LC
-res_CH <- my_data$TX_RESPOSTAS_CH
-res_CN <- my_data$TX_RESPOSTAS_CN
-res_MT <- my_data$TX_RESPOSTAS_MT
+res_lc <- my_data$TX_RESPOSTAS_LC
+res_ch <- my_data$TX_RESPOSTAS_CH
+res_cn <- my_data$TX_RESPOSTAS_CN
+res_mt <- my_data$TX_RESPOSTAS_MT
 
-gab_LC <- paste0(c, d)
-gab_CH <- my_data$TX_GABARITO_CH
-gab_CN <- my_data$TX_GABARITO_CN
-gab_MT <- my_data$TX_GABARITO_MT
+gab_lc <- paste0(c, d)
+gab_ch <- my_data$TX_GABARITO_CH
+gab_cn <- my_data$TX_GABARITO_CN
+gab_mt <- my_data$TX_GABARITO_MT
 
-score_lc <- sum(process_score(res_LC, gab_LC))
-score_ch <- sum(process_score(res_CH, gab_CH))
-score_cn <- sum(process_score(res_CN, gab_CN))
-score_mt <- sum(process_score(res_MT, gab_MT))
+score_lc <- sum(process_score(res_lc, gab_lc))
+score_ch <- sum(process_score(res_ch, gab_ch))
+score_cn <- sum(process_score(res_cn, gab_cn))
+score_mt <- sum(process_score(res_mt, gab_mt))

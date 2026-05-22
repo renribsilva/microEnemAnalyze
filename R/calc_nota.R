@@ -8,6 +8,9 @@ calc_nota <- function(sample, area, ano) {
   # --- TÍTULO ---
   cli::cli_h2("Calculando nota...")
 
+  # Validação básica
+  cli::cli_process_start("Validando argumentos")
+
   # verifica se sample é data.table
   if (!data.table::is.data.table(sample)) {
     cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
@@ -29,6 +32,10 @@ calc_nota <- function(sample, area, ano) {
       ou maior que 2019"
     )
   }
+
+  cli::cli_process_done()
+
+  cli::cli_process_start("Verificando variaveis e arquivo .rda")
 
   # constrói o nome do rda dinamicamente
   nome_itens <- paste0("itens_", ano)
@@ -54,7 +61,12 @@ calc_nota <- function(sample, area, ano) {
   }
   prod_prob <- list()
 
-  cli::cli_progress_bar(paste("Calculando Notas", area), total = nrow(sample))
+  cli::cli_process_done()
+
+  cli::cli_progress_bar(
+    paste("Calculando a nota na area: ", area),
+    total = nrow(sample)
+  )
 
   # inicia a iteração sobre o sample
   for (i in seq_len(nrow(sample))) {

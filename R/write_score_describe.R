@@ -50,6 +50,7 @@ write_score_describe <- function(data, path_json, ano) {
         data.table::as.data.table(psych::describe(nota)),
         keyby = list(score)
       ]
+
       res_agg[, vars := NULL] # nolint: objecti_usage_linter
 
       lista_scores <- stats::setNames(vector("list", 46), 0:45)

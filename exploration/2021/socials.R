@@ -2,13 +2,20 @@
 # Importa os dados.csv -
 #--------------------------------
 
-filtered <- fread("exploration/2021/MICRODADOS/microdados_enem_2021/DADOS/MICRODADOS_ENEM_2021.csv")
+filtered <- fread(
+  input = "~/Downloads/
+  microdados_enem_2021/DADOS/MICRODADOS_ENEM_2021.csv",
+  encoding = "UTF-8"
+)
 
 #-----------------------------
 # Caminho para gravar o json -
 #-----------------------------
 
-path_json <- as.character("~/Área\ de\ trabalho/DEV/NEXT/microenem/src/app/(home)/JSON/2021/visao-geral/socials/")
+path_json <- as.character(
+  "~/Área\ de\ trabalho/DEV/NEXT/microenem/
+  src/app/(home)/JSON/2021/visao-geral/socials/"
+)
 
 #----------------------------------------------------
 # Frequência absoluta e relativa das faixas etárias -
