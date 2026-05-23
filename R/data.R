@@ -6,8 +6,8 @@
 #' área.
 #' \describe{
 #'  \item{area}{Área do conhecimento: 'LC', 'CH', 'CN', 'MT'}
-#'  \item{d}{Nota média segundo os critérios divulgados pelo INEP}
-#'  \item{k}{Desvio padrão segundo os critérios divugados pelo INEP}
+#'  \item{d}{Nota média referente ao exame de 2009}
+#'  \item{k}{Desvio padrão referente ao exame de 2009}
 #' }
 #'
 #' @details Temos duas escalas: a escala oficial do Enem, cuja
@@ -61,56 +61,72 @@
 #' @description Dataset contendo os parâmetros A, B e C dos
 #' itens processados.
 #'
-#' @format Um data.table (ou data.table) com as colunas:
+#' @section Names:
 #' \describe{
-#'   \item{PARAM_A}{Parâmetro de discriminação}
-#'   \item{d}{Intercepto calculado como -a*b}
-#'   \item{g}{Parâmetro de acerto ao acaso (chute)}
+#'   \item{NU_PARAM_A}{Parâmetro de discriminação}
+#'   \item{NU_PARAM_B}{Parâmetro de dificuldade}
+#'   \item{NU_PARAM_C}{Parâmetro de acerto ao acaso (chute)}
 #' }
 #' @source Microdados do INEP.
-#' @name itens_enem
-NULL
-
-#' @rdname itens_enem
 "itens_2009"
-#' @rdname itens_enem
+
+#' @inherit itens_2009 title description source
+#' @inheritSection itens_2009 Names
 "itens_2019"
-#' @rdname itens_enem
+
+#' @inherit itens_2009 title description source
+#' @inheritSection itens_2009 Names
 "itens_2020"
-#' @rdname itens_enem
+
+#' @inherit itens_2009 title description source
+#' @inheritSection itens_2009 Names
 "itens_2021"
-#' @rdname itens_enem
+
+#' @inherit itens_2009 title description source
+#' @inheritSection itens_2009 Names
 "itens_2022"
-#' @rdname itens_enem
+
+#' @inherit itens_2009 title description source
+#' @inheritSection itens_2009 Names
 "itens_2023"
-#' @rdname itens_enem
+
+#' @inherit itens_2009 title description source
+#' @inheritSection itens_2009 Names
 "itens_2024"
 
-#' Código das provas do ENEM
+#' @title Código das provas do ENEM
 #'
-#' Dataset contendo o código das provas do ENEM.
+#' @description Dataset contendo o código das provas do ENEM.
 #'
-#' @format Um data.table (ou data.table) com as colunas:
+#' @section Names:
 #' \describe{
 #'   \item{ano}{Ano da prova}
 #'   \item{codigo}{Código do caderno}
 #'   \item{cor}{Cor do caderno}
 #' }
 #' @source Microdados do INEP.
-#' @name itens_dic
-NULL
-
-#' @rdname itens_dic
 "dic_2009"
-#' @rdname itens_dic
+
+#' @inherit dic_2009 title description source
+#' @inheritSection dic_2009 Names
 "dic_2019"
-#' @rdname itens_dic
+
+#' @inherit dic_2009 title description source
+#' @inheritSection dic_2009 Names
 "dic_2020"
-#' @rdname itens_dic
+
+#' @inherit dic_2009 title description source
+#' @inheritSection dic_2009 Names
 "dic_2021"
-#' @rdname itens_dic
+
+#' @inherit dic_2009 title description source
+#' @inheritSection dic_2009 Names
 "dic_2022"
-#' @rdname itens_dic
+
+#' @inherit dic_2009 title description source
+#' @inheritSection dic_2009 Names
 "dic_2023"
-#' @rdname itens_dic
+
+#' @inherit dic_2009 title description source
+#' @inheritSection dic_2009 Names
 "dic_2024"

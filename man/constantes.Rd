@@ -9,8 +9,8 @@ Um objeto do tipo `data.table` com as constantes de cada
 área.
 \describe{
  \item{area}{Área do conhecimento: 'LC', 'CH', 'CN', 'MT'}
- \item{d}{Nota média segundo os critérios divulgados pelo INEP}
- \item{k}{Desvio padrão segundo os critérios divugados pelo INEP}
+ \item{d}{Nota média referente ao exame de 2009}
+ \item{k}{Desvio padrão referente ao exame de 2009}
 }
 }
 \usage{
