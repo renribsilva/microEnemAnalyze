@@ -11,7 +11,7 @@
 #' @export
 filter_presence <- function(data, path_csv) {
   # --- TÍTULO ---
-  cli::cli_h2("Filtracao: Presenca Minima")
+  cli::cli_h1("Filtracao: Presenca Minima")
 
   # Validação básica
   cli::cli_process_start("Validando argumentos")
@@ -69,7 +69,7 @@ filter_presence <- function(data, path_csv) {
 
   cli::cli_process_done()
 
-  cli::cli_alert_success("Processo concluido: {.path {final_file}}")
+  cli::cli_alert_success("Arquivo salva em: {.path {final_file}}")
 
   invisible(at_least_one_presence)
 }

@@ -13,7 +13,7 @@
 #' @export
 write_presence_day <- function(data, path_json, day) {
   # --- TÍTULO ---
-  cli::cli_h2("Processamento de Presenca: Dia {day}")
+  cli::cli_h1("Processamento de Presenca: Dia {day}")
 
   # Validação básica
   cli::cli_process_start("Validando parametros e estrutura")
@@ -166,7 +166,7 @@ write_presence_day <- function(data, path_json, day) {
   )
   cli::cli_process_done()
 
-  cli::cli_alert_success("Processo concluido: {.path {final_file}}")
+  cli::cli_alert_success("Arquivo salva em: {.path {final_file}}")
 
   invisible(final_file)
 }

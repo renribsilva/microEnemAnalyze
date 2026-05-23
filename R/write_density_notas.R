@@ -4,7 +4,7 @@
 #' @param path_json Caminho do arquivo JSON.
 #' @export
 write_density_notas <- function(data, path_json) {
-  cli::cli_h2("Processamento de Densidade (Chart.js)")
+  cli::cli_h1("Processamento de Densidade")
 
   # Validação básica
   cli::cli_process_start("Validando estrutura dos dados")
@@ -89,6 +89,7 @@ write_density_notas <- function(data, path_json) {
   cli::cli_process_done()
 
   # --- TRATAMENTO DO PATH E EXPORTAÇÃO ---
+  cli::cli_process_start("Exportando arquivo JSON")
   final_file <- if (grepl("\\.json$", path_json)) {
     path_json
   } else {
@@ -102,7 +103,9 @@ write_density_notas <- function(data, path_json) {
     pretty = TRUE,
     auto_unbox = TRUE
   )
+  cli::cli_process_done()
 
-  cli::cli_alert_success("Arquivo salvo com sucesso em: {.path {final_file}}")
+  cli::cli_alert_success("Arquivo salvo em: {.path {final_file}}")
+
   invisible(final_file)
 }

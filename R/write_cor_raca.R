@@ -10,7 +10,7 @@
 #' @return Salva um arquivo JSON no diretório especificado.
 #' @export
 write_cor_raca <- function(data, path_json) {
-  cli::cli_h2("Processamento de Dados: Cor ou Raca")
+  cli::cli_h1("Processamento de Dados: Cor ou Raca")
 
   # Validação básica
   cli::cli_process_start("Validando estrutura dos dados")
@@ -91,5 +91,6 @@ write_cor_raca <- function(data, path_json) {
   cli::cli_process_done()
 
   cli::cli_alert_success("Arquivo salvo em: {.path {final_file}}")
+
   invisible(final_file)
 }

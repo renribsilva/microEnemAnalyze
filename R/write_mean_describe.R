@@ -71,7 +71,7 @@ write_mean_describe <- function(data, path) {
   )
 
   cli::cli_process_done()
-  cli::cli_alert_success("Processo concluido: {.path {final_file}}")
+  cli::cli_alert_success("Arquivo salva em: {.path {final_file}}")
 
   invisible(temp_dt)
 }

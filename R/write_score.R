@@ -44,7 +44,7 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
 
   for (area_loop in areas_to_process) {
     # --- SUBTÍTULO POR ÁREA ---
-    cli::cli_h2("Area: {.field {area_loop}}")
+    cli::cli_h1("Area: {.field {area_loop}}")
 
     # Filtra o dicionário de provas e dados dos itens
     dic_df_p1_area <- dic_df_p1[as.character(dic_df_p1$area) == area_loop, ]

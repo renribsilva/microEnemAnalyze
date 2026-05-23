@@ -4,7 +4,7 @@
 #' @param ano Inteiro ou string representando o ano (ex: 2019)
 #' @export
 write_itens <- function(path_json, ano) {
-  cli::cli_h2("Exportacao de Itens (Dicionario de Parametros) - ENEM {ano}")
+  cli::cli_h1("Exportacao de Itens (Dicionario de Parametros) - ENEM {ano}")
 
   # 1. Recuperar objeto
   obj_name <- paste0("itens_", as.character(ano))

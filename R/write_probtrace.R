@@ -18,7 +18,7 @@
 #' @export
 write_probtrace <- function(path_json = NULL, co_prova = NULL, ano) {
   # --- TÍTULO ---
-  cli::cli_h2(
+  cli::cli_h1(
     "Processamento de Curvas de Probabilidade (Probtrace) - ENEM {ano}"
   )
 
@@ -181,7 +181,7 @@ write_probtrace <- function(path_json = NULL, co_prova = NULL, ano) {
       na = "null"
     )
     cli::cli_process_done()
-    cli::cli_alert_success("Processo concluido: {.path {final_path_clean}}")
+    cli::cli_alert_success("Arquivo salva em: {.path {final_path_clean}}")
   }
 
   # Lógica de Retorno

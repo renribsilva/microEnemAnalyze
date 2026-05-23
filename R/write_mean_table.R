@@ -130,7 +130,7 @@ write_mean_table <- function(data, path) {
   )
   cli::cli_process_done()
 
-  cli::cli_alert_success("Processo concluido com sucesso!")
+  cli::cli_alert_success("Arquivo salva em com sucesso!")
 
   invisible(top_dt)
 }

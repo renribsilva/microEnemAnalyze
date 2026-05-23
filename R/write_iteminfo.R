@@ -15,7 +15,7 @@
 #' @export
 write_iteminfo <- function(path_json = NULL, co_prova = NULL, ano) {
   # --- TÍTULO ---
-  cli::cli_h2("Processamento de Curvas de Informacao (Item Info) - ENEM {ano}")
+  cli::cli_h1("Processamento de Curvas de Informacao (Item Info) - ENEM {ano}")
 
   # 1. Recuperar os objetos da memória
   cli::cli_process_start("Buscando objetos no Global Environment")
@@ -176,7 +176,7 @@ write_iteminfo <- function(path_json = NULL, co_prova = NULL, ano) {
       na = "null"
     )
     cli::cli_process_done()
-    cli::cli_alert_success("Processo concluido: {.path {final_path_clean}}")
+    cli::cli_alert_success("Arquivo salva em: {.path {final_path_clean}}")
   }
 
   if (!is.null(retorno_ambiente)) {

@@ -7,7 +7,7 @@
 #' @export
 write_dic <- function(path_json, ano) {
   # --- TÍTULO ---
-  cli::cli_h2("Exportacao de Dicionario de Cadernos - ENEM {ano}")
+  cli::cli_h1("Exportacao de Dicionario de Cadernos - ENEM {ano}")
 
   # 1. Recuperar objetos
   cli::cli_process_start("Recuperando dados do Global Env")
@@ -45,7 +45,7 @@ write_dic <- function(path_json, ano) {
   )
   cli::cli_process_done()
 
-  cli::cli_alert_success("Arquivo salvo com sucesso em: {.path {final_file}}")
+  cli::cli_alert_success("Arquivo salvo em: {.path {final_file}}")
 
   invisible(final_file)
 }

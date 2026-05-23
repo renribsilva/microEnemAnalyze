@@ -12,7 +12,7 @@
 #' @export
 write_inscritos <- function(data, path_json) {
   # --- TÍTULO ---
-  cli::cli_h2("Processamento de Inscritos e Treineiros")
+  cli::cli_h1("Processamento de Inscritos e Treineiros")
 
   # 1. Validação dos argumentos
   cli::cli_process_start("Validando estrutura dos dados")
@@ -100,7 +100,7 @@ write_inscritos <- function(data, path_json) {
 
   cli::cli_process_done()
 
-  cli::cli_alert_success("Processo concluido: {.file {final_file}}")
+  cli::cli_alert_success("Arquivo salva em: {.file {final_file}}")
 
   invisible(final_file)
 }

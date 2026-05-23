@@ -11,7 +11,7 @@
 #' @export
 write_fx_etaria <- function(data, path_json) {
   # --- TÍTULO DO PROCESSO ---
-  cli::cli_h2("Processamento de Dados: Faixa Etaria")
+  cli::cli_h1("Processamento de Dados: Faixa Etaria")
 
   # --- VALIDAÇÃO ---
   if (!data.table::is.data.table(data)) {

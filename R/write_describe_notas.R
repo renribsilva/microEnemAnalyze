@@ -4,7 +4,22 @@
 #' @param path_json String. Caminho completo do arquivo.
 #' @export
 write_describe_notas <- function(data, path_json) {
-  cli::cli_h2("Descricao Estatistica")
+  cli::cli_h1("Descricao Estatistica")
+
+  # Validação básica
+  cli::cli_process_start("Validando estrutura dos dados")
+
+  # verificando data
+  if (!data.table::is.data.table(data)) {
+    cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
+    data <- data.table::as.data.table(data)
+  }
+
+  if (!is.character(path_json)) {
+    cli::cli_abort("{.arg path_csv} precisa ser do tipo character.")
+  }
+
+  cli::cli_process_done()
 
   col_nota <- grep("^NU_NOTA_", names(data), value = TRUE)
   col_prova <- grep("^CO_PROVA_", names(data), value = TRUE)
@@ -109,6 +124,7 @@ write_describe_notas <- function(data, path_json) {
   cli::cli_process_done()
 
   # --- Exportação ---
+  cli::cli_process_start("Exportando arquivo JSON")
   final_file <- if (grepl("\\.json$", path_json)) {
     path_json
   } else {
@@ -122,7 +138,9 @@ write_describe_notas <- function(data, path_json) {
     auto_unbox = TRUE,
     na = "null"
   )
+  cli::cli_process_done()
 
-  cli::cli_alert_success("Processo concluido: {.path {final_file}}")
+  cli::cli_alert_success("Arquivo salva em: {.path {final_file}}")
+
   invisible(final_file)
 }

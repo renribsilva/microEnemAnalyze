@@ -5,7 +5,7 @@
 #'
 #' @export
 write_notas_redacao <- function(data, path_json) {
-  cli::cli_h2("Processamento de Dados: Redacao")
+  cli::cli_h1("Processamento de Dados: Redacao")
 
   # --- VALIDAÇÃO ---
   if (!"NU_NOTA_REDACAO" %in% names(data)) {

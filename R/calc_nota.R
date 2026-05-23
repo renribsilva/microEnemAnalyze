@@ -6,7 +6,7 @@
 #' @export
 calc_nota <- function(sample, area, ano) {
   # --- TÍTULO ---
-  cli::cli_h2("Calculando nota...")
+  cli::cli_h1("Calculando nota: metrica TRI")
 
   # Validação básica
   cli::cli_process_start("Validando argumentos")
@@ -178,6 +178,9 @@ calc_nota <- function(sample, area, ano) {
 
   k_val <- constantes_dt[constantes_dt$area == area, "k"]
   d_val <- constantes_dt[constantes_dt$area == area, "d"]
+  nota_final <- round(theta_eap * k_val + d_val, 1)
 
-  round(theta_eap * k_val + d_val, 1)
+  cli::cli_alert_success("Nota: {nota_final}")
+
+  invisible(nota_final)
 }

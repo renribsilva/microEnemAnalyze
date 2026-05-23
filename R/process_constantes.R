@@ -14,6 +14,19 @@
 #' a constante de deslocamento (d) e a área processada.
 #' @export
 process_constantes <- function(sample, area, itens_db) {
+  # --- TÍTULO ---
+  cli::cli_h1("Contanstes para a transformacao das escalas do ENEM")
+
+  # Validação básica
+  cli::cli_process_start("Validando argumentos")
+
+  if (!data.table::is.data.table(sample)) {
+    cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
+    sample <- data.table::as.data.table(sample)
+  }
+
+  cli::cli_process_done()
+
   # Seleciona nomes das colunas dinamicamente
   col_resp <- paste0("TX_RESPOSTAS_", area)
   col_gaba <- paste0("TX_GABARITO_", area)

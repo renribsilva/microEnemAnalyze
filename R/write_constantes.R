@@ -6,7 +6,7 @@
 #' @export
 write_constantes <- function(path_json) {
   # --- TÍTULO ---
-  cli::cli_h2("Exportacao das Constantes do ENEM")
+  cli::cli_h1("Exportacao das Constantes do ENEM")
 
   # 1. Recuperar objetos
   cli::cli_process_start("Recuperando dados do Global Env")
@@ -22,7 +22,7 @@ write_constantes <- function(path_json) {
   )
 
   # --- TRATAMENTO DO PATH ---
-  cli::cli_process_start("Preparando diretorios")
+  cli::cli_process_start("Exportando arquivo JSON")
   final_file <- if (grepl("\\.json$", path_json)) {
     path_json
   } else {
@@ -31,10 +31,8 @@ write_constantes <- function(path_json) {
 
   dir.create(dirname(final_file), showWarnings = FALSE, recursive = TRUE)
   final_file <- normalizePath(final_file, mustWork = FALSE)
-  cli::cli_process_done()
 
   # Exportação
-  cli::cli_process_start("Exportando arquivo JSON")
   jsonlite::write_json(
     constantes_df,
     path = final_file,
@@ -44,7 +42,7 @@ write_constantes <- function(path_json) {
   )
   cli::cli_process_done()
 
-  cli::cli_alert_success("Processo concluido: {.path {final_file}}")
+  cli::cli_alert_success("Arquivo salva em: {.path {final_file}}")
 
   invisible(final_file)
 }

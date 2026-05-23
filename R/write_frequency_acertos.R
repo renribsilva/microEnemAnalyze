@@ -4,7 +4,22 @@
 #' @param path_json Caminho do arquivo ou diretório de destino.
 #' @export
 write_frequency_acertos <- function(data, path_json) {
-  cli::cli_h2("Processamento de Frequencia (Acertos)")
+  cli::cli_h1("Processamento de Frequencia (Acertos)")
+
+  # Validação básica
+  cli::cli_process_start("Validando estrutura dos dados")
+
+  # verificando data
+  if (!data.table::is.data.table(data)) {
+    cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
+    data <- data.table::as.data.table(data)
+  }
+
+  if (!is.character(path_json)) {
+    cli::cli_abort("{.arg path_csv} precisa ser do tipo character.")
+  }
+
+  cli::cli_process_done()
 
   col_prova <- grep("^CO_PROVA_", names(data), value = TRUE)
   col_score <- "NU_SCORE"
@@ -64,9 +79,11 @@ write_frequency_acertos <- function(data, path_json) {
     digital = calc_freq(cod_digital),
     regular = calc_freq(cod_regular)
   )
+
   cli::cli_process_done()
 
   # --- Exportação ---
+  cli::cli_process_start("Exportando arquivo JSON")
   final_file <- if (grepl("\\.json$", path_json)) {
     path_json
   } else {
@@ -82,6 +99,7 @@ write_frequency_acertos <- function(data, path_json) {
   )
   cli::cli_process_done()
 
-  cli::cli_alert_success("Frequencias salvas em: {.path {final_file}}")
+  cli::cli_alert_success("Arquivo salvo em: {.path {final_file}}")
+
   invisible(final_file)
 }

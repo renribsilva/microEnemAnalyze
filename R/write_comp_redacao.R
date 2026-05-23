@@ -10,7 +10,7 @@
 #'
 #' @export
 write_comp_redacao <- function(data, path_json) {
-  cli::cli_h2("Processamento Integral: Competencias + Nota Total")
+  cli::cli_h1("Processamento Integral: Competencias + Nota Total")
 
   # Validação básica
   cli::cli_process_start("Validando argumentos")
@@ -108,6 +108,7 @@ write_comp_redacao <- function(data, path_json) {
   cli::cli_process_done()
 
   # --- EXPORTAÇÃO ---
+  cli::cli_process_start("Exportando arquivo JSON")
   final_file <- if (grepl("\\.json$", path_json)) {
     path_json
   } else {
@@ -115,7 +116,6 @@ write_comp_redacao <- function(data, path_json) {
   }
   dir.create(dirname(final_file), showWarnings = FALSE, recursive = TRUE)
 
-  cli::cli_process_start("Exportando JSON para {.path {final_file}}")
   jsonlite::write_json(
     resultados_final,
     path = final_file,
@@ -124,9 +124,7 @@ write_comp_redacao <- function(data, path_json) {
   )
   cli::cli_process_done()
 
-  cli::cli_alert_success(
-    "Sucesso! Estatisticas e frequencias (step 20) exportadas corretamente."
-  )
+  cli::cli_alert_success("Arquivo salvo em: {.path {final_file}}")
 
   invisible(final_file)
 }
