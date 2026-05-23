@@ -1,5 +1,3 @@
-load("data/itens_2009")
-
 sample_lc <- data.table::fread(
   "exploration/2009/MICRODADOS/sample_constantes_LC.csv"
 )
@@ -13,10 +11,10 @@ sample_mt <- data.table::fread(
   "exploration/2009/MICRODADOS/sample_constantes_MT.csv"
 )
 
-res_lc <- process_constantes(sample_lc, "LC", itens_2009)
-res_ch <- process_constantes(sample_ch, "CH", itens_2009)
-res_cn <- process_constantes(sample_cn, "CN", itens_2009)
-res_mt <- process_constantes(sample_mt, "MT", itens_2009)
+res_lc <- process_constantes(sample_lc, "LC")
+res_ch <- process_constantes(sample_ch, "CH")
+res_cn <- process_constantes(sample_cn, "CN")
+res_mt <- process_constantes(sample_mt, "MT")
 
 constantes <- data.table::data.table(
   area = c("CH", "CN", "LC", "MT"),

@@ -7,7 +7,6 @@
 #' @param data A data.table com os microdados.
 #' @param path_csv Caminho para salvar o arquivo CSV final.
 #' treineiros
-#' @return Retorna a data.table filtrada invisivelmente.
 #' @export
 filter_presence <- function(data, path_csv) {
   cli::cli_h1("Filtracao: Presenca Minima")

@@ -2,7 +2,9 @@
 #'
 #' @description Esta função processa as respostas,
 #' calcula a verossimilhança via TRI (EAP)
-#' e estima as constantes de transformação (k e d) para equalização de escalas.
+#' e estima as constantes de transformação (k e d) para
+#' equalização de escalas, tendo como referencia o exame
+#' aplicado no ano de 2009.
 #'
 #' @param sample Um data.table ou data.table contendo os
 #' microdados (respostas, gabaritos e notas).
@@ -14,15 +16,33 @@
 #' @return Uma lista contendo a constante de escala (k),
 #' a constante de deslocamento (d) e a área processada.
 #' @export
-process_constantes <- function(sample, area, itens_db) {
+process_constantes <- function(sample, area) {
   cli::cli_h1("Contanstes para a transformacao das escalas do ENEM")
 
+  # Inicia a validação dos argumentos
   cli::cli_process_start("Validando argumentos")
 
+  if (missing(sample)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg sample} e obrigatorio.",
+      "i" = "Por favor, forneca os microdados do ENEM de 2009."
+    ))
+  }
+
+  if (missing(area)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg area} e obrigatorio.",
+      "i" = "Exemplos de areas validas:
+      {.val LC}, {.val MT}, {.val CH} ou {.val CN}."
+    ))
+  }
+
+  # Normaliza os argumentos
   if (!data.table::is.data.table(sample)) {
     cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
     sample <- data.table::as.data.table(sample)
   }
+  area <- toupper(as.character(area))
 
   cli::cli_process_done()
 
@@ -42,6 +62,8 @@ process_constantes <- function(sample, area, itens_db) {
   # Itera sobre as linhas de sample
   for (i in seq_len(nrow(sample))) {
     cli::cli_progress_update()
+
+    # Cria uma lista contendo dois itens: sc (score) e co (código da prova)
     res <- tryCatch(
       {
         list(
@@ -54,6 +76,7 @@ process_constantes <- function(sample, area, itens_db) {
       }
     )
 
+    # Se res não for nulo, incrementa as variáveis com novos valores
     if (!is.null(res)) {
       score_list[[length(score_list) + 1]] <- res$sc
       co_prova_list[length(co_prova_list) + 1] <- res$co
@@ -67,7 +90,7 @@ process_constantes <- function(sample, area, itens_db) {
 
   cli::cli_progress_done()
 
-  # 2. Traceline
+  # Prepara variáveis e funções para calcular a verossimilhança
   theta <- seq(-4, 4, length.out = 40)
 
   cci_3pl <- function(theta, a, b, c) {
@@ -76,12 +99,23 @@ process_constantes <- function(sample, area, itens_db) {
 
   ls_traceline <- list()
 
+  # Importa dataset itens_2009
+  itens_db <- get("itens_2009")
+
+  # Inicia a iteração para cada código de prova
   for (k in unique(co_prova)) {
+    # Filtra dataset itens_2009 e ordena
     pars <- itens_db[itens_db$CO_PROVA == k, ]
     pars <- pars[order(pars$CO_POSICAO), ]
+
+    # Se não houver itens para o código k, segue para o próximo código
     if (nrow(pars) == 0) {
       next
-    } # Evita crash se caderno não existir
+    }
+
+    # Para cada código (prova distinta), retorna um vetor com
+    # 40 probabilidades tanto de acertos (p1) quanto de erros (p0)
+    # para todos os itens da prova
     ls_traceline[[as.character(k)]] <- lapply(
       seq_len(nrow(pars)),
       function(idx) {
@@ -96,7 +130,7 @@ process_constantes <- function(sample, area, itens_db) {
     )
   }
 
-  # 3. Verossimilhança Vetorizada (Para evitar o erro de NA e índice)
+  # 3. Verossimilhança Vetorizada
   prod_prob <- list()
 
   cli::cli_progress_bar(
@@ -104,27 +138,42 @@ process_constantes <- function(sample, area, itens_db) {
     total = nrow(sample_f)
   )
 
+  # Itera sobre sample com observações válidas
   for (m in seq_len(nrow(sample_f))) {
     cli::cli_progress_update()
+
+    # Filtra ls_traceline de acordo com o código da prova sob análise
     traceline_prova <- ls_traceline[[as.character(co_prova[m])]]
+
+    # Para cada item válido da prova, retorna um vetor com
+    # 40 probabilidades, sendo que cada uma é associada a uma
+    # possível proficiência (-4 < theta < 4)
     list_probs <- lapply(seq_along(traceline_prova), function(q) {
       res <- score[m, q]
       it <- traceline_prova[[q]]
+
+      # Se o item não tem parâmetro ou a resposta
+      # é inválida, probabilidade neutra (1)
       if (is.na(res) || any(is.na(it$p1))) {
         return(rep(1, length(theta)))
       }
+
       if (res == 1) {
         it$p1
       } else {
         it$p0
       }
     })
+
+    # Faz o produtório dasa probabilidades de erros e acertos
+    # para cada uma das 40 proficiências pré-estabelecidas (theta),
+    # guardando o resultado um vetor com 40 valores de verossimilhança.
     prod_prob[[m]] <- Reduce(`*`, list_probs)
   }
 
   cli::cli_progress_done()
 
-  # 4. EAP e Constantes
+  # Calula EAP e Constantes
   p_theta <- stats::dnorm(theta, mean = 0, sd = 1)
   theta_eap <- sapply(prod_prob, function(l_theta) {
     posterior <- l_theta * p_theta
