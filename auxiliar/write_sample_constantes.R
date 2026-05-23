@@ -27,9 +27,11 @@ names <- c(
   "Q73"
 )
 
-data <- fread(
-  "~/Downloads/
-  microdados_enem_2009/DADOS/MICRODADOS_ENEM_2009.csv",
+data <- data.table::fread(
+  file.path(
+    "~/Downloads",
+    "microdados_enem_2009/DADOS/MICRODADOS_ENEM_2009.csv"
+  ),
   select = names
 )
 

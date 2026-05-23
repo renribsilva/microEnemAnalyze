@@ -19,12 +19,11 @@ Imports:
     jsonlite,
     mirt,
     mirtCAT,
-    rlang
+    psych,
 Suggests: 
     bit64,
     devtools,
     dplyr,
-    psych,
     roxygen2,
     usethis
 Depends: 

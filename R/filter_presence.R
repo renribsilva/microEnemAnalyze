@@ -8,7 +8,6 @@
 #' @param path_csv Caminho para salvar o arquivo CSV final.
 #' treineiros
 #' @return Retorna a data.table filtrada invisivelmente.
-#' @importFrom rlang .data
 #' @export
 filter_presence <- function(data, path_csv) {
   # --- TÍTULO ---

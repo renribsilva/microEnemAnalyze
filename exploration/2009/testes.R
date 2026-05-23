@@ -1,5 +1,3 @@
-library(dplyr)
-
 sample <- data.table::fread(
   file.path(
     "~/Downloads",

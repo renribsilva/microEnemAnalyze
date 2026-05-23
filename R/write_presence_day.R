@@ -10,7 +10,6 @@
 #' @param day Dia de realização da prova: 1 ou 2 (numeric ou double)
 #'
 #' @return Retorna o caminho do arquivo gerado (invisivelmente).
-#' @importFrom rlang .data
 #' @export
 write_presence_day <- function(data, path_json, day) {
   # --- TÍTULO ---

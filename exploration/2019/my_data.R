@@ -1,6 +1,3 @@
-library(data.table)
-library(dplyr)
-
 #-----------2019--------------
 
 # CADERNO 516

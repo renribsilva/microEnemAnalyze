@@ -1,10 +1,17 @@
-library(data.table)
 load("data/itens_2009")
 
-sample_lc <- fread("exploration/2009/MICRODADOS/sample_constantes_LC.csv")
-sample_ch <- fread("exploration/2009/MICRODADOS/sample_constantes_CH.csv")
-sample_cn <- fread("exploration/2009/MICRODADOS/sample_constantes_CN.csv")
-sample_mt <- fread("exploration/2009/MICRODADOS/sample_constantes_MT.csv")
+sample_lc <- data.table::fread(
+  "exploration/2009/MICRODADOS/sample_constantes_LC.csv"
+)
+sample_ch <- data.table::fread(
+  "exploration/2009/MICRODADOS/sample_constantes_CH.csv"
+)
+sample_cn <- data.table::fread(
+  "exploration/2009/MICRODADOS/sample_constantes_CN.csv"
+)
+sample_mt <- data.table::fread(
+  "exploration/2009/MICRODADOS/sample_constantes_MT.csv"
+)
 
 res_lc <- process_constantes(sample_lc, "LC", itens_2009)
 res_ch <- process_constantes(sample_ch, "CH", itens_2009)

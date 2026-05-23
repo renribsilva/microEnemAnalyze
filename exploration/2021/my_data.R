@@ -1,6 +1,3 @@
-library(data.table)
-library(dplyr)
-
 #-----------2021--------------
 
 data <- data.table::fread(
