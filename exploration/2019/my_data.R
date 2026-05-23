@@ -4,9 +4,11 @@ library(dplyr)
 #-----------2019--------------
 
 # CADERNO 516
-data <- fread(
-  input = "~/Downloads/
-  microdados_enem_2019/DADOS/MICRODADOS_ENEM_2019.csv",
+data <- data.table::fread(
+  input = file.path(
+    "~/Downloads",
+    "microdados_enem_2019/DADOS/MICRODADOS_ENEM_2019.csv"
+  ),
   encoding = "UTF-8"
 )
 
@@ -44,7 +46,7 @@ score_mt <- sum(process_score(res_mt, gab_mt)[
   process_score(res_mt, gab_mt) == 1
 ])
 
-my_data <- fread(
+my_data <- data.table::fread(
   "exploration/2019/MICRODADOS/at_least_one_presence.csv",
   nrows = 1
 )

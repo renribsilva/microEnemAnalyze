@@ -4,21 +4,27 @@
 #-------------------------------------------------------
 
 # Importa os microdados
-table1 <- fread(
-  input = "~/Downloads/
-  microdados_enem_2024/DADOS/PARTICIPANTES_2024.csv",
+table1 <- data.table::fread(
+  input = file.path(
+    "~/Downloads",
+    "microdados_enem_2024/DADOS/PARTICIPANTES_2024.csv"
+  ),
   encoding = "UTF-8"
 )
-table2 <- fread(
-  input = "~/Downloads/
-  microdados_enem_2024/DADOS/RESULTADOS_2024.csv",
+table2 <- data.table::fread(
+  input = file.path(
+    "~/Downloads",
+    "microdados_enem_2024/DADOS/RESULTADOS_2024.csv"
+  ),
   encoding = "UTF-8"
 )
 
 # Caminho para gravar o json
 path_json <- as.character(
-  "~/Área\ de\ trabalho/DEV/NEXT/microenem/
-  src/app/(home)/JSON/2024/visao-geral/overview/"
+  file.path(
+    "~/Área\ de\ trabalho/DEV/NEXT/microenem",
+    "src/app/(home)/JSON/2024/visao-geral/overview/"
+  )
 )
 
 #-----------------------

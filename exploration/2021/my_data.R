@@ -3,9 +3,11 @@ library(dplyr)
 
 #-----------2021--------------
 
-data <- fread(
-  input = "~/Downloads/
-  microdados_enem_2021/DADOS/MICRODADOS_ENEM_2021.csv",
+data <- data.table::fread(
+  input = file.path(
+    "~/Downloads",
+    "microdados_enem_2021/DADOS/MICRODADOS_ENEM_2021.csv"
+  ),
   encoding = "UTF-8"
 )
 

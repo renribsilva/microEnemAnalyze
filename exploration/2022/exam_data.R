@@ -3,11 +3,13 @@
 #---------------------------------------------
 
 # Importa os scores
-data <- fread("exploration/2022/MICRODADOS/score_lc.csv")
+data <- data.table::fread("exploration/2022/MICRODADOS/score_lc.csv")
 
 path_json <- as.character(
-  "~/Área\ de\ trabalho/DEV/NEXT/microenem/
-  src/app/(home)/JSON/2022/dificuldade-do-exame/LC/"
+  file.path(
+    "~/Área\ de\ trabalho/DEV/NEXT/microenem",
+    "src/app/(home)/JSON/2022/dificuldade-do-exame/LC/"
+  )
 )
 
 # Escreve a descrição unidimensional dos dados
@@ -24,11 +26,13 @@ write_frequency_acertos(data, path_json = path_json)
 #---------------------------------------------
 
 # Importa os scores
-data <- fread("exploration/2022/MICRODADOS/score_ch.csv")
+data <- data.table::fread("exploration/2022/MICRODADOS/score_ch.csv")
 
 path_json <- as.character(
-  "~/Área\ de\ trabalho/DEV/NEXT/microenem/
-  src/app/(home)/JSON/2022/dificuldade-do-exame/CH/"
+  file.path(
+    "~/Área\ de\ trabalho/DEV/NEXT/microenem",
+    "src/app/(home)/JSON/2022/dificuldade-do-exame/CH/"
+  )
 )
 
 # Escreve a descrição unidimensional dos dados
@@ -45,11 +49,13 @@ write_frequency_acertos(data, path_json = path_json)
 #---------------------------------------------
 
 # Importa os scores
-data <- fread("exploration/2022/MICRODADOS/score_cn.csv")
+data <- data.table::fread("exploration/2022/MICRODADOS/score_cn.csv")
 
 path_json <- as.character(
-  "~/Área\ de\ trabalho/DEV/NEXT/microenem/
-  src/app/(home)/JSON/2022/dificuldade-do-exame/CN/"
+  file.path(
+    "~/Área\ de\ trabalho/DEV/NEXT/microenem",
+    "src/app/(home)/JSON/2022/dificuldade-do-exame/CN/"
+  )
 )
 
 # Escreve a descrição unidimensional dos dados
@@ -66,11 +72,13 @@ write_frequency_acertos(data, path_json = path_json)
 #---------------------------------------------
 
 # Importa os scores
-data <- fread("exploration/2022/MICRODADOS/score_mt.csv")
+data <- data.table::fread("exploration/2022/MICRODADOS/score_mt.csv")
 
 path_json <- as.character(
-  "~/Área\ de\ trabalho/DEV/NEXT/microenem/
-  src/app/(home)/JSON/2022/dificuldade-do-exame/MT/"
+  file.path(
+    "~/Área\ de\ trabalho/DEV/NEXT/microenem",
+    "src/app/(home)/JSON/2022/dificuldade-do-exame/MT/"
+  )
 )
 
 # Escreve a descrição unidimensional dos dados

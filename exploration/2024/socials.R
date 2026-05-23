@@ -2,9 +2,11 @@
 # Importa os dados.csv -
 #--------------------------------
 
-filtered <- fread(
-  input = "~/Downloads/
-  microdados_enem_2024/DADOS/PARTICIPANTES_2024.csv",
+filtered <- data.table::fread(
+  input = file.path(
+    "~/Downloads",
+    "microdados_enem_2024/DADOS/PARTICIPANTES_2024.csv"
+  ),
   encoding = "UTF-8"
 )
 
@@ -13,8 +15,10 @@ filtered <- fread(
 #-----------------------------
 
 path_json <- as.character(
-  "~/Área\ de\ trabalho/DEV/NEXT/microenem/
-  src/app/(home)/JSON/2024/visao-geral/socials/"
+  file.path(
+    "~/Área\ de\ trabalho/DEV/NEXT/microenem",
+    "src/app/(home)/JSON/2024/visao-geral/socials/"
+  )
 )
 
 #----------------------------------------------------

@@ -2,9 +2,11 @@
 # Importa os at_least_one_presence.csv -
 #---------------------------------------
 
-data <- fread(
-  input = "~/Downloads/
-  microdados_enem_2020/DADOS/MICRODADOS_ENEM_2020.csv",
+data <- data.table::fread(
+  input = file.path(
+    "~/Downloads",
+    "microdados_enem_2020/DADOS/MICRODADOS_ENEM_2020.csv"
+  ),
   encoding = "UTF-8"
 )
 

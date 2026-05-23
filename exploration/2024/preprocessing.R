@@ -3,9 +3,11 @@
 #----------------------------------------------------------------------
 
 # Importa os microdados
-table <- fread(
-  input = "~/Downloads/
-  microdados_enem_2024/DADOS/RESULTADOS_2024.csv",
+table <- data.table::fread(
+  input = file.path(
+    "~/Downloads",
+    "microdados_enem_2024/DADOS/RESULTADOS_2024.csv"
+  ),
   encoding = "UTF-8"
 )
 
@@ -21,7 +23,9 @@ filter_presence(table, path_csv = path_csv)
 #-------------------------------------------------
 
 # Importa os microdados
-data <- fread("exploration/2024/MICRODADOS/at_least_one_presence.csv")
+data <- data.table::fread(
+  "exploration/2024/MICRODADOS/at_least_one_presence.csv"
+)
 
 # Caminho para gravar o csv
 path_csv <- as.character("exploration/2024/MICRODADOS")

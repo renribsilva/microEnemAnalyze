@@ -4,9 +4,11 @@
 #-------------------------------------------------------
 
 # Importa os microdados
-table <- fread(
-  input = "~/Downloads/
-  microdados_enem_2020/DADOS/MICRODADOS_ENEM_2020.csv",
+table <- data.table::fread(
+  input = file.path(
+    "~/Downloads",
+    "microdados_enem_2020/DADOS/MICRODADOS_ENEM_2020.csv"
+  ),
   encoding = "UTF-8"
 )
 

@@ -3,10 +3,15 @@
 #-----------------------
 
 path <- as.character(
-  "~/Área\ de\ trabalho/DEV/NEXT/microenem/
-  src/app/(home)/JSON/2022/media-simples/"
+  file.path(
+    "~/Área\ de\ trabalho/DEV/NEXT/microenem",
+    "src/app/(home)/JSON/2022/media-simples/"
+  )
 )
-data <- fread("exploration/2022/MICRODADOS/at_least_one_presence.csv")
+
+data <- data.table::fread(
+  "exploration/2022/MICRODADOS/at_least_one_presence.csv"
+)
 
 #-----------------------
 # Executions -

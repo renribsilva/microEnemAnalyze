@@ -26,15 +26,17 @@ write_iteminfo(path_json = path_json, ano = 2024)
 # Escreve curva característica do teste de todos os cadernos -
 #-------------------------------------------------------------
 
-score_lc <- fread("exploration/2024/MICRODADOS/score_lc.csv")
-score_ch <- fread("exploration/2024/MICRODADOS/score_ch.csv")
-score_cn <- fread("exploration/2024/MICRODADOS/score_cn.csv")
-score_mt <- fread("exploration/2024/MICRODADOS/score_mt.csv")
+score_lc <- data.table::fread("exploration/2024/MICRODADOS/score_lc.csv")
+score_ch <- data.table::fread("exploration/2024/MICRODADOS/score_ch.csv")
+score_cn <- data.table::fread("exploration/2024/MICRODADOS/score_cn.csv")
+score_mt <- data.table::fread("exploration/2024/MICRODADOS/score_mt.csv")
 
 score <- list(score_lc, score_ch, score_cn, score_mt)
 
 # Importa dados
-data <- fread("exploration/2024/MICRODADOS/at_least_one_presence.csv")
+data <- data.table::fread(
+  "exploration/2024/MICRODADOS/at_least_one_presence.csv"
+)
 
 # Escreve a curva característica do exame por caderno, para um determinado ano
 write_tcc(data = data, score = score, path_json = path_json, ano = 2024)
