@@ -4,8 +4,13 @@
 #'
 #' @format Um objeto do tipo `data.table` com as constantes de cada
 #' área.
+#' \describe{
+#'  \item{area}{Área do conhecimento: 'LC', 'CH', 'CN', 'MT'}
+#'  \item{d}{Nota média segundo os critérios divulgados pelo INEP}
+#'  \item{k}{Desvio padrão segundo os critérios divugados pelo INEP}
+#' }
 #'
-#' Temos duas escalas: a escala oficial do Enem, cuja
+#' @details Temos duas escalas: a escala oficial do Enem, cuja
 #' referência são os concluintes regulares de escolas públicas do
 #' Enem 2009 (média 500, desvio padrão 100); e a escala dos
 #' itens divulgados nos microdados (escala dos microdados),
@@ -51,9 +56,10 @@
 #'
 "constantes"
 
-#' Parâmetros dos Itens do ENEM
+#' @title Parâmetros dos Itens do ENEM
 #'
-#' Dataset contendo os parâmetros A, B e C dos itens processados.
+#' @description Dataset contendo os parâmetros A, B e C dos
+#' itens processados.
 #'
 #' @format Um data.table (ou data.table) com as colunas:
 #' \describe{

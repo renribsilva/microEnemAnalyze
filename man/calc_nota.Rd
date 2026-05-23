@@ -2,18 +2,23 @@
 % Please edit documentation in R/calc_nota.R
 \name{calc_nota}
 \alias{calc_nota}
-\title{Calcular Nota Final (EAP Transformado)}
+\title{Calcular Nota do Enem}
 \usage{
 calc_nota(sample, area, ano)
 }
 \arguments{
-\item{sample}{Um data.table contendo linhas dos microdados
-do ENEM}
+\item{sample}{Um subconjunto dos microdados do ENEM, o qual pode conter
+uma linha ou mais.}
 
 \item{area}{String que indica a área do conhecimento: "LC", "CH", "CH", "MT"}
 
-\item{ano}{Número que indica o ano do exame}
+\item{ano}{Número que indica o ano do exame, que deve ser maior ou
+igual a 2019.}
 }
 \description{
-Calcular Nota Final (EAP Transformado)
+Calcula a proficiência dos participantes do ENEM para
+um determinado ano e uma determinada área do conhecimento.
+O método divulgado pelo INEP e seus pesquisadore é o 'Expected
+a posteriori' (EAP), uma forma de obter a média das proficiências
+relacionadas a uma determinada sequência de acertos e erros.
 }

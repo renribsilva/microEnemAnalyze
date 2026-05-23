@@ -7,7 +7,20 @@
 \format{
 Um objeto do tipo `data.table` com as constantes de cada
 área.
-
+\describe{
+ \item{area}{Área do conhecimento: 'LC', 'CH', 'CN', 'MT'}
+ \item{d}{Nota média segundo os critérios divulgados pelo INEP}
+ \item{k}{Desvio padrão segundo os critérios divugados pelo INEP}
+}
+}
+\usage{
+constantes
+}
+\description{
+Constantes de transformação da escala dos itens
+divulgados nos microdados para a escala oficial do Enem
+}
+\details{
 Temos duas escalas: a escala oficial do Enem, cuja
 referência são os concluintes regulares de escolas públicas do
 Enem 2009 (média 500, desvio padrão 100); e a escala dos
@@ -50,12 +63,5 @@ Dessa equação, extraímos as constantes \eqn{k} e \eqn{d}:
 Portanto, para transformar a nota da escala dos microdados para a
 escala oficial do Enem, utilizamos a seguinte equação:
 \deqn{Y_{i}=kX_{i}+d}
-}
-\usage{
-constantes
-}
-\description{
-Constantes de transformação da escala dos itens
-divulgados nos microdados para a escala oficial do Enem
 }
 \keyword{datasets}

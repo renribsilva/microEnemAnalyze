@@ -23,7 +23,7 @@ write_dic <- function(path_json, ano) {
   )
 
   # --- TRATAMENTO DO PATH ---
-  cli::cli_process_start("Preparando diretorios")
+  cli::cli_process_start("Exportando arquivo JSON")
   final_file <- if (grepl("\\.json$", path_json)) {
     path_json
   } else {
@@ -32,10 +32,8 @@ write_dic <- function(path_json, ano) {
 
   dir.create(dirname(final_file), showWarnings = FALSE, recursive = TRUE)
   final_file <- normalizePath(final_file, mustWork = FALSE)
-  cli::cli_process_done()
 
   # Exportação
-  cli::cli_process_start("Exportando arquivo JSON")
   jsonlite::write_json(
     dic_df,
     path = final_file,

@@ -52,6 +52,7 @@ itens_2023
 itens_2024
 }
 \description{
-Dataset contendo os parâmetros A, B e C dos itens processados.
+Dataset contendo os parâmetros A, B e C dos
+itens processados.
 }
 \keyword{datasets}
