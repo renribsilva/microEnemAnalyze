@@ -8,7 +8,7 @@ sample <- data.table::fread(
 
 data <- sample |>
   dplyr::filter(NU_NOTA_MT > 0) |>
-  slice(6)
+  dplyr::slice(6)
 
 data$NU_NOTA_MT
 calc_nota(data, area = "MT", ano = 2019)

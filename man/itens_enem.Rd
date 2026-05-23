@@ -19,19 +19,19 @@ Um data.table (ou data.table) com as colunas:
   \item{g}{Parâmetro de acerto ao acaso (chute)}
 }
 
-An object of class \code{data.table} (inherits from \code{data.frame}) with 1 rows and 1 columns.
+An object of class \code{data.table} (inherits from \code{data.frame}) with 1440 rows and 12 columns.
 
-An object of class \code{data.table} (inherits from \code{data.frame}) with 1 rows and 1 columns.
+An object of class \code{data.table} (inherits from \code{data.frame}) with 1945 rows and 14 columns.
 
-An object of class \code{data.table} (inherits from \code{data.frame}) with 1 rows and 1 columns.
+An object of class \code{data.table} (inherits from \code{data.frame}) with 4415 rows and 15 columns.
 
-An object of class \code{data.table} (inherits from \code{data.frame}) with 1 rows and 1 columns.
+An object of class \code{data.table} (inherits from \code{data.frame}) with 5365 rows and 14 columns.
 
-An object of class \code{data.table} (inherits from \code{data.frame}) with 1 rows and 1 columns.
+An object of class \code{data.table} (inherits from \code{data.frame}) with 5365 rows and 14 columns.
 
-An object of class \code{data.table} (inherits from \code{data.frame}) with 1 rows and 1 columns.
+An object of class \code{data.table} (inherits from \code{data.frame}) with 5550 rows and 14 columns.
 
-An object of class \code{data.table} (inherits from \code{data.frame}) with 1 rows and 1 columns.
+An object of class \code{data.table} (inherits from \code{data.frame}) with 5550 rows and 14 columns.
 }
 \source{
 Microdados do INEP.

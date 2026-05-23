@@ -63,7 +63,7 @@
 #'
 #' @format Um data.table (ou data.table) com as colunas:
 #' \describe{
-#'   \item{a1}{Parâmetro de discriminação}
+#'   \item{PARAM_A}{Parâmetro de discriminação}
 #'   \item{d}{Intercepto calculado como -a*b}
 #'   \item{g}{Parâmetro de acerto ao acaso (chute)}
 #' }

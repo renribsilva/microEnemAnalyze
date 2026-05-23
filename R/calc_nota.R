@@ -14,6 +14,7 @@ calc_nota <- function(sample, area, ano) {
   # --- TÍTULO ---
   cli::cli_h1("Calculando nota: metrica TRI")
 
+  # Inicia a validação dos argumentos passados para a função
   cli::cli_process_start("Validando argumentos")
 
   if (missing(sample)) {
@@ -45,13 +46,13 @@ calc_nota <- function(sample, area, ano) {
     )
   }
 
-  if (!is.numeric(ano) || !is.integer(ano)) {
+  if (!(is.numeric(ano) || is.integer(ano))) {
     cli::cli_abort(
       "{.arg ano} precisa ser do tipo {.cls number} ou {.cls integer}."
     )
   }
 
-  # normaliza os argumentos
+  # Normaliza os argumentos
   if (!data.table::is.data.table(sample)) {
     cli::cli_alert_info(
       "Convertendo objeto para {.cls data.table}"
@@ -61,6 +62,7 @@ calc_nota <- function(sample, area, ano) {
   area <- toupper(as.character(area))
   ano <- as.integer(ano)
 
+  # Verifica se ano é maior ou igual a 2019
   if (ano < 2019) {
     cli::cli_abort(
       "x" = "{.arg ano} invalido",
@@ -70,12 +72,13 @@ calc_nota <- function(sample, area, ano) {
 
   cli::cli_process_done()
 
-  cli::cli_process_start("Preparando variaveis e arquivo .rda")
+  # Prepara variaveis e datasets
+  cli::cli_process_start("Preparando variaveis e datasets")
 
-  # constrói o nome do rda dinamicamente
+  # Constrói nome do dataset dos itens do exame
   nome_itens <- paste0("itens_", ano)
 
-  # verifica se o arquivo rda exite
+  # Verifica se o dataset exite em ./data
   if (!exists(nome_itens)) {
     cli::cli_abort(c(
       "x" = "O objeto {.var {nome_itens}} nao foi encontrado na memoria.",
@@ -84,40 +87,45 @@ calc_nota <- function(sample, area, ano) {
     ))
   }
 
-  # importa o caderno de itens .rda
+  # Importa o dataset itens_ano de ./data
   itens_db_total <- get(nome_itens)
 
-  # constrói os nomes das colunas dinamicamente
+  # Constrói nomes das colunas presentes nos microdados
   col_resp <- paste0("TX_RESPOSTAS_", area)
   col_gaba <- paste0("TX_GABARITO_", area)
   col_prov <- paste0("CO_PROVA_", area)
 
-  # prepara a função que calcula a proficiência
+  # Prepara a função que calcula a proficiência
   theta <- seq(-4, 4, length.out = 40)
   p_theta <- stats::dnorm(theta, mean = 0, sd = 1)
   cci_3pl <- function(theta, a, b, c) {
     c + ((1 - c) / (1 + exp(-a * (theta - b))))
   }
+
+  # Prepara uma lista para receber o produto das probabilidades
   prod_prob <- list()
 
   cli::cli_process_done()
 
+  # Inicia a iteração sobre cada linha de sample
   cli::cli_progress_bar(
     paste("Calculando a nota na area: ", area),
     total = nrow(sample)
   )
 
-  # inicia a iteração sobre o sample
   for (i in seq_len(nrow(sample))) {
     cli::cli_progress_update()
 
+    # Extrai dos microdados a string de respostas, a string
+    # do gabarito, e o código da prova
     resp <- sample[[col_resp]][i]
     gaba <- sample[[col_gaba]][i]
     cod_prova <- sample[[col_prov]][i]
 
-    # 1. PEGA O BANCO DO CADERNO E ORDENA
+    # Filtra o dataset dos itens para o código da prova encontrado
     pars <- itens_db_total[itens_db_total$CO_PROVA == cod_prova, ]
 
+    # Verifica se a seleção foi exitosa
     if (nrow(pars) == 0) {
       prod_prob[[i]] <- NULL
       cli::cli_abort(c(
@@ -130,7 +138,7 @@ calc_nota <- function(sample, area, ano) {
     # Ordenação inicial para garantir Inglês/Espanhol
     pars <- pars[order(pars$TP_LINGUA, pars$CO_POSICAO), ]
 
-    # 2. TRATAMENTO LÍNGUA (FILTRA STRING E BANCO SIMULTANEAMENTE)
+    # Tratamento da língua (filtra string e caderno simultaneamente)
     if (area == "LC" && nchar(resp) == 50) {
       lg <- sample$TP_LINGUA[i]
       if (lg == 1) {
@@ -149,10 +157,7 @@ calc_nota <- function(sample, area, ano) {
     # Garante ordenação final por posição para bater com a string
     pars <- pars[order(pars$CO_POSICAO), ]
 
-    # 3. REMOÇÃO DE ITENS ANULADOS (IN_ITEM_ABAN == 1)
-    # Identificamos quais posições da string/score devem sumir
-    idx_anulados <- which(pars$IN_ITEM_ABAN == 1)
-
+    # Verifica se string de respostas e gabarito são do mesmo tamanho
     tamanho_resp <- nchar(resp)
     tamanho_gaba <- nchar(gaba)
 
@@ -167,12 +172,19 @@ calc_nota <- function(sample, area, ano) {
       ))
     }
 
+    # Identifica itens anulados e suas posições
+    idx_anulados <- which(pars$IN_ITEM_ABAN == 1)
+
+    # Constrói matrix 1x45 (ou 1x50) com os acertos, erros e anulados
     score_i <- process_score(resp, gaba) # nolint: object_usage_linter
+
+    # Remove itens anulados do score e do dataset dos itens
     if (length(idx_anulados) > 0) {
       score_i <- score_i[-idx_anulados] # Remove do score
       pars <- pars[-idx_anulados, ] # Remove do banco
     }
 
+    # Verifica se score e dataset dos itens tem o mesmo tamanho
     tamanho_score_i <- length(score_i)
     tamanho_pars <- nrow(pars)
 
@@ -187,6 +199,9 @@ calc_nota <- function(sample, area, ano) {
       ))
     }
 
+    # Para cada item válido da prova, retorna um vetor com
+    # 40 probabilidades, sendo que cada uma é associada a uma
+    # possível proficiência (-4 < theta < 4)
     list_probs <- lapply(
       seq_along(score_i),
       function(q) {
@@ -209,23 +224,33 @@ calc_nota <- function(sample, area, ano) {
       }
     )
 
+    # Para cada participante da prova, faz o produtório das
+    # probabilidades de erros e acertos para cada uma das 40
+    # proficiências pré-estabelecidas (theta), guardando o resultado
+    # um vetor com 40 valores de verossimilhança.
     prod_prob[[i]] <- Reduce(`*`, list_probs)
   }
 
   cli::cli_progress_done()
 
   cli::cli_process_start(
-    "Calculando a nota media por EAP"
+    "Calculando a proficiencia media (EAP)"
   )
-  # 5. EAP E TRANSFORMAÇÃO
+
+  # EAP E TRANSFORMAÇÃO
   # Remove nulos (casos onde o caderno não foi encontrado)
   prod_prob <- prod_prob[!sapply(prod_prob, is.null)]
 
+  # Encontra, por meio do EAP, o 'centro de gravidade' dos 40
+  # valores de verossimilhança, isto é, dentre esses valores, qual
+  # melhor representa a proficiência do participante do exame
   theta_eap <- sapply(prod_prob, function(l_theta) {
     posterior <- l_theta * p_theta
     sum(theta * posterior) / sum(posterior)
   })
 
+  # Reproduz a equalização, que é o procedimento que garante que a nota de
+  # edições e anos diferentes possam ser comparadas diretamente entre si.
   constantes_dt <- get("constantes")
 
   k_val <- constantes_dt[constantes_dt$area == area, "k"]
