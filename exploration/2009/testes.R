@@ -1,8 +1,10 @@
 library(dplyr)
 
 sample <- data.table::fread(
-  "~/Downloads/
-  microdados_enem_2019/DADOS/MICRODADOS_ENEM_2019.csv",
+  file.path(
+    "~/Downloads",
+    "microdados_enem_2019/DADOS/MICRODADOS_ENEM_2019.csv"
+  ),
   nrows = 100
 )
 
