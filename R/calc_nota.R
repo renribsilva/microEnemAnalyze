@@ -11,12 +11,11 @@
 #' igual a 2019.
 #' @export
 calc_nota <- function(sample, area, ano) {
-  # --- TÍTULO ---
   cli::cli_h1("Calculando nota: metrica TRI")
 
-  # Inicia a validação dos argumentos passados para a função
   cli::cli_process_start("Validando argumentos")
 
+  # Inicia validação dos argumentos passados à função
   if (missing(sample)) {
     cli::cli_abort(c(
       "x" = "O argumento {.arg sample} e obrigatorio.",
@@ -107,12 +106,12 @@ calc_nota <- function(sample, area, ano) {
 
   cli::cli_process_done()
 
-  # Inicia a iteração sobre cada linha de sample
   cli::cli_progress_bar(
     paste("Calculando a nota na area: ", area),
     total = nrow(sample)
   )
 
+  # Inicia a iteração sobre cada linha de sample
   for (i in seq_len(nrow(sample))) {
     cli::cli_progress_update()
 
