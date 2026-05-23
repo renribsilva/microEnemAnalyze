@@ -22,7 +22,7 @@
 #'
 #' @export
 get_grouped_mode <- function(x, bin_width = 10) {
-  # Remover valores ausentes
+  # Remove valores ausentes
   x <- x[!is.na(x)]
 
   if (length(x) == 0) {

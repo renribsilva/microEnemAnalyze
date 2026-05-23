@@ -1,6 +1,7 @@
-#' Calcular Constantes de Transformação por Área
+#' @title Calcular Constantes de Transformação por Área
 #'
-#' Esta função processa as respostas, calcula a verossimilhança via TRI (EAP)
+#' @description Esta função processa as respostas,
+#' calcula a verossimilhança via TRI (EAP)
 #' e estima as constantes de transformação (k e d) para equalização de escalas.
 #'
 #' @param sample Um data.table ou data.table contendo os
@@ -14,10 +15,8 @@
 #' a constante de deslocamento (d) e a área processada.
 #' @export
 process_constantes <- function(sample, area, itens_db) {
-  # --- TÍTULO ---
   cli::cli_h1("Contanstes para a transformacao das escalas do ENEM")
 
-  # Validação básica
   cli::cli_process_start("Validando argumentos")
 
   if (!data.table::is.data.table(sample)) {
@@ -27,7 +26,7 @@ process_constantes <- function(sample, area, itens_db) {
 
   cli::cli_process_done()
 
-  # Seleciona nomes das colunas dinamicamente
+  # Constrói nomes das colunas dinamicamente
   col_resp <- paste0("TX_RESPOSTAS_", area)
   col_gaba <- paste0("TX_GABARITO_", area)
   col_prov <- paste0("CO_PROVA_", area)
