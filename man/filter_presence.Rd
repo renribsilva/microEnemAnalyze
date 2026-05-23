@@ -12,9 +12,6 @@ filter_presence(data, path_csv)
 \item{path_csv}{Caminho para salvar o arquivo CSV final.
 treineiros}
 }
-\value{
-Retorna a data.table filtrada invisivelmente.
-}
 \description{
 Esta função processa uma data.table em batches para
 filtrar candidatos que compareceram a pelo menos uma das quatro

@@ -10,8 +10,6 @@
 #' microdados (respostas, gabaritos e notas).
 #' @param area Uma string indicando a área do conhecimento
 #' (ex: "LC", "MT", "CH", "CN").
-#' @param itens_db Um data.table contendo os parâmetros
-#' dos itens (A, B, C) e códigos de prova.
 #'
 #' @return Uma lista contendo a constante de escala (k),
 #' a constante de deslocamento (d) e a área processada.

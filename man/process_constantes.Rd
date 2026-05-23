@@ -4,7 +4,7 @@
 \alias{process_constantes}
 \title{Calcular Constantes de Transformação por Área}
 \usage{
-process_constantes(sample, area, itens_db)
+process_constantes(sample, area)
 }
 \arguments{
 \item{sample}{Um data.table ou data.table contendo os
@@ -12,15 +12,15 @@ microdados (respostas, gabaritos e notas).}
 
 \item{area}{Uma string indicando a área do conhecimento
 (ex: "LC", "MT", "CH", "CN").}
-
-\item{itens_db}{Um data.table contendo os parâmetros
-dos itens (A, B, C) e códigos de prova.}
 }
 \value{
 Uma lista contendo a constante de escala (k),
 a constante de deslocamento (d) e a área processada.
 }
 \description{
-Esta função processa as respostas, calcula a verossimilhança via TRI (EAP)
-e estima as constantes de transformação (k e d) para equalização de escalas.
+Esta função processa as respostas,
+calcula a verossimilhança via TRI (EAP)
+e estima as constantes de transformação (k e d) para
+equalização de escalas, tendo como referencia o exame
+aplicado no ano de 2009.
 }
