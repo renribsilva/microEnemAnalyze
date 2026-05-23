@@ -4,8 +4,8 @@ Title: Análise exploratória dos microdados do ENEM (Title Case)
 Version: 0.1.0
 Authors@R: c(
     person(
-      "Jane", "Doe",
-      email = "jane@example.com",
+      "Renato",
+      email = "ren.rib.silva@gmail.com",
       role = c("aut", "cre")
     )
   )

@@ -9,11 +9,11 @@
 Escreve arquivos json para serem usados em uma aplicação web.
 }
 \author{
-\strong{Maintainer}: Jane Doe \email{jane@example.com}
+\strong{Maintainer}: Renato \email{ren.rib.silva@gmail.com}
 
 Authors:
 \itemize{
-  \item Jane Doe \email{jane@example.com}
+  \item Renato \email{ren.rib.silva@gmail.com}
 }
 
 }
