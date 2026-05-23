@@ -32,13 +32,14 @@ process_constantes <- function(sample, area, itens_db) {
   col_prov <- paste0("CO_PROVA_", area)
   col_nota <- paste0("NU_NOTA_", area)
 
-  # 1. Processamento de Scores
+  # Prepara algumas variáveis
   score_list <- list()
   co_prova_list <- character()
   keep_idx <- c()
 
   cli::cli_progress_bar(paste("Processando Scores", area), total = nrow(sample))
 
+  # Itera sobre as linhas de sample
   for (i in seq_len(nrow(sample))) {
     cli::cli_progress_update()
     res <- tryCatch(

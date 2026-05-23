@@ -24,7 +24,7 @@ filter_presence <- function(data, path_csv) {
   if (missing(path_csv)) {
     cli::cli_abort(c(
       "x" = "O argumento {.arg path_csv} e obrigatorio.",
-      "i" = "Por favor, forneca o caminho onde o csv será gravado."
+      "i" = "Por favor, forneca o caminho onde o csv sera gravado."
     ))
   }
 
