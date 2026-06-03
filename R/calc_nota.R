@@ -122,6 +122,7 @@ calc_nota <- function(sample, area, ano) {
     # do gabarito, e o código da prova
     resp <- sample[[col_resp]][i]
     gaba <- sample[[col_gaba]][i]
+
     cod_prova <- sample[[col_prov]][i]
 
     # Filtra o dataset dos itens para o código da prova encontrado
@@ -141,18 +142,24 @@ calc_nota <- function(sample, area, ano) {
     pars <- pars[order(pars$TP_LINGUA, pars$CO_POSICAO), ]
 
     # Tratamento da língua (filtra string e caderno simultaneamente)
-    if (area == "LC" && nchar(resp) == 50) {
+    if (area == "LC") {
       lg <- sample$TP_LINGUA[i]
       if (lg == 1) {
-        # ESPANHOL
-        resp <- substr(resp, 6, 50)
-        gaba <- substr(gaba, 6, 50)
-        pars <- pars[!(pars$TP_LINGUA == 0 & pars$CO_POSICAO %in% 1:5), ]
+        if (nchar(resp) == 50) {
+          resp <- substr(resp, 6, 50)
+        }
+        if (nchar(gaba) == 50) {
+          gaba <- substr(gaba, 6, 50)
+        }
+        pars <- pars[pars$TP_LINGUA == 1 | is.na(pars$TP_LINGUA), ]
       } else {
-        # INGLÊS
-        resp <- paste0(substr(resp, 1, 5), substr(resp, 11, 50))
-        gaba <- paste0(substr(gaba, 1, 5), substr(gaba, 11, 50))
-        pars <- pars[!(pars$TP_LINGUA == 1 & pars$CO_POSICAO %in% 6:10), ]
+        if (nchar(resp) == 50) {
+          resp <- paste0(substr(resp, 1, 5), substr(resp, 11, 50))
+        }
+        if (nchar(gaba) == 50) {
+          gaba <- paste0(substr(gaba, 1, 5), substr(gaba, 11, 50))
+        }
+        pars <- pars[pars$TP_LINGUA == 0 | is.na(pars$TP_LINGUA), ]
       }
     }
 
