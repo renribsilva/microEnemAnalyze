@@ -6,25 +6,39 @@
 write_density_notas <- function(data, path_json) {
   cli::cli_h1("Processamento de Densidade")
 
-  # Validação básica
-  cli::cli_process_start("Validando estrutura dos dados")
+  cli::cli_process_start("Validando argumentos")
 
-  # verificando data
-  if (!data.table::is.data.table(data)) {
-    cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
-    data <- data.table::as.data.table(data)
+  if (missing(data)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg data} e obrigatorio.",
+      "i" = "Por favor, forneca os microdados do ENEM."
+    ))
+  }
+
+  if (missing(path_json)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg path_csv} e obrigatorio.",
+      "i" = "Por favor, forneca o caminho onde o csv sera gravado."
+    ))
   }
 
   if (!is.character(path_json)) {
     cli::cli_abort("{.arg path_csv} precisa ser do tipo character.")
   }
 
+  # Normaliza os microdados
+  if (!data.table::is.data.table(data)) {
+    cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
+    data <- data.table::as.data.table(data)
+  }
+
   cli::cli_process_done()
 
+  # Contrói os nomes das colunas
   col_prova <- grep("^CO_PROVA_", names(data), value = TRUE)
   col_nota <- grep("^NU_NOTA_", names(data), value = TRUE)
 
-  # --- Função de Cálculo Interna ---
+  # --- Função auxiliar ---
   calc_dens <- function(codigos_pool) {
     df_pool <- data[
       get(col_prova) %in%

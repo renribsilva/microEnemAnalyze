@@ -11,7 +11,7 @@ table <- data.table::fread(
   encoding = "UTF-8"
 )
 
-path_csv <- as.character(
+path_json <- as.character(
   "exploration/2023/MICRODADOS/at_least_one_presence.csv"
 )
 
@@ -28,7 +28,7 @@ data <- data.table::fread(
 )
 
 # Caminho para gravar o csv
-path_csv <- as.character("exploration/2023/MICRODADOS")
+path_json <- as.character("exploration/2023/MICRODADOS")
 
 # Escreve arquivos csv com score para cada área
 write_score(data, path_csv = path_csv, ano = 2023)

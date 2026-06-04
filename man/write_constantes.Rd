@@ -10,5 +10,5 @@ write_constantes(path_json)
 \item{path_json}{String com o nome do arquivo de saída}
 }
 \description{
-Esta função carrega um arquivo RDA e o converte para JSON.
+Esta função carrega um arquivo constantes.rda e o converte para JSON.
 }

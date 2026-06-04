@@ -12,24 +12,37 @@
 write_cor_raca <- function(data, path_json) {
   cli::cli_h1("Processamento de Dados: Cor ou Raca")
 
-  # Validação básica
-  cli::cli_process_start("Validando estrutura dos dados")
+  cli::cli_process_start("Validando argumentos")
 
-  # verificando data
-  if (!data.table::is.data.table(data)) {
-    cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
-    data <- data.table::as.data.table(data)
+  if (missing(data)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg data} e obrigatorio.",
+      "i" = "Por favor, forneca os microdados do ENEM."
+    ))
+  }
+
+  if (missing(path_json)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg path_csv} e obrigatorio.",
+      "i" = "Por favor, forneca o caminho onde o csv sera gravado."
+    ))
   }
 
   if (!is.character(path_json)) {
     cli::cli_abort("{.arg path_csv} precisa ser do tipo character.")
   }
 
+  # Normaliza os microdados
+  if (!data.table::is.data.table(data)) {
+    cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
+    data <- data.table::as.data.table(data)
+  }
+
   cli::cli_process_done()
 
   cli::cli_process_start("Calculando frequencias e estruturando Treemap")
 
-  # 1. Mapeamento completo (Dicionário)
+  # Mapeamento completo (Dicionário)
   mapa_cores <- c(
     "0" = "Nao declarado",
     "1" = "Branca",
@@ -40,25 +53,23 @@ write_cor_raca <- function(data, path_json) {
     "6" = "Nao dispoe da informacao"
   )
 
-  # 2. Contagem bruta
-  # Usamos table direto nos dados existentes
+  # Contagem bruta
   contagem <- table(as.character(data$TP_COR_RACA))
 
-  # 3. Cruzamos os dados existentes com os nomes do dicionário
-  # Isso garante que apenas o que EXISTE no dado entre no data.table
+  # Cruza os dados existentes com os nomes do dicionário
+  # Isso garante que apenas o que EXISTE no data.table seja mapeado
   df_treemap <- data.table::data.table(
     codigo = names(contagem),
     abs = as.numeric(contagem)
   )
 
-  # Adicionamos os labels baseados no código que veio da table
+  # Adiciona os labels baseados no código que veio da table
   df_treemap$label <- mapa_cores[df_treemap$codigo]
 
-  # Calculamos a porcentagem baseada no total
+  # Calcula a porcentagem
   df_treemap$value <- round((df_treemap$abs / sum(df_treemap$abs)) * 100, 2)
 
-  # 4. Limpeza: Se por acaso houver um código fora de 0-6, o label fica NA.
-  # Vamos garantir que não exportamos lixo.
+  # Se por acaso houver um código fora de 0-6, o label fica NA.
   df_treemap <- df_treemap[!is.na(df_treemap$label), c("label", "value", "abs")]
 
   objeto_cor_raca <- list(

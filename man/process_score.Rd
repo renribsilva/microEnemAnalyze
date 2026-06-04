@@ -2,7 +2,7 @@
 % Please edit documentation in R/process_score.R
 \name{process_score}
 \alias{process_score}
-\title{Processar escores mantendo códigos originais}
+\title{Processar scores mantendo códigos originais}
 \usage{
 process_score(res, gab)
 }
@@ -16,6 +16,5 @@ Uma matriz de uma linha com o processamento (invisível).
 }
 \description{
 Compara uma string de respostas contra um gabarito, preservando o comprimento
-original (incluindo "9", "." e "*"). Atribui o resultado a 'score'
-no GlobalEnv.
+original (incluindo "9", "." e "*").
 }

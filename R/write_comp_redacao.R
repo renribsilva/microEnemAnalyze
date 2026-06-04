@@ -50,7 +50,7 @@ write_comp_redacao <- function(data, path_json) {
   if (!all(colunas_necessarias %in% names(data))) {
     colunas_faltantes <- setdiff(colunas_necessarias, names(data))
     cli::cli_abort(
-      "Erro: Colunas necessárias ausentes: {.var {colunas_faltantes}}."
+      "Erro: Colunas necessarias ausentes: {.var {colunas_faltantes}}."
     )
   }
 
