@@ -1,18 +1,18 @@
-#' Processar escores mantendo códigos originais
+#' Processar scores mantendo códigos originais
 #'
 #' Compara uma string de respostas contra um gabarito, preservando o comprimento
-#' original (incluindo "9", "." e "*"). Atribui o resultado a 'score'
-#' no GlobalEnv.
+#' original (incluindo "9", "." e "*").
 #'
 #' @param res String com as respostas (ex: "ABC9*").
 #' @param gab String com o gabarito (ex: "ABCDE").
 #' @return Uma matriz de uma linha com o processamento (invisível).
 #' @export
 process_score <- function(res, gab) {
-  # 1. Validações de Entrada
+  # Validações de Entrada
   tamanho_res <- nchar(res)
   tamanho_gab <- nchar(gab)
 
+  # Etapa de segurança
   if (tamanho_res != tamanho_gab) {
     stop(sprintf(
       "Comprimentos diferentes: Resposta (%d) vs Gabarito (%d).",
@@ -28,23 +28,22 @@ process_score <- function(res, gab) {
     ))
   }
 
-  # 2. Vetorização
+  # Vetorização
   r_vec <- strsplit(res, "")[[1]]
   g_vec <- strsplit(gab, "")[[1]]
 
-  # 3. Lógica de Correção Manual (para manter caracteres não-numéricos)
-  # Comparamos resposta com gabarito: 1 se igual, 0 se diferente
+  # Resultado
   resultado <- ifelse(r_vec == g_vec, 1L, 0L)
 
-  # 4. Codificação de Caracteres Especiais (conforme solicitado)
-  # Nota: usamos 'L' para garantir o tipo Integer no R
+  # Reconstrução dos valores especiais
   resultado[r_vec == "9"] <- 9L
   resultado[r_vec == "."] <- 8L
   resultado[r_vec == "*"] <- 7L
 
-  # 5. Transformação em Matriz de Inteiros
+  # Transformação em Matriz de Inteiros
   mat_resultado <- matrix(as.integer(resultado), nrow = 1)
 
+  # Etapa de segurança
   if (tamanho_res != ncol(mat_resultado)) {
     stop(sprintf(
       "Tamanho invalido de mat_resultado: tem %d colunas, mas deveria ter %d",

@@ -12,31 +12,46 @@
 write_comp_redacao <- function(data, path_json) {
   cli::cli_h1("Processamento Integral: Competencias + Nota Total")
 
-  # Validação básica
   cli::cli_process_start("Validando argumentos")
 
-  # verificando data
-  if (!data.table::is.data.table(data)) {
-    cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
-    data <- data.table::as.data.table(data)
+  if (missing(data)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg data} e obrigatorio.",
+      "i" = "Por favor, forneca os microdados do ENEM."
+    ))
+  }
+
+  if (missing(path_json)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg path_csv} e obrigatorio.",
+      "i" = "Por favor, forneca o caminho onde o csv sera gravado."
+    ))
   }
 
   if (!is.character(path_json)) {
     cli::cli_abort("{.arg path_csv} precisa ser do tipo character.")
   }
 
+  # Normaliza os microdados
+  if (!data.table::is.data.table(data)) {
+    cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
+    data <- data.table::as.data.table(data)
+  }
+
   cli::cli_process_done()
 
-  # --- CONFIGURAÇÃO DE COLUNAS ---
+  # Constrói os nomes das colunas
   cols_comp <- paste0("NU_NOTA_COMP", 1:5)
   cols_total <- "NU_NOTA_REDACAO"
   todas_as_notas <- c(cols_comp, cols_total)
-
   colunas_necessarias <- c(todas_as_notas, "TP_STATUS_REDACAO")
 
+  # Etapa de verificação
   if (!all(colunas_necessarias %in% names(data))) {
-    cli::cli_alert_danger("Erro: Colunas necessarias ausentes.")
-    stop("Execucao interrompida.")
+    colunas_faltantes <- setdiff(colunas_necessarias, names(data))
+    cli::cli_abort(
+      "Erro: Colunas necessárias ausentes: {.var {colunas_faltantes}}."
+    )
   }
 
   # --- PROCESSAMENTO ---
@@ -44,6 +59,7 @@ write_comp_redacao <- function(data, path_json) {
     "Calculando metricas com labels fixos (0-200/1000 by 20)"
   )
 
+  # Itera sobre todas as notas uma função, retornando uma lista
   resultados_final <- lapply(todas_as_notas, function(col) {
     # Filtro: Status 1 e remove NAs
     valores <- data[[col]][data$TP_STATUS_REDACAO %in% 1 & !is.na(data[[col]])]
@@ -52,14 +68,13 @@ write_comp_redacao <- function(data, path_json) {
       return(NULL)
     }
 
-    # 1. FREQUÊNCIA COM LABELS FIXOS (by 20)
+    # Frequência com lables fixos (by20)
     limite_max <- if (col == "NU_NOTA_REDACAO") 1000 else 200
     labels_fixos <- seq(0, limite_max, by = 20)
 
     # Factor garante que todos os labels de 20 em 20 apareçam, mesmo com freq 0
     freq_tab <- table(factor(valores, levels = labels_fixos))
 
-    # 2. ESTATÍSTICAS (Dados Crus)
     # psych::describe fornece skew e kurtosis
     desc <- psych::describe(valores)
 
@@ -75,7 +90,7 @@ write_comp_redacao <- function(data, path_json) {
       type = 1
     )
 
-    # 3. DENSIDADE
+    # Densidade
     dens <- stats::density(valores, from = 0, to = limite_max)
 
     list(
@@ -103,7 +118,6 @@ write_comp_redacao <- function(data, path_json) {
     )
   })
 
-  # Remove possíveis nulos e nomeia a lista
   names(resultados_final) <- todas_as_notas
   cli::cli_process_done()
 
