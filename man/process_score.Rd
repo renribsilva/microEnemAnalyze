@@ -2,19 +2,16 @@
 % Please edit documentation in R/process_score.R
 \name{process_score}
 \alias{process_score}
-\title{Processar scores mantendo códigos originais}
+\title{Processar scores}
 \usage{
 process_score(res, gab)
 }
 \arguments{
-\item{res}{String com as respostas (ex: "ABC9*").}
+\item{res}{String com as respostas (ex: "ABC9*") com 45 ou 50 caracteres.}
 
-\item{gab}{String com o gabarito (ex: "ABCDE").}
-}
-\value{
-Uma matriz de uma linha com o processamento (invisível).
+\item{gab}{String com o gabarito (ex: "ABCDE") com 45 ou 50 caracteres.}
 }
 \description{
-Compara uma string de respostas contra um gabarito, preservando o comprimento
-original (incluindo "9", "." e "*").
+Compara uma string de respostas contra uma de gabarito,
+preservando caracteres especiais (incluindo "9", "." e "*").
 }

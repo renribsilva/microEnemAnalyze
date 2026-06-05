@@ -1,12 +1,13 @@
 #' @title Filtrar inscritos com pelo menos uma presença
 #'
-#' @description Esta função processa uma data.table em batches para
+#' @description Esta função processa os microdados do ENEM em batches para
 #' filtrar candidatos que compareceram a pelo menos uma das quatro
 #' provas do ENEM.
 #'
-#' @param data A data.table com os microdados.
-#' @param path_csv Caminho para salvar o arquivo CSV final.
-#' treineiros
+#' @param data Um data.table com os microdados do ENEM.
+#' @param path_csv Um string indicando o caminho para salvar o
+#' arquivo CSV final.
+#'
 #' @export
 filter_presence <- function(data, path_csv) {
   cli::cli_h1("Filtracao: Presenca Minima")

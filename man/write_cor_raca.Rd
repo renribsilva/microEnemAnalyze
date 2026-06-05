@@ -2,20 +2,16 @@
 % Please edit documentation in R/write_cor_raca.R
 \name{write_cor_raca}
 \alias{write_cor_raca}
-\title{Gera JSON sobre cor ou raça dos participantes do ENEM}
+\title{Escrever JSON sobre cor ou raça dos participantes do ENEM}
 \usage{
 write_cor_raca(data, path_json)
 }
 \arguments{
-\item{data}{Um data.table contendo a coluna TP_COR_RACA.}
+\item{data}{Um data.table contendo os microdados do ENEM.}
 
 \item{path_json}{Caminho da pasta onde o arquivo JSON será salvo.}
 }
-\value{
-Salva um arquivo JSON no diretório especificado.
-}
 \description{
 Esta função calcula frequências da variável
-cor ou raça do microdados do EENM
-e exporta um JSON formatado para uso no Chart.js.
+cor ou raça do microdados do ENEM e exporta um JSON
 }

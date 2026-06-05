@@ -13,6 +13,7 @@
 #'
 #' @return Uma lista contendo a constante de escala (k),
 #' a constante de deslocamento (d) e a área processada.
+#'
 #' @export
 process_constantes <- function(sample, area) {
   cli::cli_h1("Contanstes para a transformacao das escalas do ENEM")

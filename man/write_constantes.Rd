@@ -2,7 +2,7 @@
 % Please edit documentation in R/write_constantes.R
 \name{write_constantes}
 \alias{write_constantes}
-\title{Exportar Dados para JSON}
+\title{Escrever JSON com os dados de contantes.rda}
 \usage{
 write_constantes(path_json)
 }
@@ -10,5 +10,7 @@ write_constantes(path_json)
 \item{path_json}{String com o nome do arquivo de saída}
 }
 \description{
-Esta função carrega um arquivo constantes.rda e o converte para JSON.
+Esta função carrega um arquivo constantes.rda
+(constantes de transformação da escala do ENEM) e o
+converte para JSON.
 }

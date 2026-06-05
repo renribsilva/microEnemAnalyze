@@ -2,7 +2,7 @@
 % Please edit documentation in R/write_density_notas.R
 \name{write_density_notas}
 \alias{write_density_notas}
-\title{Exportar coordenadas de densidade para Chart.js}
+\title{Escrever JSON com as coordenadas de densidade}
 \usage{
 write_density_notas(data, path_json)
 }
@@ -12,5 +12,6 @@ write_density_notas(data, path_json)
 \item{path_json}{Caminho do arquivo JSON.}
 }
 \description{
-Exportar coordenadas de densidade para Chart.js
+Essa função escreve um JSON com a distribuição
+das notas de cada área do exame.
 }

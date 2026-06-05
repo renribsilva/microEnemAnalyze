@@ -11,7 +11,6 @@
 #' Se for NULL, o arquivo não será escrito.
 #' @param co_prova Opcional. Código do caderno específico (CO_PROVA)
 #' para processamento individual.
-#' @import data.table
 #'
 #' @return Se co_prova for informado, cria o objeto no GlobalEnv e
 #' retorna a matriz. Caso contrário, retorna o caminho do JSON (invisível).

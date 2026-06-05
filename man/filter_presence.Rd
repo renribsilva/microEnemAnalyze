@@ -7,13 +7,13 @@
 filter_presence(data, path_csv)
 }
 \arguments{
-\item{data}{A data.table com os microdados.}
+\item{data}{Um data.table com os microdados do ENEM.}
 
-\item{path_csv}{Caminho para salvar o arquivo CSV final.
-treineiros}
+\item{path_csv}{Um string indicando o caminho para salvar o
+arquivo CSV final.}
 }
 \description{
-Esta função processa uma data.table em batches para
+Esta função processa os microdados do ENEM em batches para
 filtrar candidatos que compareceram a pelo menos uma das quatro
 provas do ENEM.
 }

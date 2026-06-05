@@ -1,11 +1,11 @@
-#' Processar scores mantendo códigos originais
+#' @title Processar scores
 #'
-#' Compara uma string de respostas contra um gabarito, preservando o comprimento
-#' original (incluindo "9", "." e "*").
+#' @description Compara uma string de respostas contra uma de gabarito,
+#' preservando caracteres especiais (incluindo "9", "." e "*").
 #'
-#' @param res String com as respostas (ex: "ABC9*").
-#' @param gab String com o gabarito (ex: "ABCDE").
-#' @return Uma matriz de uma linha com o processamento (invisível).
+#' @param res String com as respostas (ex: "ABC9*") com 45 ou 50 caracteres.
+#' @param gab String com o gabarito (ex: "ABCDE") com 45 ou 50 caracteres.
+#'
 #' @export
 process_score <- function(res, gab) {
   # Validações de Entrada

@@ -1,14 +1,17 @@
-#' Exportar Dados para JSON
+#' @title Escrever JSON com os dados de contantes.rda
 #'
-#' Esta função carrega um arquivo constantes.rda e o converte para JSON.
+#' @description Esta função carrega um arquivo constantes.rda
+#' (constantes de transformação da escala do ENEM) e o
+#' converte para JSON.
 #'
 #' @param path_json String com o nome do arquivo de saída
+#'
 #' @export
 write_constantes <- function(path_json) {
   # --- TÍTULO ---
   cli::cli_h1("Exportacao das Constantes do ENEM")
 
-  # 1. Recuperar objetos
+  # Importa constantes.rda
   cli::cli_process_start("Recuperando dados do Global Env")
   tryCatch(
     {

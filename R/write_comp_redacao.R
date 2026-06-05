@@ -1,12 +1,12 @@
-#' @title Gera JSON de Estatísticas Completas da Redação
+#' @title Escrever JSON de Estatísticas Completas da Redação
 #'
-#' @description Processa NU_NOTA_COMP1-5 e NU_NOTA_REDACAO com labels
-#' padronizados (by 20).
+#' @description Essa função escreve um json contendo informações
+#' estatísticas sobre as notas das Competências e da Nota total
+#' da Redação
 #'
-#' @param data Um data.table contendo as colunas de competências,
-#' nota e status.
-#' @param path_json Caminho para salvar o arquivo JSON.
-#' @import cli
+#' @param data Um data.table contendo os microdados do ENEM
+#' @param path_json String que indica o caminho
+#' para salvar o arquivo JSON.
 #'
 #' @export
 write_comp_redacao <- function(data, path_json) {

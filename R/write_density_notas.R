@@ -1,7 +1,11 @@
-#' Exportar coordenadas de densidade para Chart.js
+#' @title Escrever JSON com as coordenadas de densidade
+#'
+#' @description Essa função escreve um JSON com a distribuição
+#' das notas de cada área do exame.
 #'
 #' @param data Data.table com a coluna NU_NOTA_...
 #' @param path_json Caminho do arquivo JSON.
+#'
 #' @export
 write_density_notas <- function(data, path_json) {
   cli::cli_h1("Processamento de Densidade")

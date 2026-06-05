@@ -10,7 +10,6 @@
 #' nome do arquivo .json final.
 #' @param co_prova Opcional. Código do caderno específico (CO_PROVA)
 #' para processamento individual.
-#' @import data.table
 #'
 #' @export
 write_iteminfo <- function(path_json = NULL, co_prova = NULL, ano) {

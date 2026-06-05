@@ -2,17 +2,18 @@
 % Please edit documentation in R/write_comp_redacao.R
 \name{write_comp_redacao}
 \alias{write_comp_redacao}
-\title{Gera JSON de Estatísticas Completas da Redação}
+\title{Escrever JSON de Estatísticas Completas da Redação}
 \usage{
 write_comp_redacao(data, path_json)
 }
 \arguments{
-\item{data}{Um data.table contendo as colunas de competências,
-nota e status.}
+\item{data}{Um data.table contendo os microdados do ENEM}
 
-\item{path_json}{Caminho para salvar o arquivo JSON.}
+\item{path_json}{String que indica o caminho
+para salvar o arquivo JSON.}
 }
 \description{
-Processa NU_NOTA_COMP1-5 e NU_NOTA_REDACAO com labels
-padronizados (by 20).
+Essa função escreve um json contendo informações
+estatísticas sobre as notas das Competências e da Nota total
+da Redação
 }

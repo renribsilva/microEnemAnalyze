@@ -1,13 +1,11 @@
-#' @title Gera JSON sobre cor ou raça dos participantes do ENEM
+#' @title Escrever JSON sobre cor ou raça dos participantes do ENEM
 #'
 #' @description Esta função calcula frequências da variável
-#' cor ou raça do microdados do EENM
-#' e exporta um JSON formatado para uso no Chart.js.
+#' cor ou raça do microdados do ENEM e exporta um JSON
 #'
-#' @param data Um data.table contendo a coluna TP_COR_RACA.
+#' @param data Um data.table contendo os microdados do ENEM.
 #' @param path_json Caminho da pasta onde o arquivo JSON será salvo.
 #'
-#' @return Salva um arquivo JSON no diretório especificado.
 #' @export
 write_cor_raca <- function(data, path_json) {
   cli::cli_h1("Processamento de Dados: Cor ou Raca")
