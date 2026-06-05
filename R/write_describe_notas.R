@@ -1,7 +1,11 @@
-#' Exportar TCCs de todos os cadernos em um único JSON
+#' @title Exportar TCCs de todos os cadernos em um único JSON
 #'
-#' @param data Data.table com a coluna NU_NOTA e NU_SCORE
+#' @description Essa função escreve um JSON com dados sobre a
+#' curva característica do exame, por área.
+#'
+#' @param data Data.table com os microdados do ENEM.
 #' @param path_json String. Caminho completo do arquivo.
+#'
 #' @export
 write_describe_notas <- function(data, path_json) {
   cli::cli_h1("Descricao Estatistica")

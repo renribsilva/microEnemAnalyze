@@ -7,10 +7,11 @@
 write_describe_notas(data, path_json)
 }
 \arguments{
-\item{data}{Data.table com a coluna NU_NOTA e NU_SCORE}
+\item{data}{Data.table com os microdados do ENEM.}
 
 \item{path_json}{String. Caminho completo do arquivo.}
 }
 \description{
-Exportar TCCs de todos os cadernos em um único JSON
+Essa função escreve um JSON com dados sobre a
+curva característica do exame, por área.
 }

@@ -7,11 +7,11 @@
 write_density_notas(data, path_json)
 }
 \arguments{
-\item{data}{Data.table com a coluna NU_NOTA_...}
+\item{data}{Data.table com os microdados do ENEM}
 
 \item{path_json}{Caminho do arquivo JSON.}
 }
 \description{
 Essa função escreve um JSON com a distribuição
-das notas de cada área do exame.
+da densidade das notas de cada área do exame.
 }

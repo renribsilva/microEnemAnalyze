@@ -1,9 +1,9 @@
 #' @title Escrever JSON com as coordenadas de densidade
 #'
 #' @description Essa função escreve um JSON com a distribuição
-#' das notas de cada área do exame.
+#' da densidade das notas de cada área do exame.
 #'
-#' @param data Data.table com a coluna NU_NOTA_...
+#' @param data Data.table com os microdados do ENEM
 #' @param path_json Caminho do arquivo JSON.
 #'
 #' @export
