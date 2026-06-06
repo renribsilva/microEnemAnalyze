@@ -1,4 +1,4 @@
-#' @title Gerar Informação do Item para Chart.js
+#' @title Gerar Informação do Item
 #'
 #' @description Esta função processa modelos MIRT para cadernos
 #' do ENEM, extrai as curvas de informação do item e exporta os

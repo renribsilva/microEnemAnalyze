@@ -12,9 +12,6 @@ colunas NU_INSCRICAO e IN_TREINEIRO.}
 
 \item{path_json}{O diretório onde o arquivo 'inscritos.json' será salvo.}
 }
-\value{
-Retorna o caminho do arquivo gerado (invisivelmente).
-}
 \description{
 Esta função processa os dados do ENEM,
 valida a integridade dos inscritos

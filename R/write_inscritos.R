@@ -8,28 +8,37 @@
 #' colunas NU_INSCRICAO e IN_TREINEIRO.
 #' @param path_json O diretório onde o arquivo 'inscritos.json' será salvo.
 #'
-#' @return Retorna o caminho do arquivo gerado (invisivelmente).
 #' @export
 write_inscritos <- function(data, path_json) {
   # --- TÍTULO ---
   cli::cli_h1("Processamento de Inscritos e Treineiros")
 
-  # 1. Validação dos argumentos
-  cli::cli_process_start("Validando estrutura dos dados")
+  cli::cli_process_start("Validando argumentos")
 
-  if (typeof(path_json) != "character") {
-    cli::cli_alert_danger("Erro no argumento {.var path_json}")
-    stop("Erro: o argumentos path_json precisa ser do tipo character")
+  if (missing(data)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg data} e obrigatorio.",
+      "i" = "Por favor, forneca os microdados do ENEM."
+    ))
   }
 
-  if (typeof(data) != "data.table") {
+  if (missing(path_json)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg path_csv} e obrigatorio.",
+      "i" = "Por favor, forneca o caminho onde o csv sera gravado."
+    ))
+  }
+
+  if (!is.character(path_json)) {
+    cli::cli_abort("{.arg path_csv} precisa ser do tipo character.")
+  }
+
+  # Normaliza os microdados
+  if (!data.table::is.data.table(data)) {
+    cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
     data <- data.table::as.data.table(data)
   }
 
-  if (any(is.na(data$NU_INSCRICAO))) {
-    cli::cli_alert_danger("Valores ausentes detectados em {.var NU_INSCRICAO}")
-    stop("Erro: Existem valores NA em NU INSCRICAO.")
-  }
   cli::cli_process_done()
 
   # 2. Criação de tabelas de frequências

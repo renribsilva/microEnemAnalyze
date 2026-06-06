@@ -2,6 +2,7 @@
 #'
 #' @param path_json String com o caminho da pasta ou nome do arquivo de saída
 #' @param ano Inteiro ou string representando o ano (ex: 2019)
+#'
 #' @export
 write_itens <- function(path_json, ano) {
   cli::cli_h1("Exportacao de Itens (Dicionario de Parametros) - ENEM {ano}")

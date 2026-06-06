@@ -2,7 +2,7 @@
 % Please edit documentation in R/write_iteminfo.R
 \name{write_iteminfo}
 \alias{write_iteminfo}
-\title{Gerar Informação do Item para Chart.js}
+\title{Gerar Informação do Item}
 \usage{
 write_iteminfo(path_json = NULL, co_prova = NULL, ano)
 }

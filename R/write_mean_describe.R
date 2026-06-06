@@ -1,9 +1,40 @@
-#' Exportar Estatísticas das Notas do ENEM
+#' @title Exportar Estatísticas das Notas do ENEM
+#'
 #' @param data Um data.table bruto
 #' @param path Caminho do arquivo JSON ou diretório
+#'
 #' @export
 write_mean_describe <- function(data, path) {
+  cli::cli_process_start("Validando argumentos")
+
+  if (missing(data)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg data} e obrigatorio.",
+      "i" = "Por favor, forneca os microdados do ENEM."
+    ))
+  }
+
+  if (missing(path)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg path_csv} e obrigatorio.",
+      "i" = "Por favor, forneca o caminho onde o csv sera gravado."
+    ))
+  }
+
+  if (!is.character(path)) {
+    cli::cli_abort("{.arg path_csv} precisa ser do tipo character.")
+  }
+
+  # Normaliza os microdados
+  if (!data.table::is.data.table(data)) {
+    cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
+    data <- data.table::as.data.table(data)
+  }
+
+  cli::cli_process_done()
+
   temp_dt <- data
+
   cols_notas <- c(
     "NU_NOTA_LC",
     "NU_NOTA_CH",
