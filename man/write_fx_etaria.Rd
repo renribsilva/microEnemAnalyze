@@ -11,9 +11,6 @@ write_fx_etaria(data, path_json)
 
 \item{path_json}{Caminho da pasta onde o arquivo JSON será salvo.}
 }
-\value{
-Salva um arquivo JSON no diretório especificado.
-}
 \description{
 Esta função agrupa os dados de faixa etária do
 ENEM, calcula frequências relativas e exporta um JSON

@@ -9,7 +9,7 @@ write_describe_notas(data, path_json)
 \arguments{
 \item{data}{Data.table com os microdados do ENEM.}
 
-\item{path_json}{String. Caminho completo do arquivo.}
+\item{path_json}{String com o caminho completo do arquivo.}
 }
 \description{
 Essa função escreve um JSON com dados sobre a

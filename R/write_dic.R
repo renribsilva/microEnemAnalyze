@@ -1,15 +1,16 @@
-#' Exportar Dados para JSON
+#' @title Exportar Dados para JSON
 #'
-#' Esta função carrega um arquivo RDA e o converte para JSON.
+#' @description Esta função carrega um arquivo RDA e o converte para JSON.
 #'
 #' @param path_json String com o nome do arquivo de saída
 #' @param ano Ano do exame (por exemplo: 2019)
+#'
 #' @export
 write_dic <- function(path_json, ano) {
   # --- TÍTULO ---
   cli::cli_h1("Exportacao de Dicionario de Cadernos - ENEM {ano}")
 
-  # 1. Recuperar objetos
+  # Importa dicionário de provas do ano determinado
   cli::cli_process_start("Recuperando dados do Global Env")
   tryCatch(
     {

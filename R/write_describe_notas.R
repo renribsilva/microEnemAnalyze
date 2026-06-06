@@ -4,7 +4,7 @@
 #' curva característica do exame, por área.
 #'
 #' @param data Data.table com os microdados do ENEM.
-#' @param path_json String. Caminho completo do arquivo.
+#' @param path_json String com o caminho completo do arquivo.
 #'
 #' @export
 write_describe_notas <- function(data, path_json) {

@@ -1,7 +1,8 @@
-#' Exportar frequência absoluta e relativa de acertos para Chart.js
+#' @title Exportar frequência absoluta e relativa de acertos
 #'
 #' @param data Data.table contendo a coluna NU_SCORE.
 #' @param path_json Caminho do arquivo ou diretório de destino.
+#'
 #' @export
 write_frequency_acertos <- function(data, path_json) {
   cli::cli_h1("Processamento de Frequencia (Acertos)")

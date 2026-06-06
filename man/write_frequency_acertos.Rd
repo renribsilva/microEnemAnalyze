@@ -2,7 +2,7 @@
 % Please edit documentation in R/write_frequency_acertos.R
 \name{write_frequency_acertos}
 \alias{write_frequency_acertos}
-\title{Exportar frequência absoluta e relativa de acertos para Chart.js}
+\title{Exportar frequência absoluta e relativa de acertos}
 \usage{
 write_frequency_acertos(data, path_json)
 }
@@ -12,5 +12,5 @@ write_frequency_acertos(data, path_json)
 \item{path_json}{Caminho do arquivo ou diretório de destino.}
 }
 \description{
-Exportar frequência absoluta e relativa de acertos para Chart.js
+Exportar frequência absoluta e relativa de acertos
 }
