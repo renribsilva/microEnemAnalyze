@@ -11,6 +11,17 @@ write_constantes <- function(path_json) {
   # --- TÍTULO ---
   cli::cli_h1("Exportacao das Constantes do ENEM")
 
+  cli::cli_process_start("Validando argumentos")
+
+  if (missing(path_json)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg path_csv} e obrigatorio.",
+      "i" = "Por favor, forneca o caminho onde o csv sera gravado."
+    ))
+  }
+
+  cli::cli_process_done()
+
   # Importa constantes.rda
   cli::cli_process_start("Recuperando dados do Global Env")
   tryCatch(

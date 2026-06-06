@@ -10,17 +10,30 @@
 write_describe_notas <- function(data, path_json) {
   cli::cli_h1("Descricao Estatistica")
 
-  # Validação básica
-  cli::cli_process_start("Validando estrutura dos dados")
+  cli::cli_process_start("Validando argumentos")
 
-  # verificando data
-  if (!data.table::is.data.table(data)) {
-    cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
-    data <- data.table::as.data.table(data)
+  if (missing(data)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg data} e obrigatorio.",
+      "i" = "Por favor, forneca os microdados do ENEM."
+    ))
+  }
+
+  if (missing(path_json)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg path_csv} e obrigatorio.",
+      "i" = "Por favor, forneca o caminho onde o csv sera gravado."
+    ))
   }
 
   if (!is.character(path_json)) {
     cli::cli_abort("{.arg path_csv} precisa ser do tipo character.")
+  }
+
+  # Normaliza os microdados
+  if (!data.table::is.data.table(data)) {
+    cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
+    data <- data.table::as.data.table(data)
   }
 
   cli::cli_process_done()

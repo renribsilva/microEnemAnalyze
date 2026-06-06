@@ -7,6 +7,36 @@
 write_itens <- function(path_json, ano) {
   cli::cli_h1("Exportacao de Itens (Dicionario de Parametros) - ENEM {ano}")
 
+  cli::cli_process_start("Validando argumentos")
+
+  if (missing(path_json)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg path_csv} e obrigatorio.",
+      "i" = "Por favor, forneca o caminho onde o csv sera gravado."
+    ))
+  }
+
+  if (missing(ano)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg ano} e obrigatorio.",
+      "i" = "Informe o ano de referencia da aplicacao (ex: {.val 2019})."
+    ))
+  }
+
+  if (!is.character(path_json)) {
+    cli::cli_abort(
+      "{.arg area} precisa ser do tipo {.cls character}."
+    )
+  }
+
+  if (!(is.numeric(ano) || is.integer(ano))) {
+    cli::cli_abort(
+      "{.arg ano} precisa ser do tipo {.cls number} ou {.cls integer}."
+    )
+  }
+
+  cli::cli_process_done()
+
   # 1. Recuperar objeto
   obj_name <- paste0("itens_", as.character(ano))
   if (!exists(obj_name, envir = .GlobalEnv)) {
