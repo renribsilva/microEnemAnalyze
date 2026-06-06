@@ -176,18 +176,11 @@ write_tcc <- function(data, score, path_json, ano) {
           itens_caderno <- itens_caderno[order(get(col_posicao)), ]
 
           if (nrow(itens_caderno) != 45) {
-            stop(
-              sprintf(
-                "ERRO CRITICO: caderno
-                invalido (n != 45)
-                codigo=%s | area=%s | versao=%s | lingua=%s | n_itens=%s",
-                codigo,
-                area_nome,
-                v_digital,
-                lingua,
-                nrow(itens_caderno)
-              ),
-              call. = FALSE
+            cli::cli_abort(
+              "ERRO CRITICO: caderno invalido (n != 45) |
+              codigo={codigo} | area={area_nome} |
+              versao={v_digital} | lingua={lingua} |
+              n_itens={nrow(itens_caderno)}"
             )
           }
 
@@ -204,8 +197,9 @@ write_tcc <- function(data, score, path_json, ano) {
           escore <- mirt::expected.test(mod_test, theta_metrico)
 
           den <- max(escore) - min(escore)
+
           if (den == 0) {
-            stop("Escore teorico constante", call. = FALSE)
+            cli::cli_abort("Escore teorico constante")
           }
 
           escore <- (escore - min(escore)) / den * nrow(itens_mirt)

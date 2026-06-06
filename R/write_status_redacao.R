@@ -37,8 +37,9 @@ write_status_redacao <- function(data, path_json) {
 
   # --- VALIDAÇÃO ---
   if (!"NU_NOTA_REDACAO" %in% names(data)) {
-    cli::cli_alert_danger("Coluna {.var NU_NOTA_REDACAO} nao encontrada.")
-    stop("Execucao interrompida.")
+    cli::cli_abort(
+      "Coluna {.var NU_NOTA_REDACAO} nao encontrada. Execucao interrompida."
+    )
   }
 
   # --- PROCESSAMENTO COM TABLE ---

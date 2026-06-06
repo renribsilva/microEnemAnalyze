@@ -48,8 +48,11 @@ write_mean_table <- function(data, path) {
 
   # Verificação de integridade
   total_na_por_linha <- rowSums(is.na(temp_dt[, cols_notas, with = FALSE]))
+
   if (any(total_na_por_linha == length(cols_notas))) {
-    stop("Ha participantes com NA em todas as areas")
+    cli::cli_abort(
+      "Existem participantes com NA em todas as areas."
+    )
   }
 
   # Tratamento de NAs e Média
@@ -107,11 +110,10 @@ write_mean_table <- function(data, path) {
           }
 
           if (nchar(r_final) != nchar(g_final)) {
-            stop(sprintf(
-              "Comprimentos diferentes: Resposta (%d) vs Gabarito (%d).",
-              nchar(r_final),
-              nchar(g_final)
-            ))
+            cli::cli_abort(
+              "Comprimentos diferentes: Resposta ({.val {nchar(r_final)}})
+              vs Gabarito ({.val {nchar(g_final)}})."
+            )
           }
 
           # Se nchar for 45, ele ignora os IFS acima e usa r e g originais

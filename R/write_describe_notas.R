@@ -38,6 +38,9 @@ write_describe_notas <- function(data, path_json) {
 
   cli::cli_process_done()
 
+  cli::cli_process_start("Preparando variaveis e funcoes auxiliares")
+
+  # Contrói os nomes das colunas dinamicamente
   col_nota <- grep("^NU_NOTA_", names(data), value = TRUE)
   col_prova <- grep("^CO_PROVA_", names(data), value = TRUE)
   col_score <- "NU_SCORE"
@@ -127,9 +130,12 @@ write_describe_notas <- function(data, path_json) {
     dic_df$cor,
     ignore.case = TRUE
   )]
+
   cod_regular <- dic_df_p1$codigo[
     !grepl("Digital", dic_df$cor, ignore.case = TRUE)
   ]
+
+  cli::cli_process_done()
 
   cli::cli_process_start("Processando Pools")
 
@@ -148,6 +154,7 @@ write_describe_notas <- function(data, path_json) {
     file.path(path_json, "describe.json")
   }
   dir.create(dirname(final_file), showWarnings = FALSE, recursive = TRUE)
+
   jsonlite::write_json(
     lista_completa,
     path = final_file,
@@ -155,6 +162,7 @@ write_describe_notas <- function(data, path_json) {
     auto_unbox = TRUE,
     na = "null"
   )
+
   cli::cli_process_done()
 
   cli::cli_alert_success("Arquivo salva em: {.path {final_file}}")

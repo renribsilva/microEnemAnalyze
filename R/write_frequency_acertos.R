@@ -1,5 +1,8 @@
 #' @title Exportar frequência absoluta e relativa de acertos
 #'
+#' @description Essa função escreve um JSON com informações
+#' sobre a frequência de acertos de cada área.
+#'
 #' @param data Data.table contendo a coluna NU_SCORE.
 #' @param path_json Caminho do arquivo ou diretório de destino.
 #'
@@ -34,6 +37,8 @@ write_frequency_acertos <- function(data, path_json) {
   }
 
   cli::cli_process_done()
+
+  cli::cli_process_start("Preparando variaveis e funcoes auxiliares")
 
   col_prova <- grep("^CO_PROVA_", names(data), value = TRUE)
   col_score <- "NU_SCORE"
@@ -83,9 +88,12 @@ write_frequency_acertos <- function(data, path_json) {
     dic_df$cor,
     ignore.case = TRUE
   )]
+
   cod_regular <- dic_df_p1$codigo[
     !grepl("Digital", dic_df$cor, ignore.case = TRUE)
   ]
+
+  cli::cli_process_done()
 
   cli::cli_process_start("Calculando Frequencias (Digital vs Regular)")
 

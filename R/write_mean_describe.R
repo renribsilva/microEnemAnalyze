@@ -47,8 +47,11 @@ write_mean_describe <- function(data, path) {
 
   # Verificação de integridade
   total_na_por_linha <- rowSums(is.na(temp_dt[, cols_notas, with = FALSE]))
+
   if (any(total_na_por_linha == length(cols_notas))) {
-    stop("Ha participantes com NA em todas as areas")
+    cli::cli_abort(
+      "Existem participantes com NA em todas as areas."
+    )
   }
 
   # Tratamento de NAs e Média

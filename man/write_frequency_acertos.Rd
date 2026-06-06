@@ -12,5 +12,6 @@ write_frequency_acertos(data, path_json)
 \item{path_json}{Caminho do arquivo ou diretório de destino.}
 }
 \description{
-Exportar frequência absoluta e relativa de acertos
+Essa função escreve um JSON com informações
+sobre a frequência de acertos de cada área.
 }

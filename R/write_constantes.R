@@ -24,19 +24,24 @@ write_constantes <- function(path_json) {
 
   # Importa constantes.rda
   cli::cli_process_start("Recuperando dados do Global Env")
+
   tryCatch(
     {
       constantes_df <- get("constantes", envir = .GlobalEnv)
       cli::cli_process_done()
     },
     error = function(e) {
-      cli::cli_alert_danger("Erro: Objeto nao encontrados no Global Env.")
-      stop(e)
+      cli::cli_process_failed()
+      cli::cli_abort(
+        "Erro: Objeto {.var constantes} nao encontrado no {.env .GlobalEnv}.",
+        parent = e
+      )
     }
   )
 
   # --- TRATAMENTO DO PATH ---
   cli::cli_process_start("Exportando arquivo JSON")
+
   final_file <- if (grepl("\\.json$", path_json)) {
     path_json
   } else {

@@ -58,10 +58,11 @@ write_inscritos <- function(data, path_json) {
 
   # 3. Validação de integridade
   if (as.integer(inscritos) != as.integer(total_counts)) {
-    cli::cli_alert_danger("Inconsistencia nos totais calculados")
-    stop("Erro: A soma de treineiros nao bate com o total de inscritos.")
+    cli::cli_abort(
+      "Inconsistencia nos totais calculados. A soma de treineiros
+      nao bate com o total de inscritos."
+    )
   }
-
   total_row <- c(total_counts, total_props)
   tabela_treineiros <- rbind(tabela_treineiros, total_row)
   tabela_treineiros[, 2] <- round(tabela_treineiros[, 2] * 100, 2)

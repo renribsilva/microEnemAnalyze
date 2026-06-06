@@ -39,9 +39,11 @@ write_itens <- function(path_json, ano) {
 
   # 1. Recuperar objeto
   obj_name <- paste0("itens_", as.character(ano))
+
   if (!exists(obj_name, envir = .GlobalEnv)) {
-    cli::cli_alert_danger("Erro: Objeto {.val {obj_name}} nao encontrado.")
-    stop("Objeto inexistente.")
+    cli::cli_abort(
+      "Erro: Objeto {.var {obj_name}} nao encontrado no {.env .GlobalEnv}."
+    )
   }
 
   itens_df <- data.table::as.data.table(get(obj_name, envir = .GlobalEnv))

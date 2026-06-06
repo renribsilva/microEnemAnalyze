@@ -25,8 +25,10 @@ write_iteminfo <- function(path_json = NULL, co_prova = NULL, ano) {
       cli::cli_process_done()
     },
     error = function(e) {
-      cli::cli_alert_danger("Objetos itens_{ano} ou dic_{ano} nao encontrados.")
-      stop(e)
+      cli::cli_abort(
+        "Objetos {.var itens_{ano}} ou {.var dic_{ano}} nao encontrados.",
+        parent = e
+      )
     }
   )
 

@@ -49,7 +49,7 @@ write_comp_redacao <- function(data, path_json) {
   # Etapa de verificação
   if (!all(colunas_necessarias %in% names(data))) {
     cli::cli_abort(
-      "Erro: Colunas necessárias ausentes:
+      "Erro: Colunas necessarias ausentes:
       {.var {setdiff(colunas_necessarias, names(data))}}"
     )
   }

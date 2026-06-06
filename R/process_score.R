@@ -14,18 +14,17 @@ process_score <- function(res, gab) {
 
   # Etapa de segurança
   if (tamanho_res != tamanho_gab) {
-    stop(sprintf(
-      "Comprimentos diferentes: Resposta (%d) vs Gabarito (%d).",
-      tamanho_res,
-      tamanho_gab
-    ))
+    cli::cli_abort(
+      "Comprimentos diferentes: Resposta ({.val {tamanho_res}}) vs
+      Gabarito ({.val {tamanho_gab}})."
+    )
   }
 
   if (!(tamanho_res %in% c(45, 50))) {
-    stop(sprintf(
-      "Tamanho invalido: A resposta tem %d caracteres. Deve ter 45 ou 50.",
-      tamanho_res
-    ))
+    cli::cli_abort(
+      "Tamanho invalido: A resposta tem {.val {tamanho_res}} caracteres.
+      Deve ter 45 ou 50."
+    )
   }
 
   # Vetorização
@@ -45,11 +44,11 @@ process_score <- function(res, gab) {
 
   # Etapa de segurança
   if (tamanho_res != ncol(mat_resultado)) {
-    stop(sprintf(
-      "Tamanho invalido de mat_resultado: tem %d colunas, mas deveria ter %d",
-      ncol(mat_resultado),
-      tamanho_res
-    ))
+    cli::cli_abort(
+      "Tamanho invalido de {.var mat_resultado}:
+      tem {.val {ncol(mat_resultado)}} colunas, mas deveria
+      ter {.val {tamanho_res}}."
+    )
   }
 
   invisible(mat_resultado)

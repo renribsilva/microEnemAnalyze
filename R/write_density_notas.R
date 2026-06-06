@@ -38,6 +38,8 @@ write_density_notas <- function(data, path_json) {
 
   cli::cli_process_done()
 
+  cli::cli_process_start("Preparando variaveis e funcoes auxiliares")
+
   # Contrói os nomes das colunas
   col_prova <- grep("^CO_PROVA_", names(data), value = TRUE)
   col_nota <- grep("^NU_NOTA_", names(data), value = TRUE)
@@ -96,6 +98,8 @@ write_density_notas <- function(data, path_json) {
   cod_regular <- dic_df_p1$codigo[
     !grepl("Digital", dic_df$cor, ignore.case = TRUE)
   ]
+
+  cli::cli_process_done()
 
   cli::cli_process_start("Calculando Densidades (Digital vs Regular)")
 

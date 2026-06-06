@@ -133,8 +133,9 @@ write_presence_day <- function(data, path_json, day) {
   )
 
   if (any(is.na(data[[id_col]]))) {
-    cli::cli_alert_danger("Valores ausentes detectados em {.var {id_col}}")
-    stop("Erro: Existem valores NA em {.var {id_col}}.")
+    cli::cli_abort(
+      "Valores ausentes detectados em {.var {id_col}}. Existem valores NA."
+    )
   }
 
   inscritos <- as.integer(length(data[[id_col]]))
@@ -142,7 +143,10 @@ write_presence_day <- function(data, path_json, day) {
   if (!any(is.na(presence_filtered[[id_col]]))) {
     inscritos_filtered <- as.integer(length(presence_filtered[[id_col]]))
   } else {
-    stop("Merda")
+    cli::cli_abort(
+      "Valores NA detectados em {.var presence_filtered}
+      para a coluna {.var {id_col}}."
+    )
   }
 
   objeto_presence_filtered <- list(

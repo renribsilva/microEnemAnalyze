@@ -30,11 +30,11 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
     },
     error = function(e) {
       cli::cli_process_failed()
-      cli::cli_alert_danger(
+      cli::cli_abort(
         "Objetos {.var itens_{ano}} ou {.var dic_{ano}} nao
-        encontrados no {.code .GlobalEnv}."
+        encontrados no {.env .GlobalEnv}.",
+        parent = e
       )
-      stop(e)
     }
   )
 
@@ -131,19 +131,17 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
         gab_orig_vetor <- strsplit(gab_45, "")[[1]]
 
         if (length(gab_orig_vetor) != 45) {
-          stop(sprintf(
-            "Vetor gab_orig_vetor tem tamanho errado (%d) na linha %d.",
-            length(gab_orig_vetor),
-            i
-          ))
+          cli::cli_abort(
+            "Vetor {.var gab_orig_vetor} tem tamanho errado
+            ({length(gab_orig_vetor)}) na linha {i}."
+          )
         }
 
         if (length(resp_orig_vetor) != 45) {
-          stop(sprintf(
-            "Vetor resp_orig_vetor tem tamanho errado (%d) na linha %d.",
-            length(resp_orig_vetor),
-            i
-          ))
+          cli::cli_abort(
+            "Vetor {.var resp_orig_vetor} tem tamanho errado
+            ({length(resp_orig_vetor)}) na linha {i}."
+          )
         }
 
         chave_cache <- paste(cod_prova_origem, gab_45, lang_cand, sep = "_")
@@ -174,18 +172,25 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
         }
 
         if (is.null(itens_prova_origem)) {
-          stop(sprintf(
-            "Erro: itens da prova %d nao esta mapeada",
-            cod_prova_origem
-          ))
+          cli::cli_abort(
+            "Erro: itens da prova {.val {cod_prova_origem}}
+            nao estao mapeados."
+          )
         }
 
         if (length(resp_orig_vetor) != 45 || length(gab_orig_vetor) != 45) {
-          stop(sprintf("Vetor RESP ou GAB tem tamanho errado"))
+          cli::cli_abort(
+            "Vetor {.var RESP} ({length(resp_orig_vetor)}) ou {.var GAB}
+            ({length(gab_orig_vetor)}) tem tamanho errado. Esperado: 45."
+          )
         }
 
         if (nrow(itens_prova_origem) != 45) {
-          stop(sprintf("Falha na selecao dos itens"))
+          cli::cli_abort(
+            "Falha na selecao dos itens. O dataframe
+            {.var itens_prova_origem} possui {.val {nrow(itens_prova_origem)}}
+            linhas, mas eram esperadas 45."
+          )
         }
 
         indices_anulados <- which(itens_prova_origem$IN_ITEM_ABAN == 1)
@@ -206,10 +211,9 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
             unname(as.character(gab_orig_comparacao))
           )
         ) {
-          stop(sprintf(
-            "Inconsistencia critica na linha %d: Gabaritos nao sao identicos.",
-            i
-          ))
+          cli::cli_abort(
+            "Inconsistencia critica na linha {i}: Gabaritos nao sao identicos."
+          )
         }
 
         resp_vetor <- as.character(resp_orig_vetor)
@@ -242,12 +246,11 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
         if (acertos_calculados == acertos_referencia) {
           score_nu[i, ] <- acertos_referencia
         } else {
-          stop(sprintf(
-            "Erro integridade na linha %d: Original %d != Novo %d",
-            i,
-            acertos_referencia,
-            acertos_calculados
-          ))
+          cli::cli_abort(
+            "Erro de integridade na linha {.val {i}}: Original
+            ({.val {acertos_referencia}}) != Novo
+            ({.val {acertos_calculados}})."
+          )
         }
       }
 

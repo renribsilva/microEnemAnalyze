@@ -42,14 +42,18 @@ write_dic <- function(path_json, ano) {
 
   # Importa dicionário de provas do ano determinado
   cli::cli_process_start("Recuperando dados do Global Env")
+
   tryCatch(
     {
       dic_df <- get(paste0("dic_", as.character(ano)), envir = .GlobalEnv)
       cli::cli_process_done()
     },
     error = function(e) {
-      cli::cli_alert_danger("Erro: Objeto nao encontrados no Global Env.")
-      stop(e)
+      cli::cli_process_failed()
+      cli::cli_abort(
+        "Erro: Objeto {.var dic_df} nao encontrado no {.env .GlobalEnv}.",
+        parent = e
+      )
     }
   )
 
