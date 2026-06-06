@@ -1,11 +1,41 @@
-#' Exportar TCC Consolidado em Arquivo Único (Streaming)
+#' @title Exportar TCC Consolidado em Arquivo Único (Streaming)
+#'
 #' @param data Data.table com colunas NU_NOTA_ de todas as áreas (Microdados)
 #' @param score Lista de data.tables (um por área) com NU_SCORE e NU_NOTA_
 #' @param path_json Caminho base ou nome do arquivo para salvar
 #' @param ano Ano do exame
+#'
 #' @export
 write_tcc <- function(data, score, path_json, ano) {
   cli::cli_h1("Processamento Consolidado: TCC Teorico + Empirico (Streaming)")
+
+  cli::cli_process_start("Validando argumentos")
+
+  if (missing(data)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg data} e obrigatorio.",
+      "i" = "Por favor, forneca os microdados do ENEM."
+    ))
+  }
+
+  if (missing(path_json)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg path_csv} e obrigatorio.",
+      "i" = "Por favor, forneca o caminho onde o csv sera gravado."
+    ))
+  }
+
+  if (!is.character(path_json)) {
+    cli::cli_abort("{.arg path_csv} precisa ser do tipo character.")
+  }
+
+  # Normaliza os microdados
+  if (!data.table::is.data.table(data)) {
+    cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
+    data <- data.table::as.data.table(data)
+  }
+
+  cli::cli_process_done()
 
   # ------------------------------------------------------------------
   # Objetos globais

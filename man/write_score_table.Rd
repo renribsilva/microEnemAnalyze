@@ -11,12 +11,8 @@ write_score_table(data, path_json)
 
 \item{path_json}{Caminho completo do arquivo .json ou diretório de destino.}
 }
-\value{
-Retorna invisivelmente a lista processada. Estrutura do JSON:
-\code{id_item -> { counts: {...}, bins: { labels: [], "0": [], "1": [] } }}.
-}
 \description{
-Esta função processa listas de microdados do ENEM, calculando a frequência
-total de respostas por item e a distribuição dessas respostas em faixas
-de 50 pontos (bins).
+Esta função processa listas de microdados do ENEM,
+calculando a frequência total de respostas por item e a
+distribuição dessas respostas em faixas de 50 pontos (bins).
 }

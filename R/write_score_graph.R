@@ -1,21 +1,44 @@
-#' Exportar Curva Empírica por Item (CCI)
+#' @title Exportar Curva Empírica por Item (CCI)
 #'
-#' Esta função processa microdados do ENEM para calcular a probabilidade
-#' observada
-#' de acerto (curva empírica) por item, utilizando uma escala
-#' imutável de 1 em 1 ponto.
+#' @description Esta função processa microdados do ENEM para calcular
+#' a probabilidade observada de acerto (curva empírica) por item,
+#' utilizando uma escala imutável de 1 em 1 ponto.
 #' O cálculo da proporção considera apenas respostas válidas
 #' (0, 1, 7, 8) e notas > 0.
 #'
 #' @param data Uma lista nomeada de \code{data.table}s (ex: list(MT = dt_mt)).
 #' @param path_json Caminho completo para o arquivo .json de saída.
 #'
-#' @return Retorna a lista processada invisivelmente. O JSON gerado
-#' segue a estrutura:
-#' \code{codigo_item -> { x: [notas], y: [proporcoes] }}.
-#'
 #' @export
 write_score_graph <- function(data, path_json) {
+  cli::cli_process_start("Validando argumentos")
+
+  if (missing(data)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg data} e obrigatorio.",
+      "i" = "Por favor, forneca os microdados do ENEM."
+    ))
+  }
+
+  if (missing(path_json)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg path_csv} e obrigatorio.",
+      "i" = "Por favor, forneca o caminho onde o csv sera gravado."
+    ))
+  }
+
+  if (!is.character(path_json)) {
+    cli::cli_abort("{.arg path_csv} precisa ser do tipo character.")
+  }
+
+  # Normaliza os microdados
+  if (!data.table::is.data.table(data)) {
+    cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
+    data <- data.table::as.data.table(data)
+  }
+
+  cli::cli_process_done()
+
   prefixos_ignore <- c(
     "NU_ANO",
     "NU_INSCRICAO",

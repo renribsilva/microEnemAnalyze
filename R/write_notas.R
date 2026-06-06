@@ -1,12 +1,41 @@
-#' Exportar TCCs de todos os cadernos em um único JSON
+#' @title Exportar TCCs de todos os cadernos em um único JSON
 #'
 #' @param data Data.table com a coluna NU_NOTA
 #' @param path_json String. Caminho completo do arquivo
 #' (ex: "caminho/describe.json").
+#'
 #' @export
 write_notas <- function(data, path_json) {
   # --- TÍTULO ---
   cli::cli_h1("Exportacao de Vetor de Notas")
+
+  cli::cli_process_start("Validando argumentos")
+
+  if (missing(data)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg data} e obrigatorio.",
+      "i" = "Por favor, forneca os microdados do ENEM."
+    ))
+  }
+
+  if (missing(path_json)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg path_csv} e obrigatorio.",
+      "i" = "Por favor, forneca o caminho onde o csv sera gravado."
+    ))
+  }
+
+  if (!is.character(path_json)) {
+    cli::cli_abort("{.arg path_csv} precisa ser do tipo character.")
+  }
+
+  # Normaliza os microdados
+  if (!data.table::is.data.table(data)) {
+    cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
+    data <- data.table::as.data.table(data)
+  }
+
+  cli::cli_process_done()
 
   # Processamento
   cli::cli_process_start("Filtrando e preparando notas")

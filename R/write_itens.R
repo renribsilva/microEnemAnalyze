@@ -1,4 +1,4 @@
-#' Exportar Dados para JSON (Garantindo UTF-8 e Tipos Originais)
+#' @title Exportar Dados para JSON (Garantindo UTF-8 e Tipos Originais)
 #'
 #' @param path_json String com o caminho da pasta ou nome do arquivo de saída
 #' @param ano Inteiro ou string representando o ano (ex: 2019)

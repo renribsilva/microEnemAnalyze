@@ -14,9 +14,6 @@ arquivo JSON será salvo.}
 
 \item{day}{Dia de realização da prova: 1 ou 2 (numeric ou double)}
 }
-\value{
-Retorna o caminho do arquivo gerado (invisivelmente).
-}
 \description{
 Processa dados de presença, valida a integridade
 dos inscritos filtrados

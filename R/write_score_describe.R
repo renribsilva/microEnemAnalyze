@@ -1,12 +1,43 @@
-#' Exportar Estatísticas Descritivas e Densidade por Score
+#' @title Exportar Estatísticas Descritivas e Densidade por Score
+#'
 #' @param data Uma lista nomeada de data.tables.
 #' @param path_json Caminho para o arquivo .json de saída.
 #' @param ano Número que indica o ano do exame
+#'
 #' @export
 write_score_describe <- function(data, path_json, ano) {
   cli::cli_h1(
     "Descricao estatistica: Processamento por Score (Digital vs Regular)"
   )
+
+  cli::cli_process_start("Validando argumentos")
+
+  if (missing(data)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg data} e obrigatorio.",
+      "i" = "Por favor, forneca os microdados do ENEM."
+    ))
+  }
+
+  if (missing(path_json)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg path_csv} e obrigatorio.",
+      "i" = "Por favor, forneca o caminho onde o csv sera gravado."
+    ))
+  }
+
+  if (!is.character(path_json)) {
+    cli::cli_abort("{.arg path_csv} precisa ser do tipo character.")
+  }
+
+  # Normaliza os microdados
+  if (!data.table::is.data.table(data)) {
+    cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
+    data <- data.table::as.data.table(data)
+  }
+
+  cli::cli_process_done()
+
   lista_final_resultados <- list()
 
   for (i in seq_along(data)) {

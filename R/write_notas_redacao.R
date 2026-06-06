@@ -7,6 +7,34 @@
 write_notas_redacao <- function(data, path_json) {
   cli::cli_h1("Processamento de Dados: Redacao")
 
+  cli::cli_process_start("Validando argumentos")
+
+  if (missing(data)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg data} e obrigatorio.",
+      "i" = "Por favor, forneca os microdados do ENEM."
+    ))
+  }
+
+  if (missing(path_json)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg path_csv} e obrigatorio.",
+      "i" = "Por favor, forneca o caminho onde o csv sera gravado."
+    ))
+  }
+
+  if (!is.character(path_json)) {
+    cli::cli_abort("{.arg path_csv} precisa ser do tipo character.")
+  }
+
+  # Normaliza os microdados
+  if (!data.table::is.data.table(data)) {
+    cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
+    data <- data.table::as.data.table(data)
+  }
+
+  cli::cli_process_done()
+
   # --- VALIDAÇÃO ---
   if (!"NU_NOTA_REDACAO" %in% names(data)) {
     cli::cli_alert_danger("Coluna {.var NU_NOTA_REDACAO} nao encontrada.")

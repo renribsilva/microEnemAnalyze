@@ -1,17 +1,42 @@
-#' Exportar Frequências Gerais e por Faixas de Nota para JSON
+#' @title Exportar Frequências Gerais e por Faixas de Nota para JSON
 #'
-#' Esta função processa listas de microdados do ENEM, calculando a frequência
-#' total de respostas por item e a distribuição dessas respostas em faixas
-#' de 50 pontos (bins).
+#' @description Esta função processa listas de microdados do ENEM,
+#' calculando a frequência total de respostas por item e a
+#' distribuição dessas respostas em faixas de 50 pontos (bins).
 #'
 #' @param data Uma lista nomeada de \code{data.table}s.
 #' @param path_json Caminho completo do arquivo .json ou diretório de destino.
 #'
-#' @return Retorna invisivelmente a lista processada. Estrutura do JSON:
-#' \code{id_item -> { counts: {...}, bins: { labels: [], "0": [], "1": [] } }}.
-#'
 #' @export
 write_score_table <- function(data, path_json) {
+  cli::cli_process_start("Validando argumentos")
+
+  if (missing(data)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg data} e obrigatorio.",
+      "i" = "Por favor, forneca os microdados do ENEM."
+    ))
+  }
+
+  if (missing(path_json)) {
+    cli::cli_abort(c(
+      "x" = "O argumento {.arg path_csv} e obrigatorio.",
+      "i" = "Por favor, forneca o caminho onde o csv sera gravado."
+    ))
+  }
+
+  if (!is.character(path_json)) {
+    cli::cli_abort("{.arg path_csv} precisa ser do tipo character.")
+  }
+
+  # Normaliza os microdados
+  if (!data.table::is.data.table(data)) {
+    cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
+    data <- data.table::as.data.table(data)
+  }
+
+  cli::cli_process_done()
+
   prefixos_ignore <- c(
     "NU_ANO",
     "NU_INSCRICAO",
