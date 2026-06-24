@@ -5,6 +5,7 @@
 #' @param path_json Caminho base ou nome do arquivo para salvar
 #' @param ano Ano do exame
 #'
+#' @import data.table
 #' @export
 write_tcc <- function(data, score, path_json, ano) {
   cli::cli_h1("Processamento Consolidado: TCC Teorico + Empirico (Streaming)")
@@ -89,16 +90,23 @@ write_tcc <- function(data, score, path_json, ano) {
 
     tabela_real <- area_dt[
       get(col_prova_area) %in% cod_selected & get(col_nota) > 0,
-      list(media = mean(get(new_col_score), na.rm = TRUE)),
-      keyby = list(x = as.integer(round(get(col_nota), 0)))
+      .(
+        media = mean(get(new_col_score), na.rm = TRUE)
+      ),
+      by = .(
+        x = as.integer(round(get(col_nota), 0))
+      )
     ]
 
     codigos <- unique(dic_df_p1$codigo[dic_df_p1$area == area_nome])
 
     pbar <- cli::cli_progress_bar(
       total = length(codigos),
-      format = "  {cli::pb_spin} Processando
-      cadernos [{pb_current}/{pb_total}] {pb_percent} | ETA: {pb_eta}"
+      format = paste0(
+        "  {cli::pb_spin} Processando cadernos ",
+        "[{cli::pb_current}/{cli::pb_total}] ",
+        "{cli::pb_percent} | ETA: {cli::pb_eta}"
+      )
     )
 
     for (codigo in codigos) {

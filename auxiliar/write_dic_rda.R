@@ -603,3 +603,105 @@ dic_2024 <- rbind(lc_2024, ch_2024, cn_2024, mt_2024)
 
 # Salvando no pacote
 usethis::use_data(dic_2024, overwrite = TRUE)
+
+# ------
+# 2025 -
+# ------
+
+itens_2025 <- data.table::fread(
+  input = file.path(
+    "~/Downloads",
+    "microdados_enem_2025/DADOS/ITENS_PROVA_2025.csv"
+  ),
+  encoding = "UTF-8"
+)
+
+# --- 1. Linguagens e Códigos (LC) ---
+lc_2025 <- data.table::data.table(
+  area = "LC",
+  ano = 2025,
+  codigo = as.numeric(
+    c(1459, 1460, 1461, 1462, 1463, 1464, 1496, 1466, 1467)
+  ),
+  cor = c(
+    "Azul",
+    "Amarela",
+    "Verde",
+    "Branca",
+    "Laranja (Ampliada)",
+    "Laranja (Superampliada)",
+    "Laranja (Atendimento especializado)",
+    "Laranja - Adaptada Ledor",
+    "Roxa - Videoprova - Libras"
+  ),
+  tipo = c(rep("1", 7), rep("2", 1), rep("3", 1))
+)
+
+# --- 2. Ciências Humanas (CH) ---
+ch_2025 <- data.table::data.table(
+  area = "CH",
+  ano = 2025,
+  codigo = as.numeric(
+    c(1447, 1448, 1449, 1450, 1451, 1452, 1495, 1454, 1455)
+  ), # P1
+  cor = c(
+    "Azul",
+    "Amarela",
+    "Branca",
+    "Verde",
+    "Laranja (Ampliada)",
+    "Laranja (Superampliada)",
+    "Laranja (Atendimento especializado)",
+    "Laranja - Adaptada Ledor",
+    "Roxa - Videoprova - Libras"
+  ),
+  tipo = c(rep("1", 7), rep("2", 1), rep("3", 1))
+)
+
+# --- 3. Ciências da Natureza (CN) ---
+cn_2025 <- data.table::data.table(
+  area = "CN",
+  ano = 2025,
+  codigo = as.numeric(
+    c(1483, 1484, 1485, 1486, 1487, 1488, 1498, 1490, 1491)
+  ), # P1
+  cor = c(
+    "Azul",
+    "Amarela",
+    "Verde",
+    "Cinza",
+    "Verde (Ampliada)",
+    "Verde (Superampliada)",
+    "Laranja (Atendimento especializado)",
+    "Laranja - Adaptada Ledor",
+    "Roxa - Videoprova - Libras"
+  ),
+  tipo = c(rep("1", 7), rep("2", 1), rep("3", 1))
+)
+
+# --- 4. Matemática (MT) ---
+mt_2025 <- data.table::data.table(
+  area = "MT",
+  ano = 2025,
+  codigo = as.numeric(
+    c(1471, 1472, 1473, 1474, 1475, 1476, 1497, 1478, 1479)
+  ), # P1
+  cor = c(
+    "Azul",
+    "Amarela",
+    "Verde",
+    "Cinza",
+    "Verde (Ampliada)",
+    "Verde (Superampliada)",
+    "Laranja (Atendimento especializado)",
+    "Laranja - Adaptada Ledor",
+    "Roxa - Videoprova - Libras"
+  ),
+  tipo = c(rep("1", 7), rep("2", 1), rep("3", 1))
+)
+
+# --- UNINDO TUDO ---
+dic_2025 <- rbind(lc_2025, ch_2025, cn_2025, mt_2025)
+
+# Salvando no pacote
+usethis::use_data(dic_2025, overwrite = TRUE)

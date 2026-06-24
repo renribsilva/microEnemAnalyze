@@ -31,12 +31,6 @@ write_score_graph <- function(data, path_json) {
     cli::cli_abort("{.arg path_csv} precisa ser do tipo character.")
   }
 
-  # Normaliza os microdados
-  if (!data.table::is.data.table(data)) {
-    cli::cli_alert_info("Convertendo objeto para {.cls data.table}")
-    data <- data.table::as.data.table(data)
-  }
-
   cli::cli_process_done()
 
   prefixos_ignore <- c(

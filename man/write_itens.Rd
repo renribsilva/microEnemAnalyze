@@ -12,5 +12,6 @@ write_itens(path_json, ano)
 \item{ano}{Inteiro ou string representando o ano (ex: 2019)}
 }
 \description{
-Exportar Dados para JSON (Garantindo UTF-8 e Tipos Originais)
+Essa função escreve um JSON com os dados dos itens
+de um determinado ano do exame.
 }

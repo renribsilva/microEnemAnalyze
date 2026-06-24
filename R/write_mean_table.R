@@ -3,6 +3,7 @@
 #' @param data Um data.table processado (com MEDIA_GERAL e TX_RESPOSTAS)
 #' @param path Caminho do arquivo JSON de saída
 #'
+#' @import data.table
 #' @export
 write_mean_table <- function(data, path) {
   cli::cli_process_start("Validando argumentos")
@@ -58,13 +59,13 @@ write_mean_table <- function(data, path) {
   # Tratamento de NAs e Média
   cli::cli_alert_info("Tratando NAs e calculando medias...")
   data.table::setnafill(temp_dt, fill = 0, cols = cols_notas)
-  temp_dt[, get(new_col_media) := rowMeans(.SD), .SDcols = cols_notas] # nolint: object_usage_linter
+  temp_dt[, (new_col_media) := rowMeans(.SD), .SDcols = cols_notas] # nolint: object_usage_linter
 
   # Ordenar e filtrar os top 2500
   top_dt <- utils::head(temp_dt[order(-get(new_col_media))], 2500)
 
   # Como o DT já está ordenado, .I gera a sequência 1, 2, 3...
-  top_dt[, get(new_col_ranking) := .I] # nolint: object_usage_linter
+  top_dt[, (new_col_ranking) := .I] # nolint: object_usage_linter
 
   areas <- c("LC", "CH", "CN", "MT")
 
@@ -78,8 +79,7 @@ write_mean_table <- function(data, path) {
     cli::cli_process_start("Processando scores da area: {.strong {a}}")
 
     # Passamos r (resposta), g (gabarito) e l (língua) para o mapply
-    top_dt[
-      ,
+    top_dt[,
       # nolint start: object_usage_linter
       (score_col) := mapply(
         # nolint end

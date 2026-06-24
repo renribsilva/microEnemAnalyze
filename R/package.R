@@ -5,5 +5,6 @@
 globalVariables(c(
   ".I",
   ".SD",
-  ":="
+  ":=",
+  "."
 ))

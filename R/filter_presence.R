@@ -71,7 +71,7 @@ filter_presence <- function(data, path_csv) {
     (get(col_presenca_cn) == 1 & get(col_prova_cn) %in% cod_selected) |
       (get(col_presenca_ch) == 1 & get(col_prova_ch) %in% cod_selected) |
       (get(col_presenca_lc) == 1 & get(col_prova_lc) %in% cod_selected) |
-      (get(col_presenca_mt) == 1 & get(col_prova_mt) %in% cod_selected)
+      (get(col_presenca_mt) == 1 & get(col_prova_mt) %in% cod_selected),
   ]
 
   cli::cli_process_done()

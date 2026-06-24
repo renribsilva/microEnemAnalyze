@@ -94,6 +94,10 @@
 #' @inheritSection itens_2009 Names
 "itens_2024"
 
+#' @inherit itens_2009 title description source
+#' @inheritSection itens_2009 Names
+"itens_2025"
+
 #' @title Código das provas do ENEM
 #'
 #' @description Dataset contendo o código das provas do ENEM.
@@ -130,3 +134,7 @@
 #' @inherit dic_2009 title description source
 #' @inheritSection dic_2009 Names
 "dic_2024"
+
+#' @inherit dic_2009 title description source
+#' @inheritSection dic_2009 Names
+"dic_2025"

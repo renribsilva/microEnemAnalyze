@@ -1,5 +1,8 @@
 #' @title Exportar Dados para JSON (Garantindo UTF-8 e Tipos Originais)
 #'
+#' @description Essa função escreve um JSON com os dados dos itens
+#' de um determinado ano do exame.
+#'
 #' @param path_json String com o caminho da pasta ou nome do arquivo de saída
 #' @param ano Inteiro ou string representando o ano (ex: 2019)
 #'

@@ -109,3 +109,19 @@ itens_2024 <- data.table::fread(
 
 # Salvando no pacote
 usethis::use_data(itens_2024, overwrite = TRUE, compress = "xz")
+
+# ------
+# 2025 -
+# ------
+
+# Importa os itens
+itens_2025 <- data.table::fread(
+  file.path(
+    "~/Downloads",
+    "microdados_enem_2025/DADOS/ITENS_PROVA_2025.csv"
+  ),
+  encoding = "UTF-8"
+)
+
+# Salvando no pacote
+usethis::use_data(itens_2025, overwrite = TRUE, compress = "xz")

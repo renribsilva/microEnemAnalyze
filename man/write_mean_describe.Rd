@@ -12,5 +12,6 @@ write_mean_describe(data, path)
 \item{path}{Caminho do arquivo JSON ou diretório}
 }
 \description{
-Exportar Estatísticas das Notas do ENEM
+Essa função escreve um JSON com descrições
+estatísticas das notas médias dos participantes do ENEM
 }

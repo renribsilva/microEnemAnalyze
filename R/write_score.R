@@ -290,9 +290,9 @@ write_score <- function(data, path_csv = NULL, ano, area = NULL) {
     # cópia física em memória
     score_final <- data.table::as.data.table(data[, cols_base, with = FALSE])
 
-    new_col_score <- "NU_SCORE"
     # 3. Atribuir o score bruto (NU_SCORE)
-    score_final[, get(new_col_score) := as.vector(score_nu)] # nolint: object_usage_linter
+    new_col_score <- "NU_SCORE"
+    score_final[[new_col_score]] <- as.vector(score_nu)
 
     # 4. Converter a matriz de itens para data.table e juntar
     # IMPORTANTE: as.data.table(score_df) garante que usamos

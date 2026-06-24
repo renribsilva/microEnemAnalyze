@@ -1,5 +1,8 @@
 #' @title Exportar Estatísticas das Notas do ENEM
 #'
+#' @description Essa função escreve um JSON com descrições
+#' estatísticas das notas médias dos participantes do ENEM
+#'
 #' @param data Um data.table bruto
 #' @param path Caminho do arquivo JSON ou diretório
 #'
@@ -57,7 +60,7 @@ write_mean_describe <- function(data, path) {
   # Tratamento de NAs e Média
   cli::cli_alert_info("Tratando NAs e calculando medias...")
   data.table::setnafill(temp_dt, fill = 0, cols = cols_notas)
-  temp_dt[, get(new_col_media) := rowMeans(.SD), .SDcols = cols_notas] # nolint: object_usage_linter
+  temp_dt[, (new_col_media) := rowMeans(.SD), .SDcols = cols_notas] # nolint: object_usage_linter
 
   # Gerar Estatísticas base
   stats_desc <- psych::describe(temp_dt$MEDIA_GERAL)
