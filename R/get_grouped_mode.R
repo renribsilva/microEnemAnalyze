@@ -38,6 +38,11 @@ get_grouped_mode <- function(x, bin_width = 10) {
 
   # Identifica a classe modal (a que tem maior frequência)
   idx_mo <- which.max(tab$Freq)
+
+  if (length(idx_mo) == 0 || is.na(idx_mo)) {
+    return(NA_real_)
+  }
+
   f_mo <- tab$Freq[idx_mo]
 
   # Frequências vizinhas (trata bordas com 0)
