@@ -44,6 +44,7 @@ write_score_table <- function(data, path_json) {
   )
 
   cli::cli_h1("Processamento de Frequencias (ENEM)")
+
   cli::cli_alert_info("Iniciando processamento de {length(data)} area(s)")
 
   lista_final_resultados <- list()
@@ -107,11 +108,9 @@ write_score_table <- function(data, path_json) {
         # Criamos um dataframe para garantir que os status (0, 1, etc)
         # sejam as colunas e as faixas as linhas
         tab_bins <- table(faixas, x, useNA = "no")
-        df_bins <- data.table::as.data.table(as.matrix(tab_bins))
-
-        # Transformamos o df em lista e injetamos os labels
-        bin_data <- as.list(df_bins)
-        bin_data$labels <- labels_faixas # <--- A CHAVE QUE FALTAVA
+        bin_data <- split(as.vector(tab_bins), col(tab_bins))
+        names(bin_data) <- colnames(tab_bins)
+        bin_data$labels <- labels_faixas
 
         list(
           counts = total_counts,

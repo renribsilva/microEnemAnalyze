@@ -37,17 +37,13 @@ get_grouped_mode <- function(x, bin_width = 10) {
   tab <- data.table::as.data.table(table(intervals))
 
   # Identifica a classe modal (a que tem maior frequência)
-  idx_mo <- which.max(tab$Freq)
+  idx_mo <- which.max(tab$N)
 
-  if (length(idx_mo) == 0 || is.na(idx_mo)) {
-    return(NA_real_)
-  }
-
-  f_mo <- tab$Freq[idx_mo]
+  f_mo <- tab$N[idx_mo]
 
   # Frequências vizinhas (trata bordas com 0)
-  f_ant <- if (idx_mo > 1) tab$Freq[idx_mo - 1] else 0
-  f_post <- if (idx_mo < nrow(tab)) tab$Freq[idx_mo + 1] else 0
+  f_ant <- if (idx_mo > 1) tab$N[idx_mo - 1] else 0
+  f_post <- if (idx_mo < nrow(tab)) tab$N[idx_mo + 1] else 0
 
   # Limite inferior da classe modal
   li <- breaks[idx_mo]
