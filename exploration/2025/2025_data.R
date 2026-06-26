@@ -26,10 +26,22 @@ write_iteminfo(path_json = path_json, ano = 2025)
 # Escreve curva característica do teste de todos os cadernos -
 #-------------------------------------------------------------
 
-score_lc <- data.table::fread("exploration/2025/MICRODADOS/score_lc.csv")
-score_ch <- data.table::fread("exploration/2025/MICRODADOS/score_ch.csv")
-score_cn <- data.table::fread("exploration/2025/MICRODADOS/score_cn.csv")
-score_mt <- data.table::fread("exploration/2025/MICRODADOS/score_mt.csv")
+score_lc <- data.table::fread(
+  "exploration/2025/MICRODADOS/score_lc.csv",
+  select = c("NU_SCORE", "NU_NOTA_LC", "CO_PROVA_LC")
+)
+score_ch <- data.table::fread(
+  "exploration/2025/MICRODADOS/score_ch.csv",
+  select = c("NU_SCORE", "NU_NOTA_CH", "CO_PROVA_CH")
+)
+score_cn <- data.table::fread(
+  "exploration/2025/MICRODADOS/score_cn.csv",
+  select = c("NU_SCORE", "NU_NOTA_CN", "CO_PROVA_CN")
+)
+score_mt <- data.table::fread(
+  "exploration/2025/MICRODADOS/score_mt.csv",
+  select = c("NU_SCORE", "NU_NOTA_MT", "CO_PROVA_MT")
+)
 
 score <- list(score_lc, score_ch, score_cn, score_mt)
 

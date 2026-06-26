@@ -670,8 +670,8 @@ cn_2025 <- data.table::data.table(
     "Amarela",
     "Verde",
     "Cinza",
-    "Verde (Ampliada)",
-    "Verde (Superampliada)",
+    "Laranja (Ampliada)",
+    "Laranja (Superampliada)",
     "Laranja (Atendimento especializado)",
     "Laranja - Adaptada Ledor",
     "Roxa - Videoprova - Libras"
@@ -691,8 +691,8 @@ mt_2025 <- data.table::data.table(
     "Amarela",
     "Verde",
     "Cinza",
-    "Verde (Ampliada)",
-    "Verde (Superampliada)",
+    "Laranja (Ampliada)",
+    "Laranja (Superampliada)",
     "Laranja (Atendimento especializado)",
     "Laranja - Adaptada Ledor",
     "Roxa - Videoprova - Libras"
