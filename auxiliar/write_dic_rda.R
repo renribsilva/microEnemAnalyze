@@ -634,7 +634,7 @@ lc_2025 <- data.table::data.table(
     "Laranja - Adaptada Ledor",
     "Roxa - Videoprova - Libras"
   ),
-  tipo = c(rep("1", 7), rep("2", 1), rep("3", 1))
+  tipo = c(rep("1", 4), rep("2", 4), rep("3", 1))
 )
 
 # --- 2. Ciências Humanas (CH) ---
@@ -655,7 +655,7 @@ ch_2025 <- data.table::data.table(
     "Laranja - Adaptada Ledor",
     "Roxa - Videoprova - Libras"
   ),
-  tipo = c(rep("1", 7), rep("2", 1), rep("3", 1))
+  tipo = c(rep("1", 4), rep("2", 4), rep("3", 1))
 )
 
 # --- 3. Ciências da Natureza (CN) ---
@@ -676,7 +676,7 @@ cn_2025 <- data.table::data.table(
     "Laranja - Adaptada Ledor",
     "Roxa - Videoprova - Libras"
   ),
-  tipo = c(rep("1", 7), rep("2", 1), rep("3", 1))
+  tipo = c(rep("1", 4), rep("2", 4), rep("3", 1))
 )
 
 # --- 4. Matemática (MT) ---
@@ -697,7 +697,7 @@ mt_2025 <- data.table::data.table(
     "Laranja - Adaptada Ledor",
     "Roxa - Videoprova - Libras"
   ),
-  tipo = c(rep("1", 7), rep("2", 1), rep("3", 1))
+  tipo = c(rep("1", 4), rep("2", 4), rep("3", 1))
 )
 
 # --- UNINDO TUDO ---
